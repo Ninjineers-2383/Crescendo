@@ -1,0 +1,78 @@
+{
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "java.server.launchMode": "Standard",
+  "files.exclude": {
+    "**/.git": true,
+    "**/.svn": true,
+    "**/.hg": true,
+    "**/CVS": true,
+    "**/.DS_Store": true,
+    "bin/": true,
+    "**/.classpath": true,
+    "**/.project": true,
+    "**/.settings": true,
+    "**/.factorypath": true,
+    "**/*~": true
+  },
+  "java.test.config": [
+    {
+      "name": "WPIlibUnitTests",
+      "workingDirectory": "${workspaceFolder}/build/jni/release",
+      "vmargs": ["-Djava.library.path=${workspaceFolder}/build/jni/release"],
+      "env": {
+        "LD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release",
+        "DYLD_LIBRARY_PATH": "${workspaceFolder}/build/jni/release"
+      }
+    }
+  ],
+  "java.test.defaultConfig": "WPIlibUnitTests",
+  "latex-workshop.latex.autoBuild.run": "onSave",
+  "latex-workshop.latex.autoClean.run": "onBuilt",
+  "cSpell.words": [
+    "AHRS",
+    "atfl",
+    "Brushless",
+    "CANivore",
+    "diffy",
+    "drivetrains",
+    "Feedforward",
+    "feedforwards",
+    "Holonomic",
+    "Irizarry",
+    "Kalman",
+    "Ninjineers",
+    "Normie",
+    "nunchuck",
+    "Odometry",
+    "overriden",
+    "Penrose",
+    "PIDF",
+    "pseudoinverse",
+    "setpoint",
+    "signum",
+    "Tele",
+    "teleop",
+    "teleoperated",
+    "timestep",
+    "unmodeled"
+  ],
+  "explorer.fileNesting.patterns": {
+    "simgui.json": "*.wpilog"
+  },
+  "explorer.fileNesting.enabled": true,
+  "latex.linter.config": "",
+  "python.analysis.typeCheckingMode": "off",
+  "editor.detectIndentation": false,
+  "wpilib.autoSaveOnDeploy": false,
+  "search.useIgnoreFiles": true,
+  "[python]": {
+      "editor.defaultFormatter": "ms-python.black-formatter"
+  },
+  "[java]": {
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "editor.defaultFormatter": "redhat.java",
+    "editor.tabSize": 4,
+    "editor.rulers": [120]
+  },
+  "java.format.settings.url": "formatter.xml",
+}

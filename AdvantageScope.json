@@ -1,0 +1,115 @@
+{
+  "version": "2.3.0",
+  "layout": [
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        },
+        "discrete": {
+          "fields": []
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": []
+        }
+      },
+      "title": "Line Graph"
+    },
+    {
+      "type": 10,
+      "fields": [
+        "NT:/AdvantageKit/RealOutputs/Pink Arm",
+        null,
+        null
+      ],
+      "listFields": [],
+      "options": {},
+      "title": "Mechanism"
+    },
+    {
+      "type": 6,
+      "fields": [],
+      "listFields": [
+        [],
+        [
+          {
+            "type": "Robot",
+            "key": "NT:/SmartDashboard/Field/Robot",
+            "fieldTypeIndex": 0
+          },
+          {
+            "type": "Mechanism (Robot)",
+            "key": "NT:/AdvantageKit/RealOutputs/Pink Arm",
+            "fieldTypeIndex": 1
+          }
+        ]
+      ],
+      "options": {
+        "field": "Evergreen",
+        "alliance": "red",
+        "robot": "Crab Bot",
+        "unitDistance": "meters",
+        "unitRotation": "degrees"
+      },
+      "title": "3D Field"
+    },
+    {
+      "type": 1,
+      "legends": {
+        "left": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": [
+            {
+              "key": "NT:/LiveWindow/DrivetrainSubsystem/frontLeft/Actual Angle",
+              "color": "#e5b31b",
+              "show": true
+            },
+            {
+              "key": "NT:/LiveWindow/DrivetrainSubsystem/frontLeft/Desired Angle",
+              "color": "#2b66a2",
+              "show": true
+            }
+          ]
+        },
+        "discrete": {
+          "fields": []
+        },
+        "right": {
+          "lockedRange": null,
+          "unitConversion": {
+            "type": null,
+            "factor": 1
+          },
+          "fields": [
+            {
+              "key": "NT:/LiveWindow/DrivetrainSubsystem/frontLeft/Actual MPS",
+              "color": "#af2437",
+              "show": true
+            },
+            {
+              "key": "NT:/LiveWindow/DrivetrainSubsystem/frontLeft/Desired MPS",
+              "color": "#80588e",
+              "show": true
+            }
+          ]
+        }
+      },
+      "title": "Line Graph"
+    }
+  ]
+}
