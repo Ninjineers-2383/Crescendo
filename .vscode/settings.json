@@ -32,7 +32,9 @@
     "AHRS",
     "atfl",
     "Brushless",
+    "Cancoder",
     "CANivore",
+    "CTRE",
     "diffy",
     "drivetrains",
     "Feedforward",
@@ -55,7 +57,7 @@
     "teleoperated",
     "timestep",
     "unmodeled"
-  ],
+],
   "explorer.fileNesting.patterns": {
     "simgui.json": "*.wpilog"
   },
@@ -66,7 +68,7 @@
   "wpilib.autoSaveOnDeploy": false,
   "search.useIgnoreFiles": true,
   "[python]": {
-      "editor.defaultFormatter": "ms-python.black-formatter"
+    "editor.defaultFormatter": "ms-python.black-formatter"
   },
   "[java]": {
     "editor.suggest.snippetsPreventQuickSuggestions": false,
@@ -74,5 +76,5 @@
     "editor.tabSize": 4,
     "editor.rulers": [120]
   },
-  "java.format.settings.url": "formatter.xml",
+  "java.format.settings.url": "formatter.xml"
 }

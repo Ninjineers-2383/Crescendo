@@ -11,6 +11,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.commands.ElevatorPositionCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
@@ -21,14 +22,20 @@ import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOPhoton;
+import com.team2383.robot.subsystems.elevator.ElevatorIO;
+import com.team2383.robot.subsystems.elevator.ElevatorIOSim;
+import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
+import com.team2383.robot.subsystems.sim_components.SimComponents;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -43,6 +50,7 @@ public class RobotContainer {
     private final GenericHID m_driverController = new GenericHID(0);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
+    private ElevatorSubsystem m_elevatorSubsystem;
 
     LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto");
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
@@ -81,6 +89,7 @@ public class RobotContainer {
                             new VisionIO() {},
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
+                    m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim() {});
                     break;
                 default:
                     break;
@@ -93,6 +102,11 @@ public class RobotContainer {
                         new VisionIO() {},
                         new SwerveModuleIO() {}, new SwerveModuleIO() {},
                         new SwerveModuleIO() {}, new SwerveModuleIO() {});
+
+        m_elevatorSubsystem = m_elevatorSubsystem != null ? m_elevatorSubsystem
+                : new ElevatorSubsystem(new ElevatorIO() {});
+
+        new SimComponents(m_elevatorSubsystem);
 
         // Configure the button bindings
         configureButtonBindings();
@@ -114,6 +128,14 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        new JoystickButton(m_driverController, 1)
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(0)));
+        new JoystickButton(m_driverController, 2)
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)));
+        new JoystickButton(m_driverController, 3)
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(20)));
+        new JoystickButton(m_driverController, 4)
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(45)));
     }
 
     private void configureDefaultCommands() {
@@ -160,5 +182,7 @@ public class RobotContainer {
         Command nullAuto = null;
 
         autoChooser.addDefaultOption("No Auto :(", nullAuto);
+        autoChooser.addOption("5 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(5)));
+        autoChooser.addOption("10 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)));
     }
 }
