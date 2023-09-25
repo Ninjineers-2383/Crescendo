@@ -30,7 +30,8 @@ import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 public class DrivetrainSubsystem extends SubsystemBase {
     private final CoaxialSwerveModule m_frontLeftModule;
     private final CoaxialSwerveModule m_frontRightModule;
-    private final CoaxialSwerveModule m_rearModule;
+    private final CoaxialSwerveModule m_rearLeftModule;
+    private final CoaxialSwerveModule m_rearRightModule;
 
     private final CoaxialSwerveModule[] m_modules;
     private final SwerveModuleState[] m_lastStates;
@@ -44,7 +45,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             DriveConstants.frontLeftConstants.translation,
             DriveConstants.frontRightConstants.translation,
-            DriveConstants.rearConstants.translation);
+            DriveConstants.rearLeftConstants.translation,
+            DriveConstants.rearRightConstants.translation);
 
     private final SwerveDrivePoseEstimator m_poseEstimator;
 
@@ -52,15 +54,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final FieldObject2d m_COR;
 
     public DrivetrainSubsystem(GyroIO gyro, VisionIO vision, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
-            SwerveModuleIO rearIO) {
+            SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
         m_gyro = gyro;
         m_vision = vision;
 
         m_frontLeftModule = new CoaxialSwerveModule(frontLeftIO, "FL");
         m_frontRightModule = new CoaxialSwerveModule(frontRightIO, "FR");
-        m_rearModule = new CoaxialSwerveModule(rearIO, "R");
+        m_rearLeftModule = new CoaxialSwerveModule(rearLeftIO, "RL");
+        m_rearRightModule = new CoaxialSwerveModule(rearRightIO, "RR");
 
-        m_modules = new CoaxialSwerveModule[] { m_frontLeftModule, m_frontRightModule, m_rearModule };
+        m_modules = new CoaxialSwerveModule[] { m_frontLeftModule, m_frontRightModule, m_rearLeftModule,
+                m_rearRightModule };
 
         m_poseEstimator = new SwerveDrivePoseEstimator(
                 m_kinematics,
@@ -75,7 +79,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         addChild(DriveConstants.frontLeftConstants.name, m_frontLeftModule);
         addChild(DriveConstants.frontRightConstants.name, m_frontRightModule);
-        addChild(DriveConstants.rearConstants.name, m_rearModule);
+        addChild(DriveConstants.rearLeftConstants.name, m_rearLeftModule);
+        addChild(DriveConstants.rearRightConstants.name, m_rearRightModule);
 
         if (RobotBase.isSimulation()) {
             m_poseEstimator.resetPosition(new Rotation2d(), getModulePositions(),
@@ -151,6 +156,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_field.setRobotPose(estimatedPose);
 
         SmartDashboard.putNumber("Roll", getRoll());
+
+        Logger.getInstance().recordOutput("Swerve/Real Module States", m_lastStates);
+
+        Logger.getInstance().recordOutput("Robot Pose", estimatedPose);
     }
 
     /**
@@ -182,6 +191,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 centerOfRotation);
 
         setModuleStates(swerveModuleStates);
+
+        Logger.getInstance().recordOutput("Swerve/Desired Module States", swerveModuleStates);
 
         m_COR.setPose(getPose().plus(new Transform2d(centerOfRotation, new Rotation2d())));
     }
@@ -259,7 +270,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] { m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(),
-                m_rearModule.getPosition() };
+                m_rearLeftModule.getPosition(), m_rearRightModule.getPosition() };
     }
 
     public void forceOdometry(Pose2d pose) {

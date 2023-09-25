@@ -13,8 +13,8 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     private final FlywheelSim angleSim;
 
     private final PIDController driveController = new PIDController(0.27135, 0, 0);
-    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0.15, 0.015968);
-    private final PIDController angleController = new PIDController(0.8, 0, 0);
+    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0.55, 0.015968);
+    private final PIDController angleController = new PIDController(4, 0, 0);
 
     private double absolutePosition = Math.random();
 
@@ -24,8 +24,8 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     private double desiredRotations = 0.0;
 
     public SwerveModuleIOSim() {
-        driveSim = new FlywheelSim(DCMotor.getFalcon500(1), DriveConstants.kDriveGearRatio, 0.025);
-        angleSim = new FlywheelSim(DCMotor.getFalcon500(1), DriveConstants.kAngleGearRatio, 0.004);
+        driveSim = new FlywheelSim(DCMotor.getFalcon500(1), DriveConstants.kDriveGearRatio, 1.5E-5);
+        angleSim = new FlywheelSim(DCMotor.getFalcon500(1), DriveConstants.kAngleGearRatio, 1E-7);
     }
 
     @Override

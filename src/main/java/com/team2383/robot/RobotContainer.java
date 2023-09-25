@@ -70,14 +70,17 @@ public class RobotContainer {
                                     DriveConstants.frontLeftEncoder, Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
                                     DriveConstants.frontRightEncoder, Constants.kCANivoreBus),
-                            new SwerveModuleIOFalcon500(DriveConstants.rearConstants,
-                                    DriveConstants.rearEncoder, Constants.kCANivoreBus));
+                            new SwerveModuleIOFalcon500(DriveConstants.rearLeftConstants,
+                                    DriveConstants.rearLeftEncoder, Constants.kCANivoreBus),
+                            new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
+                                    DriveConstants.rearRightEncoder, Constants.kCANivoreBus));
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             new GyroIO() {},
                             new VisionIO() {},
-                            new SwerveModuleIOSim() {}, new SwerveModuleIOSim() {}, new SwerveModuleIOSim() {});
+                            new SwerveModuleIOSim(), new SwerveModuleIOSim(),
+                            new SwerveModuleIOSim(), new SwerveModuleIOSim());
                     break;
                 default:
                     break;
@@ -88,7 +91,8 @@ public class RobotContainer {
                 : new DrivetrainSubsystem(
                         new GyroIO() {},
                         new VisionIO() {},
-                        new SwerveModuleIO() {}, new SwerveModuleIO() {}, new SwerveModuleIO() {});
+                        new SwerveModuleIO() {}, new SwerveModuleIO() {},
+                        new SwerveModuleIO() {}, new SwerveModuleIO() {});
 
         // Configure the button bindings
         configureButtonBindings();
