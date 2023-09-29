@@ -16,6 +16,7 @@ import com.team2383.robot.commands.JoystickDriveHeadingLock;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
+import com.team2383.robot.subsystems.drivetrain.GyroIONavX;
 import com.team2383.robot.subsystems.drivetrain.GyroIOPigeon;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
@@ -34,6 +35,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
@@ -72,7 +74,7 @@ public class RobotContainer {
             switch (Constants.getRobot()) {
                 case ROBOT_COMP:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            new GyroIOPigeon(0, Constants.kCANivoreBus),
+                            new GyroIONavX(),
                             new VisionIOPhoton(),
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     DriveConstants.frontLeftEncoder, Constants.kCANivoreBus),
@@ -136,6 +138,10 @@ public class RobotContainer {
                 .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(20)));
         new JoystickButton(m_driverController, 4)
                 .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(45)));
+
+        new JoystickButton(m_driverController, 8).onTrue(new InstantCommand(() -> {
+            m_drivetrainSubsystem.resetHeading();
+        }));
     }
 
     private void configureDefaultCommands() {

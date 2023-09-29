@@ -9,6 +9,7 @@ public interface SwerveModuleIO {
     public static class SwerveModuleIOInputs {
         public double velocityMPS = 0.0;
         public double angleRad = 0.0;
+        public double absoluteAngleRad = 0.0;
         public double drivePositionM = 0.0;
         public double appliedVoltsDrive = 0.0;
         public double appliedVoltsAngle = 0.0;

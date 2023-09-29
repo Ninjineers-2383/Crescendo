@@ -9,6 +9,7 @@ import com.ctre.phoenixpro.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenixpro.signals.NeutralModeValue;
 import com.ctre.phoenixpro.signals.SensorDirectionValue;
 import com.team2383.lib.swerve.AbsoluteCancoder;
+import com.team2383.lib.swerve.AbsoluteMagEncoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -132,7 +133,7 @@ public final class DriveConstants {
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromDegrees(230.625));
+            Rotation2d.fromRadians(-1.500));
 
     public final static ModuleConstants frontRightConstants = new ModuleConstants(
             0.065635,
@@ -144,7 +145,7 @@ public final class DriveConstants {
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromDegrees(207.86));
+            Rotation2d.fromRadians(2.792));
 
     public final static ModuleConstants rearLeftConstants = new ModuleConstants(
             0.065635,
@@ -156,7 +157,7 @@ public final class DriveConstants {
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromDegrees(283.359375));
+            Rotation2d.fromRadians(0.070));
 
     public final static ModuleConstants rearRightConstants = new ModuleConstants(
             0.065635,
@@ -168,15 +169,19 @@ public final class DriveConstants {
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromDegrees(283.359375));
+            Rotation2d.fromRadians(0.433));
 
-    public final static IAbsoluteEncoder frontLeftEncoder = new AbsoluteCancoder(1, "Drive",
-            frontLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    public final static IAbsoluteEncoder frontRightEncoder = new AbsoluteCancoder(2, "Drive",
-            frontRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    public final static IAbsoluteEncoder rearLeftEncoder = new AbsoluteCancoder(3, "Drive",
-            rearLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    public final static IAbsoluteEncoder rearRightEncoder = new AbsoluteCancoder(4, "Drive",
-            rearRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    // public final static IAbsoluteEncoder frontLeftEncoder = new AbsoluteCancoder(1, "Drive",
+    //         frontLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    // public final static IAbsoluteEncoder frontRightEncoder = new AbsoluteCancoder(2, "Drive",
+    //         frontRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    // public final static IAbsoluteEncoder rearLeftEncoder = new AbsoluteCancoder(3, "Drive",
+    //         rearLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    // public final static IAbsoluteEncoder rearRightEncoder = new AbsoluteCancoder(4, "Drive",
+    //         rearRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    public final static IAbsoluteEncoder frontLeftEncoder = new AbsoluteMagEncoder(6);
+    public final static IAbsoluteEncoder frontRightEncoder = new AbsoluteMagEncoder(7);
+    public final static IAbsoluteEncoder rearLeftEncoder = new AbsoluteMagEncoder(8);
+    public final static IAbsoluteEncoder rearRightEncoder = new AbsoluteMagEncoder(9);
 
 }

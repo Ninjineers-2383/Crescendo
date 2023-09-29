@@ -11,6 +11,7 @@ public interface GyroIO {
         public double headingDeg = 0.0;
         public double rollDeg = 0.0;
         public double headingRateDPS = 0.0;
+        public double headingAdjustment = 0.0;
 
     }
 

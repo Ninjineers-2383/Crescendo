@@ -53,6 +53,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final Field2d m_field = new Field2d();
     private final FieldObject2d m_COR;
 
+    private int loop_cycle = 0;
+
     public DrivetrainSubsystem(GyroIO gyro, VisionIO vision, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
             SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
         m_gyro = gyro;
@@ -93,6 +95,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (loop_cycle == 200) {
+            for (CoaxialSwerveModule module : m_modules) {
+                module.resetToAbsolute();
+            }
+        }
+
+        loop_cycle++;
+
         m_gyro.updateInputs(m_gyroInputs);
         Logger.getInstance().processInputs("Gyro", m_gyroInputs);
 
