@@ -13,20 +13,24 @@ import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.commands.ElevatorPositionCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
+import com.team2383.robot.commands.WristPositionCommand;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
 import com.team2383.robot.subsystems.drivetrain.GyroIONavX;
-import com.team2383.robot.subsystems.drivetrain.GyroIOPigeon;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOPhoton;
 import com.team2383.robot.subsystems.elevator.ElevatorIO;
+import com.team2383.robot.subsystems.elevator.ElevatorIOFalcon500;
 import com.team2383.robot.subsystems.elevator.ElevatorIOSim;
 import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
 import com.team2383.robot.subsystems.sim_components.SimComponents;
+import com.team2383.robot.subsystems.wrist.WristIO;
+import com.team2383.robot.subsystems.wrist.WristIOSparkMax;
+import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -53,6 +57,7 @@ public class RobotContainer {
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
     private ElevatorSubsystem m_elevatorSubsystem;
+    private WristSubsystem m_wristSubsystem;
 
     LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto");
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
@@ -84,6 +89,8 @@ public class RobotContainer {
                                     DriveConstants.rearLeftEncoder, Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     DriveConstants.rearRightEncoder, Constants.kCANivoreBus));
+                    m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOFalcon500(Constants.kCANivoreBus));
+                    m_wristSubsystem = new WristSubsystem(new WristIOSparkMax(Constants.kRIOBus));
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -108,6 +115,9 @@ public class RobotContainer {
         m_elevatorSubsystem = m_elevatorSubsystem != null ? m_elevatorSubsystem
                 : new ElevatorSubsystem(new ElevatorIO() {});
 
+        m_wristSubsystem = m_wristSubsystem != null ? m_wristSubsystem
+                : new WristSubsystem(new WristIO() {});
+
         new SimComponents(m_elevatorSubsystem);
 
         // Configure the button bindings
@@ -131,13 +141,17 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         new JoystickButton(m_driverController, 1)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(0)));
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(0)))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(20)));
         new JoystickButton(m_driverController, 2)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)));
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(30)));
         new JoystickButton(m_driverController, 3)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(20)));
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(20)))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(40)));
         new JoystickButton(m_driverController, 4)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(45)));
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(45)))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(50)));
 
         new JoystickButton(m_driverController, 8).onTrue(new InstantCommand(() -> {
             m_drivetrainSubsystem.resetHeading();

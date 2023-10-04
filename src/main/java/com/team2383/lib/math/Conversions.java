@@ -182,6 +182,19 @@ public class Conversions {
     }
 
     /**
+     * @param rotations
+     *            Rotation Count
+     * @param circumference
+     *            Circumference of Wheel
+     * @param gearRatio
+     *            Gear Ratio between Falcon and Wheel
+     * @return Meters
+     */
+    public static double metersToRotations(double meters, double circumference, double gearRatio) {
+        return meters / (circumference / gearRatio);
+    }
+
+    /**
      * @param meters
      *            Meters
      * @param circumference
