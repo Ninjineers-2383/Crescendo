@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.commands.ElevatorPositionCommand;
+import com.team2383.robot.commands.FeederVoltageCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
 import com.team2383.robot.commands.WristPositionCommand;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
@@ -27,6 +28,9 @@ import com.team2383.robot.subsystems.elevator.ElevatorIO;
 import com.team2383.robot.subsystems.elevator.ElevatorIOFalcon500;
 import com.team2383.robot.subsystems.elevator.ElevatorIOSim;
 import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
+import com.team2383.robot.subsystems.feeder.FeederIO;
+import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
+import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.sim_components.SimComponents;
 import com.team2383.robot.subsystems.wrist.WristIO;
 import com.team2383.robot.subsystems.wrist.WristIOSparkMax;
@@ -54,10 +58,12 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
     private final GenericHID m_driverController = new GenericHID(0);
+    private final GenericHID m_operatorController = new GenericHID(1);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
     private ElevatorSubsystem m_elevatorSubsystem;
     private WristSubsystem m_wristSubsystem;
+    private FeederSubsystem m_feederSubsystem;
 
     LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto");
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
@@ -90,7 +96,9 @@ public class RobotContainer {
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     DriveConstants.rearRightEncoder, Constants.kCANivoreBus));
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOFalcon500(Constants.kCANivoreBus));
-                    m_wristSubsystem = new WristSubsystem(new WristIOSparkMax(Constants.kRIOBus));
+                    // m_wristSubsystem = new WristSubsystem(new
+                    // WristIOSparkMax(Constants.kRIOBus));
+                    // m_feederSubsystem = new FeederSubsystem(new FeederIOFalcon500());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -118,6 +126,9 @@ public class RobotContainer {
         m_wristSubsystem = m_wristSubsystem != null ? m_wristSubsystem
                 : new WristSubsystem(new WristIO() {});
 
+        m_feederSubsystem = m_feederSubsystem != null ? m_feederSubsystem
+                : new FeederSubsystem(new FeederIO() {});
+
         new SimComponents(m_elevatorSubsystem);
 
         // Configure the button bindings
@@ -140,16 +151,16 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(m_driverController, 1)
+        new JoystickButton(m_operatorController, 1)
                 .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(0)))
                 .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(20)));
-        new JoystickButton(m_driverController, 2)
+        new JoystickButton(m_operatorController, 2)
                 .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)))
                 .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(30)));
-        new JoystickButton(m_driverController, 3)
+        new JoystickButton(m_operatorController, 3)
                 .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(20)))
                 .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(40)));
-        new JoystickButton(m_driverController, 4)
+        new JoystickButton(m_operatorController, 4)
                 .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(45)))
                 .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(50)));
 
@@ -169,6 +180,9 @@ public class RobotContainer {
                                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1)),
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
+
+        m_feederSubsystem.setDefaultCommand(new FeederVoltageCommand(m_feederSubsystem,
+                () -> m_operatorController.getRawAxis(1) - m_operatorController.getRawAxis(2)));
 
     }
 

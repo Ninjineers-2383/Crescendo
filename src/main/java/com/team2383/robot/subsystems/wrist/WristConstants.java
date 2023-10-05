@@ -4,7 +4,7 @@ import edu.wpi.first.math.util.Units;
 
 public final class WristConstants {
     public static final int kWristMotorID = 13;
-    public static final int kAbsEncoderID = 14;
+    public static final int kAbsEncoderID = 5;
 
     public static final double kS = 0.0;
     public static final double kV = 2.83;
@@ -27,6 +27,6 @@ public final class WristConstants {
     public static final double kEncoderMetersPerRev = 0.5;
 
     public static final double kEncoderOffset = 3.365 / (2 * Math.PI);
-    public static final double kWristMotorGearRatio = 0;
-    
+    public static final double kWristMotorGearRatio = 1 / 85.33;
+
 }

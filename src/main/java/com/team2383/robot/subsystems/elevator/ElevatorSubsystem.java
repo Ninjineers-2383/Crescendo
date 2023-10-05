@@ -2,13 +2,13 @@ package com.team2383.robot.subsystems.elevator;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class ElevatorSubsystem extends SubsystemBase {
-    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(ElevatorConstants.kS,
+    private final ElevatorFeedforward feedforward = new ElevatorFeedforward(ElevatorConstants.kS, ElevatorConstants.kG,
             ElevatorConstants.kV, ElevatorConstants.kA);
     private final PIDController controller = new PIDController(ElevatorConstants.kP, ElevatorConstants.kI,
             ElevatorConstants.kD);
