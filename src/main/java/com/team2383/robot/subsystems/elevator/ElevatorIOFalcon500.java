@@ -1,7 +1,6 @@
 package com.team2383.robot.subsystems.elevator;
 
 import com.ctre.phoenixpro.hardware.TalonFX;
-import com.team2383.lib.math.Conversions;
 
 public class ElevatorIOFalcon500 implements ElevatorIO {
 

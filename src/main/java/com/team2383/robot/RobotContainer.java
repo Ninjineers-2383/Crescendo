@@ -35,6 +35,7 @@ import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.sim_components.SimComponents;
 import com.team2383.robot.subsystems.wrist.WristIO;
+import com.team2383.robot.subsystems.wrist.WristIOSim;
 import com.team2383.robot.subsystems.wrist.WristIOSparkMax;
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
@@ -109,6 +110,7 @@ public class RobotContainer {
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim() {});
+                    m_wristSubsystem = new WristSubsystem(new WristIOSim());
                     break;
                 default:
                     break;
@@ -131,7 +133,7 @@ public class RobotContainer {
         m_feederSubsystem = m_feederSubsystem != null ? m_feederSubsystem
                 : new FeederSubsystem(new FeederIO() {});
 
-        new SimComponents(m_elevatorSubsystem);
+        new SimComponents(m_elevatorSubsystem, m_wristSubsystem);
 
         // Configure the button bindings
         configureButtonBindings();
