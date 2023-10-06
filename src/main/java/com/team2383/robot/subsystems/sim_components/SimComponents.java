@@ -24,18 +24,23 @@ public class SimComponents extends SubsystemBase {
     @Override
     public void periodic() {
 
-        Pose3d basePose = new Pose3d(0, 0, 0.1, new Rotation3d(Units.degreesToRadians(90), 0, 0));
+        Pose3d basePose = new Pose3d(0, 0, 0.0422, new Rotation3d(Units.degreesToRadians(90), 0, 0));
 
         Pose3d[] poses = new Pose3d[4];
         Rotation3d elevatorRotation = new Rotation3d(0, 0, -Units.degreesToRadians(35));
         Translation3d elevatorTop = new Translation3d(0, this.elevator.getPosition(), 0).rotateBy(elevatorRotation);
         Translation3d elevatorBottom = new Translation3d(0, this.elevator.getPosition() / 2.0, 0)
                 .rotateBy(elevatorRotation);
-        Rotation3d wristRotation = new Rotation3d(0, Math.toRadians(90), wrist.getAngle());
+        Rotation3d wristRotation = new Rotation3d(0, 0, wrist.getAngle());
+        Transform3d wristPos = new Transform3d(
+                new Translation3d(Units.inchesToMeters(6.449), Units.inchesToMeters(0.125), -Units.inchesToMeters(9.0))
+                        .rotateBy(new Rotation3d(Math.toRadians(90), 0, 0)),
+                wristRotation);
+
         poses[0] = basePose;
         poses[1] = basePose.plus(new Transform3d(elevatorBottom, new Rotation3d(0, 0, 0)));
         poses[2] = basePose.plus(new Transform3d(elevatorTop, new Rotation3d(0, 0, 0)));
-        poses[3] = basePose.plus(new Transform3d(elevatorTop, wristRotation));
+        poses[3] = basePose.plus(new Transform3d(elevatorTop, new Rotation3d())).plus(wristPos);
 
         Logger.getInstance().recordOutput("Components", poses);
     }
