@@ -12,9 +12,11 @@ import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.commands.ElevatorPositionCommand;
+import com.team2383.robot.commands.ElevatorVelocityCommand;
 import com.team2383.robot.commands.FeederVoltageCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
 import com.team2383.robot.commands.WristPositionCommand;
+import com.team2383.robot.commands.WristVelocityCommand;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
@@ -46,6 +48,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -96,9 +99,8 @@ public class RobotContainer {
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     DriveConstants.rearRightEncoder, Constants.kCANivoreBus));
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOFalcon500(Constants.kCANivoreBus));
-                    // m_wristSubsystem = new WristSubsystem(new
-                    // WristIOSparkMax(Constants.kRIOBus));
-                    // m_feederSubsystem = new FeederSubsystem(new FeederIOFalcon500());
+                    m_wristSubsystem = new WristSubsystem(new WristIOSparkMax());
+                    m_feederSubsystem = new FeederSubsystem(new FeederIOFalcon500());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -151,18 +153,31 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
+        // Ground Intake
         new JoystickButton(m_operatorController, 1)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(0)))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(20)));
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem,
+                        Units.inchesToMeters(0)))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, 0.3));
+
+        // Cone Chute
         new JoystickButton(m_operatorController, 2)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(30)));
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem,
+                        0.06))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, 1.32));
+        // Middle
         new JoystickButton(m_operatorController, 3)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(20)))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(40)));
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem,
+                        0.75))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, 0.605));
+        // High
         new JoystickButton(m_operatorController, 4)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(45)))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, Units.degreesToRadians(50)));
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem,
+                        1.33))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, 0.73));
+
+        new POVButton(m_operatorController, 0)
+                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, 0.47))
+                .onTrue(new WristPositionCommand(m_wristSubsystem, 1.46));
 
         new JoystickButton(m_driverController, 8).onTrue(new InstantCommand(() -> {
             m_drivetrainSubsystem.resetHeading();
@@ -182,8 +197,15 @@ public class RobotContainer {
                         () -> -1));
 
         m_feederSubsystem.setDefaultCommand(new FeederVoltageCommand(m_feederSubsystem,
-                () -> m_operatorController.getRawAxis(1) - m_operatorController.getRawAxis(2)));
+                () -> m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3)));
 
+        m_wristSubsystem.setDefaultCommand(
+                new WristVelocityCommand(m_wristSubsystem,
+                        () -> -MathUtil.applyDeadband(m_operatorController.getRawAxis(1), 0.02)));
+
+        m_elevatorSubsystem.setDefaultCommand(
+                new ElevatorVelocityCommand(m_elevatorSubsystem,
+                        () -> -MathUtil.applyDeadband(m_operatorController.getRawAxis(5), 0.02)));
     }
 
     /**

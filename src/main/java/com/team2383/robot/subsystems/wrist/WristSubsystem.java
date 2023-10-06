@@ -2,14 +2,14 @@ package com.team2383.robot.subsystems.wrist;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class WristSubsystem extends SubsystemBase {
-    private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(WristConstants.kS,
-            WristConstants.kV, WristConstants.kA);
+    private final ArmFeedforward feedforward = new ArmFeedforward(WristConstants.kS,
+            WristConstants.kG, WristConstants.kV, WristConstants.kA);
     private final PIDController controller = new PIDController(WristConstants.kP, WristConstants.kI,
             WristConstants.kD);
 
@@ -50,11 +50,16 @@ public class WristSubsystem extends SubsystemBase {
         io.setVoltage(voltage);
     }
 
+    public void setVelocity(double velocity) {
+        goal = new TrapezoidProfile.State(goal.position + velocity * 0.02, 0);
+    }
+
     public double calculateVoltage(TrapezoidProfile.State setpoint, TrapezoidProfile.State prev, double angleRad,
             double angleRadPerSec) {
         double accel = (setpoint.velocity - angleRadPerSec) / 0.02;
-        return feedforward.calculate(setpoint.velocity, accel) + controller.calculate(angleRad,
-                setpoint.position);
+        return feedforward.calculate(inputs.wristAngle, setpoint.velocity, accel)
+                + controller.calculate(angleRad,
+                        setpoint.position);
     }
 
     public void setPosition(double positionMeters) {

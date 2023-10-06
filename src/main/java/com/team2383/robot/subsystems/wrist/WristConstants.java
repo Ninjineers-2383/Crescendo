@@ -6,17 +6,18 @@ public final class WristConstants {
     public static final int kWristMotorID = 13;
     public static final int kAbsEncoderID = 5;
 
-    public static final double kS = 0.0;
-    public static final double kV = 2.83;
-    public static final double kA = 0.07;
+    public static final double kG = 0.25;
+    public static final double kS = 0;
+    public static final double kV = 2.1;
+    public static final double kA = 0.0;
 
-    public static final double kP = 12;
-    public static final double kI = 1.2;
-    public static final double kD = 4;
+    public static final double kP = 1.8;
+    public static final double kI = 0;
+    public static final double kD = 0.25;
 
     public static final double kMaxVoltage = 12.0;
-    public static final double kMaxVelocity = 5;
-    public static final double kMaxAcceleration = 7;
+    public static final double kMaxVelocity = 30;
+    public static final double kMaxAcceleration = 12;
     public static final int kMaxCurrent = 40;
 
     public static final double kMaxPosition = Units.inchesToMeters(45);
@@ -26,7 +27,7 @@ public final class WristConstants {
 
     public static final double kEncoderMetersPerRev = 0.5;
 
-    public static final double kEncoderOffset = 3.365 / (2 * Math.PI);
-    public static final double kWristMotorGearRatio = 1 / 85.33;
+    public static final double kEncoderOffset = 2.404;
+    public static final double kWristMotorGearRatio = (4.0 / 1) * (3.0 / 1) * (4.0 / 1) * (32.0 / 18.0);
 
 }

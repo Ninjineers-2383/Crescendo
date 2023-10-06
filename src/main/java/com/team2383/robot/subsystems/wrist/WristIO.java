@@ -8,6 +8,8 @@ public interface WristIO {
     public static class WristIOInputs {
         public double velocityRadPerSec = 0.0;
         public double wristAngle = 0.0;
+        public double absoluteWristAngle = 0.0;
+        public double absoluteWristAngleOffset = 0.0;
         public double appliedVolts = 0.0;
         public double current = 0.0;
     }
@@ -21,5 +23,5 @@ public interface WristIO {
 
     public default void forceAngle(double angle) {
     }
-    
+
 }

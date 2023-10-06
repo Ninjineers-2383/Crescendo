@@ -59,7 +59,7 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
     public void resetToAbsolute() {
         double absolutePosition = Conversions.degreesToRotations(
                 getAbsolute().getDegrees() - m_angleOffset.getDegrees(),
-                 DriveConstants.kAngleGearRatio);
+                DriveConstants.kAngleGearRatio);
         m_angleMotor.setRotorPosition(absolutePosition);
     }
 

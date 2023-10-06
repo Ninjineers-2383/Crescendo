@@ -50,6 +50,10 @@ public class ElevatorSubsystem extends SubsystemBase {
         io.setVoltage(voltage);
     }
 
+    public void setVelocity(double velocity) {
+        goal = new TrapezoidProfile.State(goal.position + velocity * 0.02, 0);
+    }
+
     public double calculateVoltage(TrapezoidProfile.State setpoint, TrapezoidProfile.State prev, double positionMeters,
             double velocityMetersPerSecond) {
         double accel = (setpoint.velocity - prev.velocity) / 0.02;
