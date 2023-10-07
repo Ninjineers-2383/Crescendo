@@ -73,7 +73,7 @@ public class RobotContainer {
     private WristSubsystem m_wristSubsystem;
     private FeederSubsystem m_feederSubsystem;
 
-    private Boolean feederBoolean = true;
+    private Boolean cubeMode = true;
 
     LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto");
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
@@ -148,7 +148,7 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        SmartDashboard.putBoolean("Feeder Boolean", feederBoolean);
+        SmartDashboard.putBoolean("Cube Mode", cubeMode);
 
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
@@ -190,10 +190,10 @@ public class RobotContainer {
                         () -> -1));
 
         new JoystickButton(m_driverController, 3).onTrue(new InstantCommand(() -> {
-            feederBoolean = true;
+            cubeMode = true;
         }));
         new JoystickButton(m_driverController, 4).onTrue(new InstantCommand(() -> {
-            feederBoolean = false;
+            cubeMode = false;
         }));
 
         new JoystickButton(m_driverController, 8)
@@ -218,7 +218,7 @@ public class RobotContainer {
 
         m_feederSubsystem.setDefaultCommand(new FeederVoltageCommand(m_feederSubsystem,
                 () -> ((m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3) - 0.15)
-                        * (feederBoolean ? -1 : 1))));
+                        * (cubeMode ? -0.5 : 1))));
 
         m_wristSubsystem.setDefaultCommand(
                 new WristVelocityCommand(m_wristSubsystem,
