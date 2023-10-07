@@ -17,6 +17,7 @@ import com.team2383.robot.commands.ElevatorVelocityCommand;
 import com.team2383.robot.commands.FeederVoltageCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
 import com.team2383.robot.commands.WristVelocityCommand;
+import com.team2383.robot.commands.ZeroElevatorCommand;
 import com.team2383.robot.commands.blizzard.BlizzardCommand;
 import com.team2383.robot.commands.blizzard.BlizzardPresets;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
@@ -47,6 +48,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
@@ -70,6 +72,8 @@ public class RobotContainer {
     private ElevatorSubsystem m_elevatorSubsystem;
     private WristSubsystem m_wristSubsystem;
     private FeederSubsystem m_feederSubsystem;
+
+    private Boolean feederBoolean = true;
 
     LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto");
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
@@ -140,9 +144,12 @@ public class RobotContainer {
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
+
     }
 
     public void periodic() {
+        SmartDashboard.putBoolean("Feeder Boolean", feederBoolean);
+
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
             lwEnabled = true;
@@ -182,18 +189,19 @@ public class RobotContainer {
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
 
-        new JoystickButton(m_driverController, 3)
-                .toggleOnTrue(new FeederVoltageCommand(m_feederSubsystem,
-                () -> m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3) + 0.15));
-
-        new JoystickButton(m_driverController, 4)
-                .toggleOnTrue(new FeederVoltageCommand(m_feederSubsystem,
-                () -> m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3) - 0.15));
+        new JoystickButton(m_driverController, 3).onTrue(new InstantCommand(() -> {
+            feederBoolean = true;
+        }));
+        new JoystickButton(m_driverController, 4).onTrue(new InstantCommand(() -> {
+            feederBoolean = false;
+        }));
 
         new JoystickButton(m_driverController, 8)
-            .onTrue(new InstantCommand(() -> {
-            m_drivetrainSubsystem.resetHeading();
-        }));
+                .onTrue(new InstantCommand(() -> {
+                    m_drivetrainSubsystem.resetHeading();
+                }));
+
+        new JoystickButton(m_operatorController, 8).onTrue(new ZeroElevatorCommand(m_elevatorSubsystem));
     }
 
     private void configureDefaultCommands() {
@@ -209,7 +217,8 @@ public class RobotContainer {
                         () -> -1));
 
         m_feederSubsystem.setDefaultCommand(new FeederVoltageCommand(m_feederSubsystem,
-                () -> m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3)));
+                () -> ((m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3) - 0.15)
+                        * (feederBoolean ? -1 : 1))));
 
         m_wristSubsystem.setDefaultCommand(
                 new WristVelocityCommand(m_wristSubsystem,

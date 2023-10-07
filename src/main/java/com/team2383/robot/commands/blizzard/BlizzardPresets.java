@@ -4,11 +4,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
 public class BlizzardPresets {
-    public static final BlizzardPosition GROUND_INTAKE = new BlizzardPosition(Units.inchesToMeters(0),
-            Rotation2d.fromRadians(0.3));
+    public static final BlizzardPosition GROUND_INTAKE = new BlizzardPosition(0.08,
+            Rotation2d.fromRadians(-0.16));
 
     public static final BlizzardPosition CONE_CHUTE = new BlizzardPosition(0.06,
-            Rotation2d.fromRadians(0.3));
+            Rotation2d.fromRadians(1.32));
 
     public static final BlizzardPosition MIDDLE = new BlizzardPosition(0.75,
             Rotation2d.fromRadians(0.605));

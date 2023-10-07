@@ -76,4 +76,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     public double getPosition() {
         return inputs.positionM;
     }
+
+    public double getCurrent() {
+        return inputs.current;
+    }
 }
