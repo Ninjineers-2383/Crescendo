@@ -14,6 +14,7 @@ import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.autos.CubeConeAutoClean;
 import com.team2383.robot.autos.CubeMobilityAuto;
 import com.team2383.robot.autos.EngageAuto;
+import com.team2383.robot.autos.ScoreCubeAuto;
 import com.team2383.robot.commands.ElevatorPositionCommand;
 import com.team2383.robot.commands.ElevatorVelocityCommand;
 import com.team2383.robot.commands.FeederVoltageCommand;
@@ -178,6 +179,9 @@ public class RobotContainer {
 
         new POVButton(m_operatorController, 0)
                 .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.SLIDER));
+        
+        new POVButton(m_operatorController, 90)
+        .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.HIGH_2));
 
         new JoystickButton(m_driverController, 1)
                 .toggleOnTrue(new JoystickDriveHeadingLock(m_drivetrainSubsystem,
@@ -272,5 +276,7 @@ public class RobotContainer {
                 m_wristSubsystem, m_feederSubsystem, "CubeEngage", autoBuilder));
         autoChooser.addOption("Cube Cone Clean", new CubeConeAutoClean(m_drivetrainSubsystem, m_elevatorSubsystem,
                 m_wristSubsystem, m_feederSubsystem, "CubeConeClean", autoBuilder));
+        autoChooser.addOption("Score Cube",
+                new ScoreCubeAuto(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
     }
 }
