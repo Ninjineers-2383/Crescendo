@@ -55,6 +55,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private int loop_cycle = 0;
 
+    private double headingIntegral = 0;
+
     public DrivetrainSubsystem(GyroIO gyro, VisionIO vision, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
             SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
         m_gyro = gyro;
@@ -91,6 +93,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         resetHeading();
 
+        // headingIntegral = m_poseEstimator.getEstimatedPosition().getRotation().getRadians();
+
     }
 
     @Override
@@ -119,11 +123,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         ChassisSpeeds chassis = m_kinematics.toChassisSpeeds(m_lastStates);
 
+        headingIntegral += chassis.omegaRadiansPerSecond * 0.02;
+
         if (m_gyroInputs.connected) {
             m_poseEstimator.update(Rotation2d.fromDegrees(m_gyroInputs.headingDeg), getModulePositions());
         } else {
             m_poseEstimator.update(
-                    Rotation2d.fromRadians(getHeading().getRadians() + chassis.omegaRadiansPerSecond * 0.02),
+                    Rotation2d.fromRadians(headingIntegral),
                     getModulePositions());
         }
 
@@ -168,6 +174,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("Roll", getRoll());
 
         Logger.getInstance().recordOutput("Swerve/Real Module States", m_lastStates);
+
+        Logger.getInstance().recordOutput("Swerve/Heading Integaral", headingIntegral);
+
+        Logger.getInstance().recordOutput("Swerve/Chassis Heading", chassis.omegaRadiansPerSecond);
 
         Logger.getInstance().recordOutput("Robot Pose", estimatedPose);
     }

@@ -29,7 +29,7 @@ public class ZeroElevatorCommand extends CommandBase {
 
     @Override
     public boolean isFinished() {
-        if (m_elevator.getCurrent() > 18) {
+        if (m_elevator.getCurrent() > 10) {
             count++;
         } else {
             count = 0;

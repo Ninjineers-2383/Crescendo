@@ -11,7 +11,7 @@ public final class WristConstants {
     public static final double kV = 2.1;
     public static final double kA = 0.0;
 
-    public static final double kP = 2.1;
+    public static final double kP = 2.3;
     public static final double kI = 0;
     public static final double kD = 0.25;
 
