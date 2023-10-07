@@ -219,8 +219,7 @@ public class RobotContainer {
                         () -> -1));
 
         m_feederSubsystem.setDefaultCommand(new FeederVoltageCommand(m_feederSubsystem,
-                () -> ((m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3) - 0.15)
-                        * (cubeMode ? -0.5 : 1))));
+                () -> (m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3)), cubeMode));
 
         m_wristSubsystem.setDefaultCommand(
                 new WristVelocityCommand(m_wristSubsystem,

@@ -17,9 +17,9 @@ public class EngageAuto extends SequentialCommandGroup {
 
         addCommands(
                 new BlizzardCommand(elevator, wrist, BlizzardPresets.HIGH).withTimeout(2),
-                new FeederVoltageCommand(feeder, () -> -0.2).withTimeout(0.5),
+                new FeederVoltageCommand(feeder, () -> 0.2, true).withTimeout(0.5),
                 new BlizzardCommand(elevator, wrist, BlizzardPresets.CONE_CHUTE).withTimeout(2),
-                new FeederVoltageCommand(feeder, () -> 0).withTimeout(0.5),
+                new FeederVoltageCommand(feeder, () -> 0, true).withTimeout(0.5),
                 new FullAutoCommand(drivetrain, pathName, autoBuilder),
                 new Engage(drivetrain, true));
     }

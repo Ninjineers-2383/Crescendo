@@ -4,7 +4,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public class BlizzardPresets {
     public static final BlizzardPosition GROUND_INTAKE = new BlizzardPosition(0.08,
-            Rotation2d.fromRadians(-0.259));
+            Rotation2d.fromRadians(-0.159));
 
     public static final BlizzardPosition CONE_CHUTE = new BlizzardPosition(0.06,
             Rotation2d.fromRadians(1.32));
