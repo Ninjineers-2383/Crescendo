@@ -2,14 +2,15 @@ package com.team2383.robot.commands;
 
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class WristPositionCommand extends CommandBase {
     private final WristSubsystem m_wrist;
 
-    private final double m_angle;
+    private final Rotation2d m_angle;
 
-    public WristPositionCommand(WristSubsystem wrist, double angleRad) {
+    public WristPositionCommand(WristSubsystem wrist, Rotation2d angleRad) {
         m_wrist = wrist;
         m_angle = angleRad;
 
@@ -18,7 +19,7 @@ public class WristPositionCommand extends CommandBase {
 
     @Override
     public void initialize() {
-        m_wrist.setPosition(m_angle);
+        m_wrist.setPosition(m_angle.getRadians());
     }
 
     @Override
