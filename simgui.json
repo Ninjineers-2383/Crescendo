@@ -48,6 +48,12 @@
           "open": true
         },
         "open": true
+      },
+      "SmartDashboard": {
+        "Auto": {
+          "open": true
+        },
+        "open": true
       }
     }
   }
