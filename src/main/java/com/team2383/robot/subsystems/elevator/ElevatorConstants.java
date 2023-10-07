@@ -4,11 +4,11 @@ import edu.wpi.first.math.util.Units;
 
 public final class ElevatorConstants {
     public static final double kS = 0.3;
-    public static final double kV = 1.9;
+    public static final double kV = 1.6;
     public static final double kA = 0.07;
     public static final double kG = 0.541;
 
-    public static final double kP = 18.2;
+    public static final double kP = 20.135364346;
     public static final double kI = 0.2;
     public static final double kD = 0.5;
 

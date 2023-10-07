@@ -181,7 +181,28 @@ public class RobotContainer {
                 .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, 0.47))
                 .onTrue(new WristPositionCommand(m_wristSubsystem, 1.46));
 
-        new JoystickButton(m_driverController, 8).onTrue(new InstantCommand(() -> {
+        new JoystickButton(m_driverController, 1)
+                .toggleOnTrue(new JoystickDriveHeadingLock(m_drivetrainSubsystem,
+                        () -> new Translation2d(
+                                MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveX) * 0.5, .1),
+                                MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveY) * 0.5, .1)),
+                        () -> Rotation2d
+                                .fromDegrees(100 * MathUtil
+                                        .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega) * 0.5,
+                                                0.1)),
+                        () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
+                        () -> -1));
+
+        new JoystickButton(m_driverController, 3)
+                .toggleOnTrue(new FeederVoltageCommand(m_feederSubsystem,
+                () -> m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3) + 0.15));
+
+        new JoystickButton(m_driverController, 4)
+                .toggleOnTrue(new FeederVoltageCommand(m_feederSubsystem,
+                () -> m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3) - 0.15));
+
+        new JoystickButton(m_driverController, 8)
+            .onTrue(new InstantCommand(() -> {
             m_drivetrainSubsystem.resetHeading();
         }));
     }
