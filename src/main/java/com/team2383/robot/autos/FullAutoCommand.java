@@ -18,7 +18,7 @@ public class FullAutoCommand extends SequentialCommandGroup {
         // for every path in the group
         List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup(pathName,
                 new PathConstraints(1.5, 0.7));
-
+                
         addCommands(
                 autoBuilder.fullAuto(pathGroup));
     }

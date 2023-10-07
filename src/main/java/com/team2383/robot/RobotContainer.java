@@ -11,7 +11,9 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.autos.CubeConeAutoClean;
 import com.team2383.robot.autos.CubeMobilityAuto;
+import com.team2383.robot.autos.EngageAuto;
 import com.team2383.robot.commands.ElevatorPositionCommand;
 import com.team2383.robot.commands.ElevatorVelocityCommand;
 import com.team2383.robot.commands.FeederVoltageCommand;
@@ -263,7 +265,13 @@ public class RobotContainer {
         autoChooser.addDefaultOption("No Auto :(", nullAuto);
         autoChooser.addOption("5 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(5)));
         autoChooser.addOption("10 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)));
-        autoChooser.addOption("Cube Mobility", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, "Path1", autoBuilder));
+        autoChooser.addOption("Cube Mobility Dirty", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
+                m_wristSubsystem, m_feederSubsystem, "CubeMobilityDirty", autoBuilder));
+        autoChooser.addOption("Cube Mobility Clean", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
+                m_wristSubsystem, m_feederSubsystem, "CubeMobilityClean", autoBuilder));
+        autoChooser.addOption("Cube Engage", new EngageAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
+                m_wristSubsystem, m_feederSubsystem, "CubeEngage", autoBuilder));
+        autoChooser.addOption("Cube Cone Clean", new CubeConeAutoClean(m_drivetrainSubsystem, m_elevatorSubsystem,
+                m_wristSubsystem, m_feederSubsystem, "CubeConeClean", autoBuilder));
     }
 }
