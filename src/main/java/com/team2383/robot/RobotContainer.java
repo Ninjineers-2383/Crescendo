@@ -11,12 +11,14 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.PIDConstants;
 import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.autos.CubeMobilityAuto;
 import com.team2383.robot.commands.ElevatorPositionCommand;
 import com.team2383.robot.commands.ElevatorVelocityCommand;
 import com.team2383.robot.commands.FeederVoltageCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
-import com.team2383.robot.commands.WristPositionCommand;
 import com.team2383.robot.commands.WristVelocityCommand;
+import com.team2383.robot.commands.blizzard.BlizzardCommand;
+import com.team2383.robot.commands.blizzard.BlizzardPresets;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
@@ -74,12 +76,8 @@ public class RobotContainer {
 
     private boolean lwEnabled = false;
 
-    // This is just an example event map. It would be better to have a constant,
-    // global event map
-    // in your code that will be used by all path following commands.
-    HashMap<String, Command> autoHashMap;
-
     public SwerveAutoBuilder autoBuilder;
+    HashMap<String, Command> autoHashMap;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -157,29 +155,20 @@ public class RobotContainer {
     private void configureButtonBindings() {
         // Ground Intake
         new JoystickButton(m_operatorController, 1)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem,
-                        Units.inchesToMeters(0)))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, 0.3));
+                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.GROUND_INTAKE));
 
         // Cone Chute
         new JoystickButton(m_operatorController, 2)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem,
-                        0.06))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, 1.32));
+                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.CONE_CHUTE));
         // Middle
         new JoystickButton(m_operatorController, 3)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem,
-                        0.75))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, 0.605));
+                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.MIDDLE));
         // High
         new JoystickButton(m_operatorController, 4)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem,
-                        1.33))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, 0.73));
+                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.HIGH));
 
         new POVButton(m_operatorController, 0)
-                .onTrue(new ElevatorPositionCommand(m_elevatorSubsystem, 0.47))
-                .onTrue(new WristPositionCommand(m_wristSubsystem, 1.46));
+                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.SLIDER));
 
         new JoystickButton(m_driverController, 1)
                 .toggleOnTrue(new JoystickDriveHeadingLock(m_drivetrainSubsystem,
@@ -244,6 +233,8 @@ public class RobotContainer {
         autoHashMap = new HashMap<>() {
             {
                 put("Auto Log", new PrintCommand("Auto Event: log"));
+
+                put("Cube", new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.HIGH));
             }
         };
 
@@ -263,5 +254,7 @@ public class RobotContainer {
         autoChooser.addDefaultOption("No Auto :(", nullAuto);
         autoChooser.addOption("5 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(5)));
         autoChooser.addOption("10 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)));
+        autoChooser.addOption("Cube Mobility", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
+                m_wristSubsystem, "Path1", autoBuilder));
     }
 }
