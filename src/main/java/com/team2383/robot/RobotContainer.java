@@ -264,6 +264,6 @@ public class RobotContainer {
         autoChooser.addOption("5 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(5)));
         autoChooser.addOption("10 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)));
         autoChooser.addOption("Cube Mobility", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, "Path1", autoBuilder));
+                m_wristSubsystem, m_feederSubsystem, "Path1", autoBuilder));
     }
 }
