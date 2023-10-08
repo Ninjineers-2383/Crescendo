@@ -24,7 +24,7 @@ public class ElevatorIOFalcon500 implements ElevatorIO {
 
         inputs.appliedVolts = m_elevatorLeft.getDutyCycle().getValue() * m_elevatorLeft.getSupplyVoltage().getValue();
 
-        inputs.current = m_elevatorLeft.getStatorCurrent().getValue();
+        inputs.current = m_elevatorLeft.getSupplyCurrent().getValue();
     }
 
     public void setVoltage(double voltage) {
