@@ -24,7 +24,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOInputsAutoLogged;
-import com.pathplanner.lib.PathPlannerTrajectory;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionConstants;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 
@@ -259,7 +258,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      *            facing directly towards the opposing alliance wall
      */
     public void forceHeading(Rotation2d currentHeading) {
-        m_gyro.setHeading(currentHeading);
+        // m_gyro.setHeading(currentHeading);
         m_poseEstimator.resetPosition(currentHeading, getModulePositions(), m_poseEstimator.getEstimatedPosition());
     }
 
@@ -300,8 +299,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void forceOdometry(Pose2d pose) {
-        correctToAlliance(pose);
-        forceHeading(pose.getRotation());
+        // correctToAlliance(pose);
+        // forceHeading(pose.getRotation());
         m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
         resetEncoders();
     }

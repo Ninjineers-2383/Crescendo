@@ -78,6 +78,7 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
     private void configDriveMotor(ModuleConstants constants) {
         m_driveMotor.getConfigurator().apply(constants.kHardwareConfigs.kDriveMotorConfigs);
         m_driveMotor.setInverted(true);
+        m_driveMotor.setRotorPosition(0);
     }
 
     private void setSpeed(SwerveModuleState desiredState) {

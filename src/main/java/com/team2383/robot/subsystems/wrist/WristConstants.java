@@ -11,7 +11,7 @@ public final class WristConstants {
     public static final double kV = 1.9;
     public static final double kA = 0.0;
 
-    public static final double kP = 3;
+    public static final double kP = 4;
     public static final double kI = 0;
     public static final double kD = 0.25;
 
@@ -23,7 +23,7 @@ public final class WristConstants {
     public static final double kMaxPosition = Units.inchesToMeters(45);
     public static final double kMinPosition = 0.0;
 
-    public static final double kPositionTolerance = 0.1;
+    public static final double kPositionTolerance = 0.075;
 
     public static final double kEncoderMetersPerRev = 0.5;
 

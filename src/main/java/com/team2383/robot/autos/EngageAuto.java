@@ -9,9 +9,6 @@ import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class EngageAuto extends SequentialCommandGroup {
@@ -19,12 +16,13 @@ public class EngageAuto extends SequentialCommandGroup {
             FeederSubsystem feeder, String pathName, SwerveAutoBuilder autoBuilder) {
 
         addCommands(
-                new InstantCommand(() -> drivetrain.forceOdometry(new Pose2d(1.79, 2.73, Rotation2d.fromDegrees(180)))),
+                // new InstantCommand(() -> drivetrain.forceOdometry(new Pose2d(1.79, 2.73,
+                // Rotation2d.fromDegrees(180)))),
                 new BlizzardCommand(elevator, wrist, BlizzardPresets.HIGH).withTimeout(2),
-                new FeederVoltageCommand(feeder, () -> 0.5, true).withTimeout(0.5),
+                new FeederVoltageCommand(feeder, () -> 0.75, true).withTimeout(0.5),
                 new BlizzardCommand(elevator, wrist, BlizzardPresets.CONE_CHUTE).withTimeout(2),
                 new FeederVoltageCommand(feeder, () -> 0, true).withTimeout(0.5),
                 new FullAutoCommand(drivetrain, pathName, autoBuilder),
-                new Engage(drivetrain, true));
+                new Engage(drivetrain, false));
     }
 }
