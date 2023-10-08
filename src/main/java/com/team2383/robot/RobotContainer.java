@@ -249,6 +249,9 @@ public class RobotContainer {
                 put("Auto Log", new PrintCommand("Auto Event: log"));
 
                 put("Cube", new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.HIGH));
+
+                put("Feed", new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.GROUND_INTAKE)
+                        .alongWith(new FeederVoltageCommand(m_feederSubsystem, () -> 0.5, false)));
             }
         };
 

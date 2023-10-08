@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOInputsAutoLogged;
+import com.pathplanner.lib.PathPlannerTrajectory;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionConstants;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 
@@ -93,7 +94,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         resetHeading();
 
-        // headingIntegral = m_poseEstimator.getEstimatedPosition().getRotation().getRadians();
+        // headingIntegral =
+        // m_poseEstimator.getEstimatedPosition().getRotation().getRadians();
 
     }
 
@@ -160,14 +162,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         Pose2d estimatedPose = m_poseEstimator.getEstimatedPosition();
-
-        if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
-            Translation2d transformedTranslation = new Translation2d(16.46 - estimatedPose.getX(),
-                    8.02 - estimatedPose.getY());
-            Rotation2d transformedHeading = estimatedPose.getRotation().plus(Rotation2d.fromDegrees(180));
-
-            estimatedPose = new Pose2d(transformedTranslation, transformedHeading);
-        }
 
         m_field.setRobotPose(estimatedPose);
 
@@ -244,6 +238,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return m_poseEstimator.getEstimatedPosition().getRotation();
     }
 
+    public Pose2d correctToAlliance(Pose2d pose) {
+        if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
+            Translation2d transformedTranslation = new Translation2d(pose.getX(),
+                    8.02 - pose.getY());
+            Rotation2d transformedHeading = pose.getRotation().plus(Rotation2d.fromDegrees(180));
+
+            pose = new Pose2d(transformedTranslation, transformedHeading);
+        }
+
+        return pose;
+    }
+
     /**
      * Reset the heading to the param
      * 
@@ -294,6 +300,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void forceOdometry(Pose2d pose) {
+        correctToAlliance(pose);
         forceHeading(pose.getRotation());
         m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
         resetEncoders();
