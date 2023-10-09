@@ -4,18 +4,14 @@
 
 package com.team2383.robot;
 
-import java.util.HashMap;
-
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import com.pathplanner.lib.auto.PIDConstants;
-import com.pathplanner.lib.auto.SwerveAutoBuilder;
 import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.autos.CubeConeAutoClean;
+import com.team2383.robot.autos.CubeConeAuto;
 import com.team2383.robot.autos.CubeMobilityAuto;
 import com.team2383.robot.autos.EngageAuto;
-import com.team2383.robot.autos.ScoreCubeAuto;
-import com.team2383.robot.commands.ElevatorPositionCommand;
+import com.team2383.robot.autos.auto_blocks.ScoreHighCommand;
+import com.team2383.robot.autos.auto_blocks.ScoreMiddleCommand;
 import com.team2383.robot.commands.ElevatorVelocityCommand;
 import com.team2383.robot.commands.FeederVoltageCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
@@ -47,13 +43,11 @@ import com.team2383.robot.subsystems.wrist.WristSubsystem;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 
@@ -81,9 +75,6 @@ public class RobotContainer {
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
     private boolean lwEnabled = false;
-
-    public SwerveAutoBuilder autoBuilder;
-    HashMap<String, Command> autoHashMap;
 
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -243,42 +234,33 @@ public class RobotContainer {
     }
 
     private void setAutoCommands() {
-        autoHashMap = new HashMap<>() {
-            {
-                put("Auto Log", new PrintCommand("Auto Event: log"));
-
-                put("Cube", new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.HIGH));
-
-                put("Feed", new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.GROUND_INTAKE)
-                        .alongWith(new FeederVoltageCommand(m_feederSubsystem, () -> 0.5, false)));
-            }
-        };
-
-        autoBuilder = new SwerveAutoBuilder(
-                m_drivetrainSubsystem::getPose,
-                m_drivetrainSubsystem::forceOdometry,
-                m_drivetrainSubsystem.m_kinematics,
-                new PIDConstants(5, 0, 0),
-                new PIDConstants(4, 0, 0),
-                m_drivetrainSubsystem::setModuleStates,
-                autoHashMap,
-                true,
-                m_drivetrainSubsystem);
-
         Command nullAuto = null;
 
         autoChooser.addDefaultOption("No Auto :(", nullAuto);
-        autoChooser.addOption("5 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(5)));
-        autoChooser.addOption("10 in", new ElevatorPositionCommand(m_elevatorSubsystem, Units.inchesToMeters(10)));
+
+        autoChooser.addOption("Score Cube Middle",
+                new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
+
+        autoChooser.addOption("Score Cube High",
+                new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
+
+        autoChooser.addOption("Score Cone Middle",
+                new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
+
+        autoChooser.addOption("Score Cone High",
+                new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
+
         autoChooser.addOption("Cube Mobility Dirty", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "CubeMobilityDirty", autoBuilder));
+                m_wristSubsystem, m_feederSubsystem, "CubeMobilityDirty"));
+
         autoChooser.addOption("Cube Mobility Clean", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "CubeMobilityClean", autoBuilder));
+                m_wristSubsystem, m_feederSubsystem, "CubeMobilityClean"));
+
         autoChooser.addOption("Cube Engage", new EngageAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "CubeEngage", autoBuilder));
-        autoChooser.addOption("Cube Cone Clean", new CubeConeAutoClean(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "CubeConeClean", autoBuilder));
-        autoChooser.addOption("Score Cube",
-                new ScoreCubeAuto(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
+                m_wristSubsystem, m_feederSubsystem, "CubeEngage", true));
+
+        autoChooser.addOption("Cube Cone Clean", new CubeConeAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
+                m_wristSubsystem, m_feederSubsystem, "CubeConeClean"));
+
     }
 }

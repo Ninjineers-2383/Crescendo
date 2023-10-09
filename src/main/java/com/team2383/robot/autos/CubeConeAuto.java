@@ -9,12 +9,13 @@ import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class CubeMobilityAuto extends SequentialCommandGroup {
-    public CubeMobilityAuto(DrivetrainSubsystem drivetrain, ElevatorSubsystem elevator, WristSubsystem wrist,
+public class CubeConeAuto extends SequentialCommandGroup {
+    public CubeConeAuto(DrivetrainSubsystem drivetrain, ElevatorSubsystem elevator, WristSubsystem wrist,
             FeederSubsystem feeder, String pathName) {
 
         addCommands(
                 new ScoreHighCommand(elevator, wrist, feeder, true),
-                new FullAutoCommand(drivetrain, elevator, wrist, feeder, pathName));
+                new FullAutoCommand(drivetrain, elevator, wrist, feeder, pathName),
+                new ScoreHighCommand(elevator, wrist, feeder, false));
     }
 }

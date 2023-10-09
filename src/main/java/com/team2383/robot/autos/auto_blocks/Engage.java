@@ -1,4 +1,4 @@
-package com.team2383.robot.autos;
+package com.team2383.robot.autos.auto_blocks;
 
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 

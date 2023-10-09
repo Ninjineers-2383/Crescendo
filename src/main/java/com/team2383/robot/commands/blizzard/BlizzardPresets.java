@@ -3,6 +3,9 @@ package com.team2383.robot.commands.blizzard;
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class BlizzardPresets {
+    public static final BlizzardPosition ZERO = new BlizzardPosition(0,
+            Rotation2d.fromDegrees(90));
+
     public static final BlizzardPosition GROUND_INTAKE = new BlizzardPosition(0.08,
             Rotation2d.fromRadians(-0.06));
 
