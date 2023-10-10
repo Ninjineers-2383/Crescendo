@@ -21,4 +21,8 @@ public class FeederSubsystem extends SubsystemBase {
     public void setPower(double power) {
         feeder.setPower(power);
     }
+
+    public double getPower() {
+        return inputs.power;
+    }
 }

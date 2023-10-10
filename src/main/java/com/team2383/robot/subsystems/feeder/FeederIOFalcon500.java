@@ -9,7 +9,7 @@ public class FeederIOFalcon500 implements FeederIO {
     @Override
     public void updateInputs(FeederIOInputs inputs) {
         inputs.current = motor.getSupplyCurrent();
-        inputs.voltage = motor.getMotorOutputPercent() * motor.getBusVoltage();
+        inputs.power = motor.getMotorOutputPercent();
     }
 
     @Override
