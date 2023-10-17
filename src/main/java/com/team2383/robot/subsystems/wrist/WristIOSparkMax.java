@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import com.team2383.lib.swerve.AbsoluteMagEncoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 
@@ -33,7 +34,8 @@ public class WristIOSparkMax implements WristIO {
     }
 
     public void updateInputs(WristIOInputs inputs) {
-        inputs.wristAngle = m_absEncoder.getAbsoluteAngle().getRadians() - WristConstants.kEncoderOffset;
+        inputs.wristAngle = MathUtil
+                .angleModulus(m_absEncoder.getAbsoluteAngle().getRadians() - WristConstants.kEncoderOffset);
         inputs.velocityRadPerSec = m_wristMotor.getEncoder().getVelocity() * ((2 * Math.PI) / 60.0)
                 / WristConstants.kWristMotorGearRatio;
         inputs.appliedVolts = m_wristMotor.getAppliedOutput() * m_wristMotor.getBusVoltage();

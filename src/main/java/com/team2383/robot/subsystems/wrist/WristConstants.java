@@ -27,7 +27,7 @@ public final class WristConstants {
 
     public static final double kEncoderMetersPerRev = 0.5;
 
-    public static final double kEncoderOffset = 2.404;
+    public static final double kEncoderOffset = 4.5;
     public static final double kWristMotorGearRatio = (4.0 / 1) * (3.0 / 1) * (4.0 / 1) * (32.0 / 18.0);
 
 }
