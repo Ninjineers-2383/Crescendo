@@ -23,9 +23,9 @@ public class PhotonCameraWrapper {
     public PhotonCamera[] photonCameras = new PhotonCamera[numCameras];
     public PhotonPoseEstimator[] photonPoseEstimators = new PhotonPoseEstimator[numCameras];
     public SimVisionSystem simVisionSystem = null;
+    private AprilTagFieldLayout atfl;
 
     public PhotonCameraWrapper() {
-        AprilTagFieldLayout atfl;
         try {
             atfl = AprilTagFieldLayout
                     .loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
@@ -74,6 +74,10 @@ public class PhotonCameraWrapper {
      *         firmly on the ground
      */
     public EstimatedRobotPose getEstimatedGlobalPose(Pose2d prevEstimatedRobotPose) {
+        atfl.setOrigin(DriverStation.getAlliance().equals(DriverStation.Alliance.Red)
+                ? OriginPosition.kRedAllianceWallRightSide
+                : OriginPosition.kBlueAllianceWallRightSide);
+
         EstimatedRobotPose latestPose = null;
         int len = Robot.isReal() ? photonCameras.length : 1;
         for (int i = 0; i < len; i++) {
