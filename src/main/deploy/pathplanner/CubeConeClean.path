@@ -124,7 +124,13 @@
     {
       "position": 1.5127272727272703,
       "names": [
-        "Feed"
+        "Feed Cone"
+      ]
+    },
+    {
+      "position": 2.909090909090746,
+      "names": [
+        "Retract"
       ]
     }
   ]

@@ -46,8 +46,7 @@
       "AdvantageKit": {
         "RealOutputs": {
           "open": true
-        },
-        "open": true
+        }
       },
       "SmartDashboard": {
         "Auto": {

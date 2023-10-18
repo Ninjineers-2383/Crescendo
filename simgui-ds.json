@@ -16,17 +16,20 @@
           "incKey": 68
         },
         {
-          "decKey": 81,
           "incKey": 69
+        },
+        {
+          "incKey": 81
         }
       ],
-      "axisCount": 3,
-      "buttonCount": 4,
+      "axisCount": 4,
+      "buttonCount": 5,
       "buttonKeys": [
         90,
         88,
         67,
-        86
+        86,
+        66
       ],
       "povConfig": [
         {
@@ -94,8 +97,7 @@
   ],
   "robotJoysticks": [
     {
-      "guid": "78696e70757401000000000000000000",
-      "useGamepad": true
+      "guid": "Keyboard0"
     },
     {
       "useGamepad": true

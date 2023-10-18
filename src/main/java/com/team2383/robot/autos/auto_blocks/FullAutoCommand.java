@@ -28,10 +28,13 @@ public class FullAutoCommand extends SequentialCommandGroup {
             {
                 put("Auto Log", new PrintCommand("Auto Event: log"));
 
-                put("Cube", new BlizzardCommand(elevator, wrist, BlizzardPresets.HIGH));
-
-                put("Feed", new BlizzardCommand(elevator, wrist, BlizzardPresets.GROUND_INTAKE)
+                put("Feed Cone", new BlizzardCommand(elevator, wrist, BlizzardPresets.GROUND_INTAKE)
                         .alongWith(new FeederVoltageCommand(feeder, () -> 0.5, false)));
+
+                put("Feed Cube", new BlizzardCommand(elevator, wrist, BlizzardPresets.GROUND_INTAKE)
+                        .alongWith(new FeederVoltageCommand(feeder, () -> 0.5, true)));
+                
+                put("Retract", new BlizzardCommand(elevator, wrist, BlizzardPresets.CONE_CHUTE));
             }
         };
 

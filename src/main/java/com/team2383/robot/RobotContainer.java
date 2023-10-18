@@ -34,6 +34,7 @@ import com.team2383.robot.subsystems.elevator.ElevatorIOSim;
 import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
 import com.team2383.robot.subsystems.feeder.FeederIO;
 import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
+import com.team2383.robot.subsystems.feeder.FeederIOSim;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.sim_components.SimComponents;
 import com.team2383.robot.subsystems.wrist.WristIO;
@@ -107,6 +108,7 @@ public class RobotContainer {
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim() {});
                     m_wristSubsystem = new WristSubsystem(new WristIOSim());
+                    m_feederSubsystem = new FeederSubsystem(new FeederIOSim());
                     break;
                 default:
                     break;
@@ -251,11 +253,13 @@ public class RobotContainer {
         autoChooser.addOption("Score Cone High",
                 new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
 
-        autoChooser.addOption("Cube Mobility Dirty", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "CubeMobilityDirty"));
+        autoChooser.addOption("Cube Mobility Dirty Cone",
+                new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
+                        m_wristSubsystem, m_feederSubsystem, "CubeMobilityDirtyCone"));
 
-        autoChooser.addOption("Cube Mobility Clean", new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "CubeMobilityClean"));
+        autoChooser.addOption("Cube Mobility Clean Cone",
+                new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
+                        m_wristSubsystem, m_feederSubsystem, "CubeMobilityCleanCone"));
 
         autoChooser.addOption("Cube Engage", new EngageAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
                 m_wristSubsystem, m_feederSubsystem, "CubeEngage", true));
