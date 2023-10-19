@@ -11,8 +11,8 @@ import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class ConeCubeDirtyAuto extends SequentialCommandGroup {
-    public ConeCubeDirtyAuto(DrivetrainSubsystem drivetrain, ElevatorSubsystem elevator, WristSubsystem wrist,
+public class ConeCubeAuto extends SequentialCommandGroup {
+    public ConeCubeAuto(DrivetrainSubsystem drivetrain, ElevatorSubsystem elevator, WristSubsystem wrist,
             FeederSubsystem feeder, String pathName) {
 
         addCommands(
