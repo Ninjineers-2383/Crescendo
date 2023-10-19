@@ -29,12 +29,14 @@ public class FullAutoCommand extends SequentialCommandGroup {
                 put("Auto Log", new PrintCommand("Auto Event: log"));
 
                 put("Feed Cone", new BlizzardCommand(elevator, wrist, BlizzardPresets.GROUND_INTAKE)
-                        .alongWith(new FeederVoltageCommand(feeder, () -> 0.5, false)));
+                        .alongWith(new FeederVoltageCommand(feeder, () -> -0.5, false)));
 
                 put("Feed Cube", new BlizzardCommand(elevator, wrist, BlizzardPresets.GROUND_INTAKE)
-                        .alongWith(new FeederVoltageCommand(feeder, () -> 0.5, true)));
-                
+                        .alongWith(new FeederVoltageCommand(feeder, () -> -0.5, true)));
+
                 put("Retract", new BlizzardCommand(elevator, wrist, BlizzardPresets.CONE_CHUTE));
+
+                put("Score Cube High", new ScoreHighCommand(elevator, wrist, feeder, true));
             }
         };
 
@@ -53,7 +55,7 @@ public class FullAutoCommand extends SequentialCommandGroup {
         // and a max acceleration
         // for every path in the group
         List<PathPlannerTrajectory> pathGroup = PathPlanner.loadPathGroup(pathName,
-                new PathConstraints(1.5, 0.7));
+                new PathConstraints(6, 1));
 
         addCommands(
                 autoBuilder.fullAuto(pathGroup));

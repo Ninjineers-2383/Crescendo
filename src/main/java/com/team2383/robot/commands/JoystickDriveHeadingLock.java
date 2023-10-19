@@ -35,6 +35,7 @@ public class JoystickDriveHeadingLock extends CommandBase {
             Supplier<Rotation2d> rotation, BooleanSupplier fieldRelative, IntSupplier hatSupplier) {
         m_drivetrain = drivetrain;
 
+        m_Controller.enableContinuousInput(0, 2 * Math.PI);
         m_moveSupply = moveSupplier;
         m_rotSupply = rotation;
         m_fieldRelative = fieldRelative;

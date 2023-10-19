@@ -7,6 +7,7 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.autos.ConeCubeDirtyAuto;
 import com.team2383.robot.autos.CubeConeAuto;
 import com.team2383.robot.autos.CubeMobilityAuto;
 import com.team2383.robot.autos.EngageAuto;
@@ -255,7 +256,7 @@ public class RobotContainer {
 
         autoChooser.addOption("Cube Mobility Dirty Cone",
                 new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                        m_wristSubsystem, m_feederSubsystem, "CubeMobilityDirtyCone"));
+                        m_wristSubsystem, m_feederSubsystem, "CubeMobilityDirtyConeForward"));
 
         autoChooser.addOption("Cube Mobility Clean Cone",
                 new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
@@ -266,6 +267,9 @@ public class RobotContainer {
 
         autoChooser.addOption("Cube Cone Clean", new CubeConeAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
                 m_wristSubsystem, m_feederSubsystem, "CubeConeClean"));
+
+        autoChooser.addOption("Cone Cube Dirty", new ConeCubeDirtyAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
+                m_wristSubsystem, m_feederSubsystem, "ConeCubeDirty"));
 
     }
 }

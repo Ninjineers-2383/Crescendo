@@ -277,6 +277,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     /**
+     * Set the current heading to the calculated compass heading
+     * <p>
+     * Gyro offset needs to be saved to robot before this can be used.
+     * If the compass heading is not stored this will set the forward direction to
+     * north
+     */
+    public void resetHeading(Rotation2d offset) {
+        m_gyro.setHeading(Rotation2d.fromDegrees(getCompassHeading() + offset.getDegrees()));
+        m_poseEstimator.resetPosition(getHeading(), getModulePositions(),
+                new Pose2d(m_poseEstimator.getEstimatedPosition().getTranslation(), getHeading()));
+        resetEncoders();
+    }
+
+    /**
      * Get turn rate of robot
      * 
      * @return turn rate in degrees per second CCW positive
