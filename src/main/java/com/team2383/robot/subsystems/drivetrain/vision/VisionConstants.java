@@ -10,7 +10,7 @@ public final class VisionConstants {
     // Description of the camera's relative position
     private static final Rotation3d CAM_ROTATION = new Rotation3d(0, 0, 0);
 
-    public static final double POSE_VARIANCE_SCALE = 0.8;
+    public static final double POSE_VARIANCE_SCALE = 0.4;
     public static final double POSE_VARIANCE_STATIC = 1E-9;
 
     private static final Translation3d CAM_LEFT = new Translation3d(
