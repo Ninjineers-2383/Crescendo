@@ -14,7 +14,7 @@ public class ScoreHighCommand extends SequentialCommandGroup {
         addCommands(
                 new FeederVoltageCommand(feeder, () -> 0, isCube).withTimeout(0.1),
                 new BlizzardCommand(elevator, wrist, BlizzardPresets.HIGH).withTimeout(1),
-                new FeederVoltageCommand(feeder, () -> 0.75, isCube).withTimeout(0.5),
+                new FeederVoltageCommand(feeder, () -> 0.75, isCube).withTimeout(0.1),
                 new BlizzardCommand(elevator, wrist, BlizzardPresets.CONE_CHUTE).withTimeout(0.5),
                 new FeederVoltageCommand(feeder, () -> 0, isCube).withTimeout(0.1));
     }

@@ -24,7 +24,7 @@ public class JoystickDriveHeadingLock extends CommandBase {
     private final IntSupplier m_hatSupplier;
     private Rotation2d m_storedRotation = new Rotation2d();
 
-    private final PIDController m_Controller = new PIDController(4, 0, 0);
+    private final PIDController m_controller = new PIDController(4, 0, 0);
     private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(8);
     private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(8);
     private final SlewRateLimiter m_oRateLimiter = new SlewRateLimiter(15);
@@ -35,7 +35,7 @@ public class JoystickDriveHeadingLock extends CommandBase {
             Supplier<Rotation2d> rotation, BooleanSupplier fieldRelative, IntSupplier hatSupplier) {
         m_drivetrain = drivetrain;
 
-        m_Controller.enableContinuousInput(0, 2 * Math.PI);
+        m_controller.enableContinuousInput(0, 2 * Math.PI);
         m_moveSupply = moveSupplier;
         m_rotSupply = rotation;
         m_fieldRelative = fieldRelative;
@@ -68,7 +68,7 @@ public class JoystickDriveHeadingLock extends CommandBase {
 
         if (omega.getRadians() == 0 && move.getX() + move.getY() != 0) {
             rotVelocity = new Rotation2d(
-                    m_Controller.calculate(m_drivetrain.getHeading().getRadians(), m_storedRotation.getRadians()));
+                    m_controller.calculate(m_drivetrain.getHeading().getRadians(), m_storedRotation.getRadians()));
             prev_zero = true;
         } else {
             rotVelocity = omega;
