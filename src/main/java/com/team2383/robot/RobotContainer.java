@@ -8,7 +8,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.autos.ConeCubeDirtyAuto;
-import com.team2383.robot.autos.CubeCleanConeEngage;
 import com.team2383.robot.autos.CubeConeAuto;
 import com.team2383.robot.autos.CubeMobilityAuto;
 import com.team2383.robot.autos.EngageAuto;
@@ -272,8 +271,14 @@ public class RobotContainer {
         autoChooser.addOption("Cone Cube Dirty", new ConeCubeDirtyAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
                 m_wristSubsystem, m_feederSubsystem, "ConeDirtyCubeScore"));
 
-        autoChooser.addOption("Cube Clean Cone Engage", new CubeCleanConeEngage(m_drivetrainSubsystem,
-                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeCleanConeEngage"));
+        autoChooser.addOption("Cube Clean Cone Engage", new EngageAuto(m_drivetrainSubsystem,
+                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeCleanConeEngage", true));
+
+        autoChooser.addOption("Cube Charge Cone Engage", new EngageAuto(m_drivetrainSubsystem,
+                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeChargeConeEngage", true));
+
+        autoChooser.addOption("Cube Charge Cone Score Engage", new EngageAuto(m_drivetrainSubsystem,
+                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeChargeConeScoreEngage", true));
 
     }
 }

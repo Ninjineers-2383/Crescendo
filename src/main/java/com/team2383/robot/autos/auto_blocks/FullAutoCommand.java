@@ -37,6 +37,8 @@ public class FullAutoCommand extends SequentialCommandGroup {
                 put("Retract", new BlizzardCommand(elevator, wrist, BlizzardPresets.CONE_CHUTE));
 
                 put("Score Cube High", new ScoreHighCommand(elevator, wrist, feeder, true));
+
+                put("Score Cone High", new ScoreHighCommand(elevator, wrist, feeder, false));
             }
         };
 
