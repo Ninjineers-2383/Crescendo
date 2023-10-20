@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class Engage extends CommandBase {
     private final DrivetrainSubsystem m_drivetrain;
-    private final PIDController m_pid = new PIDController(0.015, 0, 0);
+    private final PIDController m_pid = new PIDController(0.015, 0.002, 0);
 
     public Engage(DrivetrainSubsystem drivetrain, boolean invert) {
         this.m_drivetrain = drivetrain;
@@ -23,12 +23,13 @@ public class Engage extends CommandBase {
 
     @Override
     public void execute() {
-        m_drivetrain.drive(new Translation2d(-m_pid.calculate(m_drivetrain.getRoll()), 0), new Rotation2d(0), false,
+        m_drivetrain.drive(new Translation2d(m_pid.calculate(m_drivetrain.getRoll()), 0), new Rotation2d(0), true,
                 new Translation2d());
     }
 
     @Override
     public boolean isFinished() {
-        return m_pid.atSetpoint();
+        // return m_pid.atSetpoint();
+        return false;
     }
 }

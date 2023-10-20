@@ -7,8 +7,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8246155576280625,
-        "y": 0.4385483580127474
+        "x": 4.304919926565833,
+        "y": 0.2472392133396374
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -24,16 +24,16 @@
     },
     {
       "anchorPoint": {
-        "x": 4.86249006734818,
-        "y": 0.7318693096729976
+        "x": 7.775778113833809,
+        "y": 1.5119628815770094
       },
       "prevControl": {
-        "x": 3.8175834450878097,
-        "y": 0.3594273453029637
+        "x": 7.043569674327961,
+        "y": 2.2441713210828556
       },
       "nextControl": {
-        "x": 5.892568768726956,
-        "y": 1.099026074520879
+        "x": 8.814546742955327,
+        "y": 0.47319425245549374
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
@@ -49,37 +49,12 @@
     },
     {
       "anchorPoint": {
-        "x": 7.648129800076394,
-        "y": 1.4788258584150757
+        "x": 1.6233253818820819,
+        "y": 1.2457052672112472
       },
       "prevControl": {
-        "x": 7.35431666179655,
-        "y": 1.8641008598246274
-      },
-      "nextControl": {
-        "x": 8.453223867931332,
-        "y": 0.4231119446547011
-      },
-      "holonomicAngle": 180.0,
-      "isReversal": false,
-      "velOverride": null,
-      "isLocked": false,
-      "isStopPoint": false,
-      "stopEvent": {
-        "names": [],
-        "executionBehavior": "parallel",
-        "waitBehavior": "none",
-        "waitTime": 0
-      }
-    },
-    {
-      "anchorPoint": {
-        "x": 1.5390491849685994,
-        "y": 1.0708738974729866
-      },
-      "prevControl": {
-        "x": 2.569127886347376,
-        "y": 0.9076931130961519
+        "x": 2.7454110424235085,
+        "y": 0.7797544420711633
       },
       "nextControl": null,
       "holonomicAngle": 180.0,
@@ -97,7 +72,7 @@
   ],
   "markers": [
     {
-      "position": 2.1757575757577086,
+      "position": 1.02,
       "names": [
         "Feed Cube"
       ]
@@ -109,13 +84,13 @@
       ]
     },
     {
-      "position": 2.3090909090909113,
+      "position": 1.40606060606063,
       "names": [
         "Retract"
       ]
     },
     {
-      "position": 2.8181818181818126,
+      "position": 1.8181818181818126,
       "names": [
         "Score Cube High"
       ]

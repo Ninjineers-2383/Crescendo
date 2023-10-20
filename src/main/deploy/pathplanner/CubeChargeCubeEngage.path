@@ -12,7 +12,7 @@
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": null,
+      "velOverride": 0.25,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -37,7 +37,7 @@
       },
       "holonomicAngle": 180.0,
       "isReversal": false,
-      "velOverride": null,
+      "velOverride": 0.25,
       "isLocked": false,
       "isStopPoint": false,
       "stopEvent": {
@@ -74,7 +74,7 @@
     {
       "position": 0.9309090909090504,
       "names": [
-        "Feed Cone"
+        "Feed Cube"
       ]
     },
     {
