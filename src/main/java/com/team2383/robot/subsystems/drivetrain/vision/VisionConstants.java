@@ -15,11 +15,11 @@ public final class VisionConstants {
 
     private static final Translation3d CAM_LEFT = new Translation3d(
             Units.inchesToMeters(8),
-            -Units.inchesToMeters(12 / 2),
+            Units.inchesToMeters(12 / 2),
             Units.inchesToMeters(35));
     private static final Translation3d CAM_RIGHT = new Translation3d(
-            -Units.inchesToMeters(8),
-            Units.inchesToMeters(12 / 2),
+            Units.inchesToMeters(8),
+            -Units.inchesToMeters(12 / 2),
             Units.inchesToMeters(35));
 
     public static final class PhotonCameraData {
