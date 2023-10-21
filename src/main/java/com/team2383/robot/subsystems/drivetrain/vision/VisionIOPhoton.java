@@ -18,9 +18,9 @@ public class VisionIOPhoton implements VisionIO {
 
     public PhotonCamera[] photonCameras = new PhotonCamera[VisionConstants.kPhotonCameras.length];
     public PhotonPoseEstimator[] photonPoseEstimators = new PhotonPoseEstimator[VisionConstants.kPhotonCameras.length];
+    AprilTagFieldLayout atfl;
 
     public VisionIOPhoton() {
-        AprilTagFieldLayout atfl;
         try {
             atfl = AprilTagFieldLayout
                     .loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
@@ -43,18 +43,22 @@ public class VisionIOPhoton implements VisionIO {
 
     @Override
     public void updateInputs(VisionIOInputs inputs) {
+        atfl.setOrigin(DriverStation.getAlliance().equals(DriverStation.Alliance.Red)
+                ? OriginPosition.kRedAllianceWallRightSide
+                : OriginPosition.kBlueAllianceWallRightSide);
+
         EstimatedRobotPose[] poses = new EstimatedRobotPose[photonCameras.length];
         int len = photonCameras.length;
         for (int i = 0; i < len; i++) {
             PhotonPipelineResult result = photonCameras[i].getLatestResult();
-            inputs.tagsSeen[i] = new int[result.targets.size()];
+            // inputs.tagsSeen[i] = new int[result.targets.size()];
             double minAmbiguity = 0;
             for (int j = 0; j < result.targets.size(); j++) {
                 double ambiguity = result.targets.get(j).getPoseAmbiguity();
                 if (minAmbiguity > ambiguity) {
                     minAmbiguity = ambiguity;
                 }
-                inputs.tagsSeen[i][j] = result.targets.get(j).getFiducialId();
+                // inputs.tagsSeen[i][j] = result.targets.get(j).getFiducialId();
             }
 
             if (minAmbiguity > 0.4) {

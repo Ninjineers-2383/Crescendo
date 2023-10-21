@@ -68,7 +68,7 @@ public class FullAutoCommand extends SequentialCommandGroup {
                         .alongWith(new FeederVoltageCommand(feeder, () -> -0.5, true)));
 
                 put("Retract", new BlizzardCommand(elevator, wrist, BlizzardPresets.CONE_CHUTE)
-                        .alongWith(new FeederVoltageCommand(feeder, () -> -0.15, false).withTimeout(0.02)));
+                        .alongWith(new FeederVoltageCommand(feeder, () -> -0.15, true).withTimeout(0.02)));
 
                 put("Score Cube High", new ScoreHighCommand(elevator, wrist, feeder, true));
 
