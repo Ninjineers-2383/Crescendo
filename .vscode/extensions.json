@@ -1,0 +1,7 @@
+{
+    "recommendations": [
+        "mechanical-advantage.event-deploy-wpilib",
+        "wpilibsuite.vscode-wpilib",
+        "vscjava.vscode-java-pack"
+    ]
+}
