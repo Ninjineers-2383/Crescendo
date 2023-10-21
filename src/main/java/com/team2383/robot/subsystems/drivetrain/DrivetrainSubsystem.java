@@ -18,6 +18,7 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -150,14 +151,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
             Pose3d camPose = new Pose3d(camTranslation, camRotation);
 
-            double distance = camTranslation.getNorm();
-
-            double variance = Math.pow(distance, 1) * VisionConstants.POSE_VARIANCE_SCALE
-                    + VisionConstants.POSE_VARIANCE_STATIC;
+            double variance = VisionConstants.POSE_VARIANCE_STATIC;
 
             m_poseEstimator.addVisionMeasurement(camPose.toPose2d(),
                     m_visionInputs.timestampSeconds[i],
                     VecBuilder.fill(variance, variance, variance));
+
+            Logger.getInstance().recordOutput("Vision/Raw Estimated Poses " + i, camPose);
         }
 
         Pose2d estimatedPose = m_poseEstimator.getEstimatedPosition();

@@ -47,12 +47,14 @@ public class VisionIOPhoton implements VisionIO {
         int len = photonCameras.length;
         for (int i = 0; i < len; i++) {
             PhotonPipelineResult result = photonCameras[i].getLatestResult();
+            inputs.tagsSeen[i] = new int[result.targets.size()];
             double minAmbiguity = 0;
-            for (PhotonTrackedTarget target : result.targets) {
-                double ambiguity = target.getPoseAmbiguity();
+            for (int j = 0; j < result.targets.size(); j++) {
+                double ambiguity = result.targets.get(j).getPoseAmbiguity();
                 if (minAmbiguity > ambiguity) {
                     minAmbiguity = ambiguity;
                 }
+                inputs.tagsSeen[i][j] = result.targets.get(j).getFiducialId();
             }
 
             if (minAmbiguity > 0.4) {
