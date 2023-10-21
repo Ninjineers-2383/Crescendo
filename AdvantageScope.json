@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0-beta-2",
+  "version": "3.0.0-beta-3",
   "layout": [
     {
       "type": 1,
@@ -12,23 +12,13 @@
           },
           "fields": [
             {
-              "key": "/RealOutputs/Wrist/Set Position",
-              "color": "#2b66a2",
-              "show": true
-            },
-            {
-              "key": "/Wrist/WristAngle",
-              "color": "#e5b31b",
-              "show": true
-            },
-            {
               "key": "NT:/AdvantageKit/RealOutputs/Wrist/Set Position",
-              "color": "#e48b32",
+              "color": "#af2437",
               "show": true
             },
             {
               "key": "NT:/AdvantageKit/Wrist/WristAngle",
-              "color": "#aacaee",
+              "color": "#80588e",
               "show": true
             }
           ]
@@ -43,16 +33,6 @@
             "factor": 1
           },
           "fields": [
-            {
-              "key": "/RealOutputs/Wrist/Set Velocity",
-              "color": "#af2437",
-              "show": true
-            },
-            {
-              "key": "/Wrist/VelocityRadPerSec",
-              "color": "#80588e",
-              "show": true
-            },
             {
               "key": "NT:/AdvantageKit/RealOutputs/Wrist/Set Velocity",
               "color": "#c0b487",
@@ -79,23 +59,13 @@
           },
           "fields": [
             {
-              "key": "/RealOutputs/Elevator Set Position",
-              "color": "#2b66a2",
-              "show": true
-            },
-            {
-              "key": "/Elevator/PositionM",
+              "key": "NT:/AdvantageKit/RealOutputs/Elevator Set Position",
               "color": "#af2437",
               "show": true
             },
             {
-              "key": "NT:/AdvantageKit/RealOutputs/Elevator Set Position",
-              "color": "#e48b32",
-              "show": true
-            },
-            {
               "key": "NT:/AdvantageKit/Elevator/PositionM",
-              "color": "#aacaee",
+              "color": "#80588e",
               "show": true
             }
           ]
@@ -104,7 +74,7 @@
           "fields": [
             {
               "key": "NT:/AdvantageKit/DriverStation/Enabled",
-              "color": "#3b875a",
+              "color": "#e48b32",
               "show": true
             }
           ]
@@ -117,23 +87,13 @@
           },
           "fields": [
             {
-              "key": "/RealOutputs/Elevator Set Velocity",
-              "color": "#e5b31b",
-              "show": true
-            },
-            {
-              "key": "/Elevator/VelocityMPS",
-              "color": "#80588e",
-              "show": true
-            },
-            {
               "key": "NT:/AdvantageKit/RealOutputs/Elevator Set Velocity",
-              "color": "#c0b487",
+              "color": "#858584",
               "show": true
             },
             {
               "key": "NT:/AdvantageKit/Elevator/VelocityMPS",
-              "color": "#858584",
+              "color": "#3b875a",
               "show": true
             }
           ]
@@ -162,7 +122,7 @@
           "fields": [
             {
               "key": "NT:/AdvantageKit/PowerDistribution/Faults",
-              "color": "#af2437",
+              "color": "#e5b31b",
               "show": true
             }
           ]
@@ -176,7 +136,7 @@
           "fields": [
             {
               "key": "NT:/AdvantageKit/PowerDistribution/TotalCurrent",
-              "color": "#e5b31b",
+              "color": "#af2437",
               "show": true
             }
           ]
@@ -191,24 +151,12 @@
         [
           {
             "type": "Component (Robot)",
-            "key": "/RealOutputs/Components",
-            "sourceTypeIndex": 0,
-            "sourceType": 5
-          },
-          {
-            "type": "Component (Robot)",
             "key": "NT:/AdvantageKit/RealOutputs/Components",
             "sourceTypeIndex": 0,
             "sourceType": 5
           }
         ],
         [
-          {
-            "type": "Robot",
-            "key": "/RealOutputs/Robot Pose",
-            "sourceTypeIndex": 0,
-            "sourceType": 5
-          },
           {
             "type": "Robot",
             "key": "NT:/AdvantageKit/RealOutputs/Robot Pose",
@@ -300,7 +248,7 @@
     },
     {
       "type": 3,
-      "field": "/RealOutputs/Console",
+      "field": "NT:/AdvantageKit/RealOutputs/Console",
       "title": "Console"
     },
     {
@@ -310,7 +258,7 @@
     {
       "type": 2,
       "fields": [
-        "/DriverStation/GameSpecificMessage"
+        "NT:/AdvantageKit/DriverStation/GameSpecificMessage"
       ],
       "title": "Table"
     }
