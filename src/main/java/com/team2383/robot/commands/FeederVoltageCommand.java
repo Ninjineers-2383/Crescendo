@@ -27,6 +27,6 @@ public class FeederVoltageCommand extends CommandBase {
 
     @Override
     public void execute() {
-        feeder.setPower((power.getAsDouble() - 0.15) * (cubeMode.getAsBoolean() ? -0.5 : 1));
+        feeder.setPower((power.getAsDouble() - 0.175) * (cubeMode.getAsBoolean() ? -0.4 : 1));
     }
 }

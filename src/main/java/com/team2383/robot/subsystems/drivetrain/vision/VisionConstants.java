@@ -11,7 +11,7 @@ public final class VisionConstants {
     private static final Rotation3d CAM_ROTATION = new Rotation3d(0, 0, 0);
 
     public static final double POSE_VARIANCE_SCALE = 0.04;
-    public static final double POSE_VARIANCE_STATIC = 1E-9;
+    public static final double POSE_VARIANCE_STATIC = 1E-1;
 
     private static final Translation3d CAM_LEFT = new Translation3d(
             Units.inchesToMeters(8),

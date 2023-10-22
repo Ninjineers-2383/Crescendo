@@ -7,7 +7,7 @@ public class BlizzardPresets {
             Rotation2d.fromDegrees(90));
 
     public static final BlizzardPosition GROUND_INTAKE = new BlizzardPosition(0.08,
-            Rotation2d.fromRadians(0.3));
+            Rotation2d.fromRadians(0.25));
 
     public static final BlizzardPosition CONE_CHUTE = new BlizzardPosition(0.06,
             Rotation2d.fromRadians(1.32));

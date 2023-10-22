@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 
 public class Engage extends CommandBase {
     private final DrivetrainSubsystem m_drivetrain;
-    private final PIDController m_pid = new PIDController(0.015, 0.002, 0);
+    private final PIDController m_pid = new PIDController(0.03, 0, 0);
 
     public Engage(DrivetrainSubsystem drivetrain, boolean invert) {
         this.m_drivetrain = drivetrain;

@@ -16,6 +16,8 @@ public class WristIOSparkMax implements WristIO {
 
     private final IAbsoluteEncoder m_absEncoder;
 
+    private double previousVel = 0.0;
+
     public WristIOSparkMax() {
         m_wristMotor = new CANSparkMax(WristConstants.kWristMotorID, MotorType.kBrushless);
 
@@ -38,6 +40,9 @@ public class WristIOSparkMax implements WristIO {
                 .angleModulus(m_absEncoder.getAbsoluteAngle().getRadians() - WristConstants.kEncoderOffset);
         inputs.velocityRadPerSec = m_wristMotor.getEncoder().getVelocity() * ((2 * Math.PI) / 60.0)
                 / WristConstants.kWristMotorGearRatio;
+        inputs.accelerationRadPerSecSquared = (inputs.velocityRadPerSec - previousVel) / 0.02;
+
+        previousVel = inputs.velocityRadPerSec;
         inputs.appliedVolts = m_wristMotor.getAppliedOutput() * m_wristMotor.getBusVoltage();
         inputs.current = m_wristMotor.getOutputCurrent();
         inputs.absoluteWristAngle = m_absEncoder.getAbsoluteAngle().getRadians();

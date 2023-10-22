@@ -10,6 +10,7 @@ import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.autos.ConeCubeAuto;
 import com.team2383.robot.autos.CubeMobilityAuto;
 import com.team2383.robot.autos.EngageAuto;
+import com.team2383.robot.autos.auto_blocks.Engage;
 import com.team2383.robot.autos.auto_blocks.ScoreHighCommand;
 import com.team2383.robot.autos.auto_blocks.ScoreMiddleCommand;
 import com.team2383.robot.commands.ElevatorVelocityCommand;
@@ -220,11 +221,11 @@ public class RobotContainer {
 
         m_wristSubsystem.setDefaultCommand(
                 new WristVelocityCommand(m_wristSubsystem,
-                        () -> -MathUtil.applyDeadband(m_operatorController.getRawAxis(1), 0.02)));
+                        () -> -MathUtil.applyDeadband(m_operatorController.getRawAxis(1), 0.04)));
 
         m_elevatorSubsystem.setDefaultCommand(
                 new ElevatorVelocityCommand(m_elevatorSubsystem,
-                        () -> -MathUtil.applyDeadband(m_operatorController.getRawAxis(5), 0.02)));
+                        () -> -MathUtil.applyDeadband(m_operatorController.getRawAxis(5), 0.04)));
     }
 
     /**
@@ -270,14 +271,16 @@ public class RobotContainer {
         autoChooser.addOption("Cone Cube Dirty Score", new ConeCubeAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
                 m_wristSubsystem, m_feederSubsystem, "ConeDirtyCubeScore"));
 
-        autoChooser.addOption("Cube Clean Cone Engage", new EngageAuto(m_drivetrainSubsystem,
-                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeCleanConeEngage", true));
+        autoChooser.addOption("Cube Clean Cube Engage", new EngageAuto(m_drivetrainSubsystem,
+                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeCleanCubeEngage", true));
 
         autoChooser.addOption("Cube Charge Cube Engage", new EngageAuto(m_drivetrainSubsystem,
                 m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeChargeCubeEngage", true));
 
         autoChooser.addOption("Cube Charge Cone Score Engage", new EngageAuto(m_drivetrainSubsystem,
                 m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeChargeConeScoreEngage", true));
+
+        autoChooser.addOption("Engage", new Engage(m_drivetrainSubsystem, true));
 
     }
 }

@@ -38,6 +38,7 @@ public class WristSubsystem extends SubsystemBase {
 
         Logger.getInstance().recordOutput("Wrist/Set Position", setpoint_next.position);
         Logger.getInstance().recordOutput("Wrist/Set Velocity", setpoint_next.velocity);
+        Logger.getInstance().recordOutput("Wrist/Set Acceleration", constraints.maxAcceleration);
 
         double voltage = calculateVoltage(setpoint_next, setpoint, inputs.wristAngle, inputs.velocityRadPerSec);
 
