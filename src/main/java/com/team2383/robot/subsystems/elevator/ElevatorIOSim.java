@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj.simulation.ElevatorSim;
 public class ElevatorIOSim implements ElevatorIO {
     private final DCMotor m_motorModel = DCMotor.getFalcon500(2);
     private final ElevatorSim m_sim = new ElevatorSim(m_motorModel, 7.75, Units.lbsToKilograms(3),
-            Units.inchesToMeters(2), 0, Units.inchesToMeters(45), true, null);
+            Units.inchesToMeters(2), 0, Units.inchesToMeters(45), true, 0);
 
     private double volts;
     private double extension = 0;

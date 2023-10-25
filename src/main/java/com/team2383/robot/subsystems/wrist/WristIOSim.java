@@ -7,7 +7,7 @@ public class WristIOSim implements WristIO {
     private final DCMotor m_motorModel = DCMotor.getNEO(1);
     private final SingleJointedArmSim m_sim = new SingleJointedArmSim(m_motorModel,
             WristConstants.kWristMotorGearRatio, 1, 1, Math.toRadians(0),
-            Math.toRadians(60), true);
+            Math.toRadians(60), true, 0);
 
     private double volts;
 

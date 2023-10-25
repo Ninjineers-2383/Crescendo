@@ -16,8 +16,8 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
 
     private final IAbsoluteEncoder m_angleEncoder;
 
-    private final VelocityVoltage m_velocityOut = new VelocityVoltage(0, true, 0, 0, false);
-    private final PositionVoltage m_positionOut = new PositionVoltage(0, true, 0, 0, false);
+    private final VelocityVoltage m_velocityOut = new VelocityVoltage(0, 0, true, 0, 0, false);
+    private final PositionVoltage m_positionOut = new PositionVoltage(0, 0, true, 0, 0, false);
 
     private Rotation2d m_lastAngle = new Rotation2d();
 
@@ -60,7 +60,7 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
         double absolutePosition = Conversions.degreesToRotations(
                 getAbsolute().getDegrees() - m_angleOffset.getDegrees(),
                 DriveConstants.kAngleGearRatio);
-        m_angleMotor.setRotorPosition(absolutePosition);
+        m_angleMotor.setPosition(absolutePosition);
     }
 
     @Override
@@ -78,7 +78,7 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
     private void configDriveMotor(ModuleConstants constants) {
         m_driveMotor.getConfigurator().apply(constants.kHardwareConfigs.kDriveMotorConfigs);
         m_driveMotor.setInverted(true);
-        m_driveMotor.setRotorPosition(0);
+        m_driveMotor.setPosition(0);
     }
 
     private void setSpeed(SwerveModuleState desiredState) {

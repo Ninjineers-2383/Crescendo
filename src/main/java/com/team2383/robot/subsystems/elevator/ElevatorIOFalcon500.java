@@ -10,8 +10,8 @@ public class ElevatorIOFalcon500 implements ElevatorIO {
     public ElevatorIOFalcon500(String CANbus) {
         m_elevatorLeft = new TalonFX(ElevatorConstants.kElevatorLeftID, CANbus);
         m_elevatorRight = new TalonFX(ElevatorConstants.kElevatorRightID, CANbus);
-        m_elevatorLeft.setRotorPosition(0);
-        m_elevatorRight.setRotorPosition(0);
+        m_elevatorLeft.setPosition(0);
+        m_elevatorRight.setPosition(0);
         m_elevatorLeft.setInverted(false);
         m_elevatorRight.setInverted(true);
 
@@ -33,8 +33,8 @@ public class ElevatorIOFalcon500 implements ElevatorIO {
     }
 
     public void forcePosition(double positionMeters) {
-        m_elevatorLeft.setRotorPosition(positionMeters / 0.0665);
-        m_elevatorRight.setRotorPosition(positionMeters / 0.0665);
+        m_elevatorLeft.setPosition(positionMeters / 0.0665);
+        m_elevatorRight.setPosition(positionMeters / 0.0665);
 
     }
 }

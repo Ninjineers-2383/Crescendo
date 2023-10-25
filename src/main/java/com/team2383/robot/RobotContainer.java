@@ -23,12 +23,10 @@ import com.team2383.robot.commands.blizzard.BlizzardPresets;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
-import com.team2383.robot.subsystems.drivetrain.GyroIONavX;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
-import com.team2383.robot.subsystems.drivetrain.vision.VisionIOPhoton;
 import com.team2383.robot.subsystems.elevator.ElevatorIO;
 import com.team2383.robot.subsystems.elevator.ElevatorIOFalcon500;
 import com.team2383.robot.subsystems.elevator.ElevatorIOSim;
@@ -87,8 +85,8 @@ public class RobotContainer {
             switch (Constants.getRobot()) {
                 case ROBOT_COMP:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            new GyroIONavX(),
-                            new VisionIOPhoton(),
+                            new GyroIO() {},
+                            new VisionIO() {},
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     DriveConstants.frontLeftEncoder, Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
