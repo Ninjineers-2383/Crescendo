@@ -4,9 +4,9 @@ import java.util.function.DoubleSupplier;
 
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class WristVelocityCommand extends CommandBase {
+public class WristVelocityCommand extends Command {
     private final WristSubsystem wrist;
     private final DoubleSupplier power;
 

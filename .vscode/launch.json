@@ -16,6 +16,6 @@
       "name": "WPILib roboRIO Debug",
       "request": "launch",
       "desktop": false,
-    },
+    }
   ]
 }

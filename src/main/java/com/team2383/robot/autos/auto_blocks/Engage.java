@@ -5,9 +5,9 @@ import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class Engage extends CommandBase {
+public class Engage extends Command {
     private final DrivetrainSubsystem m_drivetrain;
     private final PIDController m_pid = new PIDController(0.03, 0, 0);
 

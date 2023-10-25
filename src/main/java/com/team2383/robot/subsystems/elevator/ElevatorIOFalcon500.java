@@ -1,6 +1,6 @@
 package com.team2383.robot.subsystems.elevator;
 
-import com.ctre.phoenixpro.hardware.TalonFX;
+import com.ctre.phoenix6.hardware.TalonFX;
 
 public class ElevatorIOFalcon500 implements ElevatorIO {
 

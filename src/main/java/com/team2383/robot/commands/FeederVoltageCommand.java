@@ -5,9 +5,9 @@ import java.util.function.DoubleSupplier;
 
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class FeederVoltageCommand extends CommandBase {
+public class FeederVoltageCommand extends Command {
     private final FeederSubsystem feeder;
     private final DoubleSupplier power;
     private final BooleanSupplier cubeMode;

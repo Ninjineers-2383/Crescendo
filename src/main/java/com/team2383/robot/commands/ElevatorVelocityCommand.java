@@ -4,9 +4,9 @@ import java.util.function.DoubleSupplier;
 
 import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class ElevatorVelocityCommand extends CommandBase {
+public class ElevatorVelocityCommand extends Command {
     private ElevatorSubsystem elevator;
     private DoubleSupplier power;
 

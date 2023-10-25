@@ -1,13 +1,13 @@
 package com.team2383.robot.subsystems.drivetrain;
 
-import com.ctre.phoenixpro.configs.CANcoderConfiguration;
-import com.ctre.phoenixpro.configs.CurrentLimitsConfigs;
-import com.ctre.phoenixpro.configs.MotorOutputConfigs;
-import com.ctre.phoenixpro.configs.Slot0Configs;
-import com.ctre.phoenixpro.configs.TalonFXConfiguration;
-import com.ctre.phoenixpro.signals.AbsoluteSensorRangeValue;
-import com.ctre.phoenixpro.signals.NeutralModeValue;
-import com.ctre.phoenixpro.signals.SensorDirectionValue;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.team2383.lib.swerve.AbsoluteMagEncoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
 
@@ -170,14 +170,18 @@ public final class DriveConstants {
                     -DriveConstants.kTrackWidthMeters / 2),
             Rotation2d.fromRadians(0.433));
 
-    // public final static IAbsoluteEncoder frontLeftEncoder = new AbsoluteCancoder(1, "Drive",
-    //         frontLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    // public final static IAbsoluteEncoder frontRightEncoder = new AbsoluteCancoder(2, "Drive",
-    //         frontRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    // public final static IAbsoluteEncoder rearLeftEncoder = new AbsoluteCancoder(3, "Drive",
-    //         rearLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    // public final static IAbsoluteEncoder rearRightEncoder = new AbsoluteCancoder(4, "Drive",
-    //         rearRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    // public final static IAbsoluteEncoder frontLeftEncoder = new
+    // AbsoluteCancoder(1, "Drive",
+    // frontLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    // public final static IAbsoluteEncoder frontRightEncoder = new
+    // AbsoluteCancoder(2, "Drive",
+    // frontRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    // public final static IAbsoluteEncoder rearLeftEncoder = new
+    // AbsoluteCancoder(3, "Drive",
+    // rearLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
+    // public final static IAbsoluteEncoder rearRightEncoder = new
+    // AbsoluteCancoder(4, "Drive",
+    // rearRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
     public final static IAbsoluteEncoder frontLeftEncoder = new AbsoluteMagEncoder(6);
     public final static IAbsoluteEncoder frontRightEncoder = new AbsoluteMagEncoder(7);
     public final static IAbsoluteEncoder rearLeftEncoder = new AbsoluteMagEncoder(8);

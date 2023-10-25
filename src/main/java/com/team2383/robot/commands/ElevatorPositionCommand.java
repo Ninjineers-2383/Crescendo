@@ -2,9 +2,9 @@ package com.team2383.robot.commands;
 
 import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class ElevatorPositionCommand extends CommandBase {
+public class ElevatorPositionCommand extends Command {
     private final ElevatorSubsystem m_elevator;
 
     private final double m_position;

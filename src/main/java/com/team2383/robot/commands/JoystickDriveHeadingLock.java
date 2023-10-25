@@ -9,13 +9,13 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
 import com.team2383.lib.math.ThrottleSoftener;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
-public class JoystickDriveHeadingLock extends CommandBase {
+public class JoystickDriveHeadingLock extends Command {
     private final DrivetrainSubsystem m_drivetrain;
 
     private final Supplier<Rotation2d> m_rotSupply;

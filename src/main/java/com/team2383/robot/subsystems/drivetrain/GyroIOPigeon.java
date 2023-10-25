@@ -1,6 +1,6 @@
 package com.team2383.robot.subsystems.drivetrain;
 
-import com.ctre.phoenixpro.hardware.Pigeon2;
+import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 

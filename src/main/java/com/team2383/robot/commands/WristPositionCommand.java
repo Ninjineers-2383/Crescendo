@@ -3,9 +3,9 @@ package com.team2383.robot.commands;
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class WristPositionCommand extends CommandBase {
+public class WristPositionCommand extends Command {
     private final WristSubsystem m_wrist;
 
     private final Rotation2d m_angle;
