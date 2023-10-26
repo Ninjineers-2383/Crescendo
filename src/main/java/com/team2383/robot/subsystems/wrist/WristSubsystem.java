@@ -21,7 +21,7 @@ public class WristSubsystem extends SubsystemBase {
 
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-    private TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, goal);
+    private TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
     public WristSubsystem(WristIO io) {
         this.io = io;
@@ -30,15 +30,13 @@ public class WristSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.getInstance().processInputs("Wrist", inputs);
+        Logger.processInputs("Wrist", inputs);
 
-        profile = new TrapezoidProfile(constraints, goal, setpoint);
+        var setpoint_next = profile.calculate(0.02, goal, setpoint);
 
-        var setpoint_next = profile.calculate(0.02);
-
-        Logger.getInstance().recordOutput("Wrist/Set Position", setpoint_next.position);
-        Logger.getInstance().recordOutput("Wrist/Set Velocity", setpoint_next.velocity);
-        Logger.getInstance().recordOutput("Wrist/Set Acceleration", constraints.maxAcceleration);
+        Logger.recordOutput("Wrist/Set Position", setpoint_next.position);
+        Logger.recordOutput("Wrist/Set Velocity", setpoint_next.velocity);
+        Logger.recordOutput("Wrist/Set Acceleration", constraints.maxAcceleration);
 
         double voltage = calculateVoltage(setpoint_next, setpoint, inputs.wristAngle, inputs.velocityRadPerSec);
 

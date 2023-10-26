@@ -21,7 +21,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
-    private TrapezoidProfile profile = new TrapezoidProfile(constraints, goal, goal);
+    private TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
     public ElevatorSubsystem(ElevatorIO io) {
         this.io = io;
@@ -30,14 +30,12 @@ public class ElevatorSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.getInstance().processInputs("Elevator", inputs);
+        Logger.processInputs("Elevator", inputs);
 
-        profile = new TrapezoidProfile(constraints, goal, setpoint);
+        var setpoint_next = profile.calculate(0.02, goal, setpoint);
 
-        var setpoint_next = profile.calculate(0.02);
-
-        Logger.getInstance().recordOutput("Elevator Set Position", setpoint_next.position);
-        Logger.getInstance().recordOutput("Elevator Set Velocity", setpoint_next.velocity);
+        Logger.recordOutput("Elevator Set Position", setpoint_next.position);
+        Logger.recordOutput("Elevator Set Velocity", setpoint_next.velocity);
 
         double voltage = calculateVoltage(setpoint_next, setpoint, inputs.positionM, inputs.velocityMPS);
 

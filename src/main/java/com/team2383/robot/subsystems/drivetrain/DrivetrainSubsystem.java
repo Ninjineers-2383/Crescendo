@@ -109,10 +109,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         loop_cycle++;
 
         m_gyro.updateInputs(m_gyroInputs);
-        Logger.getInstance().processInputs("Gyro", m_gyroInputs);
+        Logger.processInputs("Gyro", m_gyroInputs);
 
         m_vision.updateInputs(m_visionInputs);
-        Logger.getInstance().processInputs("Vision", m_visionInputs);
+        Logger.processInputs("Vision", m_visionInputs);
 
         for (CoaxialSwerveModule module : m_modules) {
             module.periodic();
@@ -162,7 +162,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     m_visionInputs.timestampSeconds[i],
                     VecBuilder.fill(variance, variance, variance));
 
-            Logger.getInstance().recordOutput("Vision/Raw Estimated Poses " + i, camPose);
+            Logger.recordOutput("Vision/Raw Estimated Poses " + i, camPose);
         }
 
         Pose2d estimatedPose = m_poseEstimator.getEstimatedPosition();
@@ -171,13 +171,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         SmartDashboard.putNumber("Roll", getRoll());
 
-        Logger.getInstance().recordOutput("Swerve/Real Module States", m_lastStates);
+        Logger.recordOutput("Swerve/Real Module States", m_lastStates);
 
-        Logger.getInstance().recordOutput("Swerve/Heading Integaral", headingIntegral);
+        Logger.recordOutput("Swerve/Heading Integaral", headingIntegral);
 
-        Logger.getInstance().recordOutput("Swerve/Chassis Heading", chassis.omegaRadiansPerSecond);
+        Logger.recordOutput("Swerve/Chassis Heading", chassis.omegaRadiansPerSecond);
 
-        Logger.getInstance().recordOutput("Robot Pose", estimatedPose);
+        Logger.recordOutput("Robot Pose", estimatedPose);
     }
 
     /**
@@ -210,7 +210,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         setModuleStates(swerveModuleStates);
 
-        Logger.getInstance().recordOutput("Swerve/Desired Module States", swerveModuleStates);
+        Logger.recordOutput("Swerve/Desired Module States", swerveModuleStates);
 
         m_COR.setPose(getPose().plus(new Transform2d(centerOfRotation, new Rotation2d())));
     }

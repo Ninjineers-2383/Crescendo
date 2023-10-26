@@ -4,6 +4,11 @@
       "visible": true
     }
   },
+  "Keyboard 1 Settings": {
+    "window": {
+      "visible": true
+    }
+  },
   "keyboardJoysticks": [
     {
       "axisConfig": [
@@ -22,14 +27,17 @@
           "incKey": 81
         }
       ],
-      "axisCount": 4,
-      "buttonCount": 5,
+      "axisCount": 8,
+      "buttonCount": 8,
       "buttonKeys": [
         90,
         88,
         67,
         86,
-        66
+        66,
+        -1,
+        -1,
+        -1
       ],
       "povConfig": [
         {
@@ -56,13 +64,17 @@
           "incKey": 75
         }
       ],
-      "axisCount": 2,
-      "buttonCount": 4,
+      "axisCount": 6,
+      "buttonCount": 8,
       "buttonKeys": [
         77,
         44,
         46,
-        47
+        47,
+        -1,
+        -1,
+        -1,
+        -1
       ],
       "povCount": 1
     },
@@ -100,7 +112,7 @@
       "guid": "Keyboard0"
     },
     {
-      "useGamepad": true
+      "guid": "Keyboard1"
     }
   ]
 }

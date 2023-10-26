@@ -26,7 +26,7 @@ public class CoaxialSwerveModule implements Sendable {
     public void periodic() {
         m_io.updateInputs(m_inputs);
 
-        Logger.getInstance().processInputs(m_logName, m_inputs);
+        Logger.processInputs(m_logName, m_inputs);
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {

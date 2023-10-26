@@ -18,8 +18,6 @@ public interface VisionIO {
 
         public double[] timestampSeconds = {};
 
-        public int[][] tagsSeen = {};
-
         public void clear(int len) {
             connected = new boolean[len];
             x = new double[len];

@@ -42,7 +42,7 @@ public class SimComponents extends SubsystemBase {
         poses[2] = basePose.plus(new Transform3d(elevatorTop, new Rotation3d(0, 0, 0)));
         poses[3] = basePose.plus(new Transform3d(elevatorTop, new Rotation3d())).plus(wristPos);
 
-        Logger.getInstance().recordOutput("Components", poses);
+        Logger.recordOutput("Components", poses);
     }
 
 }

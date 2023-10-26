@@ -15,7 +15,7 @@ public class FeederSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         feeder.updateInputs(inputs);
-        Logger.getInstance().processInputs("Feeder", inputs);
+        Logger.processInputs("Feeder", inputs);
     }
 
     public void setPower(double power) {

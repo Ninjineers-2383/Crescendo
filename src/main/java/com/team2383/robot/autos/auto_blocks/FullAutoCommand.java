@@ -99,10 +99,10 @@ public class FullAutoCommand extends SequentialCommandGroup {
         // "generatedJSON",
         // pathName + ".wpilib.json"));
 
-        // Logger.getInstance().recordOutput("Swerve/Auto Path", new Trajectory());
+        // Logger.recordOutput("Swerve/Auto Path", new Trajectory());
 
         // addCommands(
-        // new InstantCommand(() -> Logger.getInstance().recordOutput("Swerve/Auto
+        // new InstantCommand(() -> Logger.recordOutput("Swerve/Auto
         // Path",
         // flipTrajectory(trajectory))),
         // autoBuilder.fullAuto(pathGroup));
