@@ -2,6 +2,8 @@ package com.team2383.robot.subsystems.drivetrain;
 
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -9,6 +11,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -24,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOInputsAutoLogged;
+import com.team2383.lib.SLAM.EKFSLAM;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionConstants;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 
@@ -50,12 +54,16 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final SwerveDrivePoseEstimator m_poseEstimator;
 
+    private final EKFSLAM m_slam;
+
     private final Field2d m_field = new Field2d();
     private final FieldObject2d m_COR;
 
     private int loop_cycle = 0;
 
     private double headingIntegral = 0;
+
+    private AprilTagFieldLayout aprilTags;
 
     public DrivetrainSubsystem(GyroIO gyro, VisionIO vision, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
             SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
@@ -75,6 +83,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new Rotation2d(),
                 getModulePositions(),
                 new Pose2d());
+
+        m_slam = new EKFSLAM(8);
+        try {
+            aprilTags = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+        } catch (Exception e) {
+            aprilTags = new AprilTagFieldLayout(null, 0, 0);
+        }
 
         m_lastStates = new SwerveModuleState[m_modules.length];
 
@@ -178,6 +193,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("Swerve/Chassis Heading", chassis.omegaRadiansPerSecond);
 
         Logger.recordOutput("Robot Pose", estimatedPose);
+
+        // SLAM Test
+
+        Pose3d tag_pose = aprilTags.getTagPose(4).get();
+
+        Pose3d robot_pose = new Pose3d(estimatedPose.getX(), estimatedPose.getY(), 0,
+                new Rotation3d(0, 0, estimatedPose.getRotation().getRadians()));
+
+        Transform3d robotToTag = new Transform3d(robot_pose, tag_pose);
+
+        Pose3d SLAM = m_slam.update(chassis, 0.02);
+
+        Logger.recordOutput("SLAM/Pose", SLAM);
     }
 
     /**
