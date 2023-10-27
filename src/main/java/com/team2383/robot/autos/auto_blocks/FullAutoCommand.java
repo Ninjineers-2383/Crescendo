@@ -1,31 +1,11 @@
 package com.team2383.robot.autos.auto_blocks;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.littletonrobotics.junction.Logger;
-
-import com.team2383.robot.commands.FeederVoltageCommand;
-import com.team2383.robot.commands.blizzard.BlizzardCommand;
-import com.team2383.robot.commands.blizzard.BlizzardPresets;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryUtil;
-import edu.wpi.first.math.trajectory.Trajectory.State;
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-
-import java.io.IOException;
-import java.nio.file.Path;
 
 public class FullAutoCommand extends SequentialCommandGroup {
     // private Trajectory geTrajectory(Path path) {

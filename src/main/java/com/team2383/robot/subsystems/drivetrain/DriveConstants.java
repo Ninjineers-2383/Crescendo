@@ -8,6 +8,9 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
+import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
+import com.pathplanner.lib.util.PIDConstants;
+import com.pathplanner.lib.util.ReplanningConfig;
 import com.team2383.lib.swerve.AbsoluteMagEncoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
 
@@ -32,6 +35,13 @@ public final class DriveConstants {
 
     public final static double kMaxAngularVelocity = Math.PI * 20;
     public final static double kMaxAngularAcceleration = Math.PI * 2 * 100;
+
+    public final static HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(
+            new PIDConstants(5, 0, 0),
+            new PIDConstants(5, 0, 0),
+            4.5,
+            0.5,
+            new ReplanningConfig());
 
     public final static PIDController HEADING_CONTROLLER = new PIDController(1, 0, 0);
 

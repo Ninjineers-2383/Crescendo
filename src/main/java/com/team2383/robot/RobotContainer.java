@@ -6,11 +6,14 @@ package com.team2383.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathConstraints;
 import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.autos.ConeCubeAuto;
-import com.team2383.robot.autos.CubeMobilityAuto;
-import com.team2383.robot.autos.EngageAuto;
 import com.team2383.robot.autos.auto_blocks.Engage;
+import com.team2383.robot.autos.auto_blocks.FeedCone;
+import com.team2383.robot.autos.auto_blocks.Retract;
 import com.team2383.robot.autos.auto_blocks.ScoreHighCommand;
 import com.team2383.robot.autos.auto_blocks.ScoreMiddleCommand;
 import com.team2383.robot.commands.ElevatorVelocityCommand;
@@ -42,8 +45,10 @@ import com.team2383.robot.subsystems.wrist.WristIOSparkMax;
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -236,49 +241,46 @@ public class RobotContainer {
     }
 
     private void setAutoCommands() {
+        NamedCommands.registerCommand("Engage", new Engage(m_drivetrainSubsystem, true));
+
+        NamedCommands.registerCommand("Feed Cone",
+                new FeedCone(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
+
+        NamedCommands.registerCommand("Feed Cube", new FeederVoltageCommand(m_feederSubsystem, () -> -0.5, false));
+
+        NamedCommands.registerCommand("Retract Cone",
+                new Retract(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
+
+        NamedCommands.registerCommand("Retract Cube",
+                new Retract(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
+
+        NamedCommands.registerCommand("Score Cube High",
+                new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
+
+        NamedCommands.registerCommand("Score Cube Middle",
+                new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
+
+        NamedCommands.registerCommand("Score Cone High",
+                new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
+
+        NamedCommands.registerCommand("Score Cone Middle",
+                new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
+
         Command nullAuto = null;
 
         autoChooser.addDefaultOption("No Auto :(", nullAuto);
 
-        autoChooser.addOption("Score Cube Middle",
-                new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
+        autoChooser.addOption("Engage", new PathPlannerAuto("Cube2EngageAuto"));
 
-        autoChooser.addOption("Score Cube High",
-                new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
-
-        autoChooser.addOption("Score Cone Middle",
-                new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
-
-        autoChooser.addOption("Score Cone High",
-                new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
-
-        autoChooser.addOption("Cube Mobility Dirty Cone",
-                new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                        m_wristSubsystem, m_feederSubsystem, "CubeDirtyCone"));
-
-        autoChooser.addOption("Cube Mobility Clean Cone",
-                new CubeMobilityAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                        m_wristSubsystem, m_feederSubsystem, "CubeCleanCone"));
-
-        autoChooser.addOption("Cube Engage", new EngageAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "CubeEngage", true));
-
-        autoChooser.addOption("Cone Cube Clean Score", new ConeCubeAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "ConeCleanCubeScore"));
-
-        autoChooser.addOption("Cone Cube Dirty Score", new ConeCubeAuto(m_drivetrainSubsystem, m_elevatorSubsystem,
-                m_wristSubsystem, m_feederSubsystem, "ConeDirtyCubeScore"));
-
-        autoChooser.addOption("Cube Clean Cube Engage", new EngageAuto(m_drivetrainSubsystem,
-                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeCleanCubeEngage", true));
-
-        autoChooser.addOption("Cube Charge Cube Engage", new EngageAuto(m_drivetrainSubsystem,
-                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeChargeCubeEngage", true));
-
-        autoChooser.addOption("Cube Charge Cone Score Engage", new EngageAuto(m_drivetrainSubsystem,
-                m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, "CubeChargeConeScoreEngage", true));
-
-        autoChooser.addOption("Engage", new Engage(m_drivetrainSubsystem, true));
+        autoChooser.addOption("Do whatever", AutoBuilder.pathfindToPose(
+                new Pose2d(10, 5, Rotation2d.fromDegrees(180)),
+                new PathConstraints(
+                        3.0, 4.0,
+                        Units.degreesToRadians(540), Units.degreesToRadians(720)),
+                0.0, // Goal end velocity in meters/sec
+                0.0 // Rotation delay distance in meters. This is how far the robot should travel
+                    // before attempting to rotate.
+        ));
 
     }
 }

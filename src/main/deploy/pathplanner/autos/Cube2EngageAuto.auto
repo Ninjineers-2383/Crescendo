@@ -1,0 +1,36 @@
+{
+  "version": 1.0,
+  "startingPose": {
+    "position": {
+      "x": 1.83,
+      "y": 2.72
+    },
+    "rotation": 180.0
+  },
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "Score Cube High"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Cube2Engage"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Engage"
+          }
+        }
+      ]
+    }
+  },
+  "folder": null
+}

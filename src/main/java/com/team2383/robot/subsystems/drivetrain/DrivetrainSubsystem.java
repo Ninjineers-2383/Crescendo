@@ -24,6 +24,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOInputsAutoLogged;
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionConstants;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 
@@ -56,6 +57,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private int loop_cycle = 0;
 
     private double headingIntegral = 0;
+
+    private ChassisSpeeds m_robotRelativeChassisSpeeds = new ChassisSpeeds();
 
     public DrivetrainSubsystem(GyroIO gyro, VisionIO vision, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
             SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
@@ -95,6 +98,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         // headingIntegral =
         // m_poseEstimator.getEstimatedPosition().getRotation().getRadians();
+
+        AutoBuilder.configureHolonomic(
+                this::getPose,
+                this::forceOdometry,
+                this::getRobotRelativeSpeeds,
+                this::driveRobotRelative,
+                DriveConstants.CONFIG,
+                this);
 
     }
 
@@ -213,6 +224,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("Swerve/Desired Module States", swerveModuleStates);
 
         m_COR.setPose(getPose().plus(new Transform2d(centerOfRotation, new Rotation2d())));
+    }
+
+    public ChassisSpeeds getRobotRelativeSpeeds() {
+        return m_robotRelativeChassisSpeeds;
+    }
+
+    public void driveRobotRelative(ChassisSpeeds speeds) {
+        m_robotRelativeChassisSpeeds = speeds;
+
+        SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
+                speeds);
+
+        setModuleStates(swerveModuleStates);
+
+        Logger.recordOutput("Swerve/Desired Module States", swerveModuleStates);
+
+        m_COR.setPose(getPose());
     }
 
     public void setModuleStates(SwerveModuleState[] states) {
