@@ -1,4 +1,4 @@
-from sympy import symbols, Matrix, cos, sin, init_printing, Quaternion
+from sympy import symbols, Matrix, cos, sin, init_printing, Quaternion, sqrt
 
 init_printing()
 
@@ -18,10 +18,12 @@ motion = Quaternion(rw, rx, ry, rz) * motion_command * Quaternion(rw, -rx, -ry, 
 
 rotation = Quaternion(cos(dtheta / 2), 0, 0, sin(dtheta / 2))
 
-rotation_diff = rotation * Quaternion(rw, rx, ry, rz)
+rotation_diff = rotation * Quaternion(
+    rw / sqrt(rw**2 + rz**2), 0, 0, rz / sqrt(rw**2 + rz**2)
+)
 
 
-mu = mu_t + Matrix(
+mu_d = Matrix(
     [
         motion.b,
         motion.c,

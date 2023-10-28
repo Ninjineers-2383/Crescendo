@@ -9,8 +9,6 @@ public class ExtendedKalmanFilterDisc {
     private SimpleMatrix sigma;
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> g_t;
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> G_t;
-    private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> h_t;
-    private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> H_t;
 
     public ExtendedKalmanFilterDisc(
             SimpleMatrix init_mu, SimpleMatrix init_sigma,
@@ -22,8 +20,6 @@ public class ExtendedKalmanFilterDisc {
         this.sigma = init_sigma;
         this.g_t = g_t;
         this.G_t = G_t;
-        this.h_t = h_t;
-        this.H_t = h_t;
     }
 
     public void predict(SimpleMatrix u_t, SimpleMatrix R) {

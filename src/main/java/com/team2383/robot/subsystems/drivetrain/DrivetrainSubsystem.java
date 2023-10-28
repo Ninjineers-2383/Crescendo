@@ -1,5 +1,7 @@
 package com.team2383.robot.subsystems.drivetrain;
 
+import java.util.Random;
+
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -8,6 +10,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
@@ -60,6 +63,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final FieldObject2d m_COR;
 
     private int loop_cycle = 0;
+    private int buttons = 0;
 
     private double headingIntegral = 0;
 
@@ -111,6 +115,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // headingIntegral =
         // m_poseEstimator.getEstimatedPosition().getRotation().getRadians();
 
+        Pose3d[] landmarks = new Pose3d[8];
+
+        for (int i = 1; i <= 8; i++) {
+            landmarks[i - 1] = aprilTags.getTagPose(i).get();
+        }
+
+        m_slam.seedLandmarks(landmarks);
     }
 
     @Override
@@ -196,16 +207,50 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         // SLAM Test
 
-        Pose3d tag_pose = aprilTags.getTagPose(4).get();
-
-        Pose3d robot_pose = new Pose3d(estimatedPose.getX(), estimatedPose.getY(), 0,
+        Pose3d robot_pose = new Pose3d(
+                new Translation3d(estimatedPose.getTranslation().getX(), estimatedPose.getTranslation().getY(), 0),
                 new Rotation3d(0, 0, estimatedPose.getRotation().getRadians()));
 
-        Transform3d robotToTag = new Transform3d(robot_pose, tag_pose);
+        Pose3d SLAM = m_slam.predict(chassis.plus(noisySpeeds(0, 0.001)), 0.02);
 
-        Pose3d SLAM = m_slam.update(chassis, 0.02);
+        int thisButtons = DriverStation.getStickButtons(2);
+
+        for (int i = 0; i < 8; i++) {
+            if ((((buttons ^ thisButtons) & thisButtons) & (1 << i)) != 0) {
+                Pose3d tag_pose = aprilTags.getTagPose(i + 1).get();
+                Transform3d robotToTag = new Transform3d(robot_pose, tag_pose).plus(noisyTransform(0, 0.01));
+
+                SLAM = m_slam.correct(robotToTag, i);
+            }
+        }
+
+        buttons = DriverStation.getStickButtons(2);
 
         Logger.recordOutput("SLAM/Pose", SLAM);
+    }
+
+    private Transform3d noisyTransform(double mu, double sigma) {
+        Random r = new Random();
+
+        double x = r.nextGaussian() * sigma + mu;
+        double y = r.nextGaussian() * sigma + mu;
+        double z = r.nextGaussian() * sigma + mu;
+
+        double roll = r.nextGaussian() * sigma + mu;
+        double pitch = r.nextGaussian() * sigma + mu;
+        double yaw = r.nextGaussian() * sigma + mu;
+
+        return new Transform3d(new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw));
+    }
+
+    private ChassisSpeeds noisySpeeds(double mu, double sigma) {
+        Random r = new Random();
+
+        double vx = r.nextGaussian() * sigma + mu;
+        double vy = r.nextGaussian() * sigma + mu;
+        double omega = r.nextGaussian() * sigma + mu;
+
+        return new ChassisSpeeds(vx, vy, omega);
     }
 
     /**

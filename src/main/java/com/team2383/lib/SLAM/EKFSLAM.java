@@ -2,17 +2,27 @@ package com.team2383.lib.SLAM;
 
 import java.util.function.BiFunction;
 
-import org.ejml.equation.Function;
 import org.ejml.simple.SimpleMatrix;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 public class EKFSLAM {
-    private final ExtendedKalmanFilterDisc ekf;
     private final SimpleMatrix F_x;
+
+    private SimpleMatrix mu;
+    private SimpleMatrix sigma;
+
+    private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> motion_model;
+    private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> motion_model_jacobian;
+    private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> sensor_model;
+    private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> sensor_model_jacobian;
+
+    boolean[] seenLandmarks;
 
     public EKFSLAM(int numLandmarks) {
         F_x = new SimpleMatrix(7, (numLandmarks + 1) * 7);
@@ -20,177 +30,158 @@ public class EKFSLAM {
             F_x.set(i, i, 1);
         }
 
-        SimpleMatrix init_mu = new SimpleMatrix(7 * (numLandmarks + 1), 1);
+        mu = new SimpleMatrix(7 * (numLandmarks + 1), 1);
         // Set 0 rotation
         for (int i = 0; i < 7 * (numLandmarks + 1); i += 7) {
-            init_mu.set(i + 3, 0, 1);
+            mu.set(i + 3, 0, 1);
         }
 
-        SimpleMatrix init_sigma = new SimpleMatrix(7 * (numLandmarks + 1), 7 * (numLandmarks + 1));
+        sigma = new SimpleMatrix(7 * (numLandmarks + 1), 7 * (numLandmarks + 1));
 
-        for (int i = 7; i < 7 * (numLandmarks + 1); i++) {
-            init_sigma.set(i, i, Double.POSITIVE_INFINITY);
+        sigma.fill(0.1);
+
+        for (int i = 0; i < 7; i++) {
+            for (int j = 0; j < 63; j++) {
+                sigma.set(i, j, 0);
+                sigma.set(j, i, 0);
+            }
         }
 
-        ekf = new ExtendedKalmanFilterDisc(
-                init_mu, init_sigma,
-                new MotionModel(F_x), new MotionModelJacobian(F_x),
-                null, null);
+        motion_model = new MotionModel(F_x);
+        motion_model_jacobian = new MotionModelJacobian(F_x);
+        sensor_model = new SensorModelTag();
+        sensor_model_jacobian = new SensorModelTagJacobian();
+
+        seenLandmarks = new boolean[numLandmarks];
     }
 
-    public Pose3d update(ChassisSpeeds speeds, double dt) {
+    public void seedLandmarks(Pose3d[] landmarks) {
+        for (int i = 0; i < landmarks.length; i++) {
+            if (landmarks[i] != null) {
+                mu.set(7 * (i + 1), 0, landmarks[i].getTranslation().getX());
+                mu.set(7 * (i + 1) + 1, 0, landmarks[i].getTranslation().getY());
+                mu.set(7 * (i + 1) + 2, 0, landmarks[i].getTranslation().getZ());
+                mu.set(7 * (i + 1) + 3, 0, landmarks[i].getRotation().getQuaternion().getW());
+                mu.set(7 * (i + 1) + 4, 0, landmarks[i].getRotation().getQuaternion().getX());
+                mu.set(7 * (i + 1) + 5, 0, landmarks[i].getRotation().getQuaternion().getY());
+                mu.set(7 * (i + 1) + 6, 0, landmarks[i].getRotation().getQuaternion().getZ());
+                seenLandmarks[i] = true;
+            }
+        }
+
+        Pose3d[] landmarks2 = new Pose3d[seenLandmarks.length];
+
+        for (int i = 0; i < seenLandmarks.length; i++) {
+            if (seenLandmarks[i]) {
+                Pose3d landmark = getPose(mu, 7 * (i + 1));
+                landmarks2[i] = landmark;
+            } else {
+                landmarks2[i] = new Pose3d();
+            }
+        }
+
+        Logger.recordOutput("SLAM/landmarks", landmarks2);
+    }
+
+    public Pose3d predict(ChassisSpeeds speeds, double dt) {
         SimpleMatrix u = new SimpleMatrix(3, 1, true,
                 speeds.vxMetersPerSecond * dt, speeds.vyMetersPerSecond * dt, speeds.omegaRadiansPerSecond * dt);
-        SimpleMatrix R = new SimpleMatrix(7, 7);
-        ekf.predict(u, F_x.transpose().mult(R).mult(F_x));
+        SimpleMatrix R = SimpleMatrix.diag(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
 
-        SimpleMatrix mu = ekf.mu();
-        return new Pose3d(mu.get(0), mu.get(1), mu.get(2),
-                new Rotation3d(new Quaternion(mu.get(3), mu.get(4), mu.get(5), mu.get(6))));
+        mu = mu.plus(motion_model.apply(u, mu));
+        SimpleMatrix G = SimpleMatrix.identity(63).plus(motion_model_jacobian.apply(u, mu));
+        sigma = G.mult(sigma.mult(G.transpose())).plus(F_x.transpose().mult(R.mult(F_x)));
+
+        return getPose(mu, 0);
     }
 
-    private class MotionModel implements BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> {
-        private SimpleMatrix F_x;
+    public Pose3d correct(Transform3d tag, int landmarkIndex) {
+        SimpleMatrix z_obs = new SimpleMatrix(7, 1, true,
+                tag.getTranslation().getX(), tag.getTranslation().getY(),
+                tag.getTranslation().getZ(),
+                tag.getRotation().getQuaternion().getW(),
+                tag.getRotation().getQuaternion().getX(),
+                tag.getRotation().getQuaternion().getY(),
+                tag.getRotation().getQuaternion().getZ());
 
-        public MotionModel(SimpleMatrix F_x) {
-            this.F_x = F_x;
+        if (!seenLandmarks[landmarkIndex]) {
+            seenLandmarks[landmarkIndex] = true;
+            mu.set(7 * (landmarkIndex + 1), 0, tag.getTranslation().getX());
+            mu.set(7 * (landmarkIndex + 1) + 1, 0, tag.getTranslation().getY());
+            mu.set(7 * (landmarkIndex + 1) + 2, 0, tag.getTranslation().getZ());
+            mu.set(7 * (landmarkIndex + 1) + 3, 0, tag.getRotation().getQuaternion().getW());
+            mu.set(7 * (landmarkIndex + 1) + 4, 0, tag.getRotation().getQuaternion().getX());
+            mu.set(7 * (landmarkIndex + 1) + 5, 0, tag.getRotation().getQuaternion().getY());
+            mu.set(7 * (landmarkIndex + 1) + 6, 0, tag.getRotation().getQuaternion().getZ());
         }
 
-        @Override
-        public SimpleMatrix apply(SimpleMatrix u, SimpleMatrix mu) {
-            double dx = u.get(0);
-            double dy = u.get(1);
-            double dtheta = u.get(2);
+        SimpleMatrix z_pred = sensor_model.apply(mu, new SimpleMatrix(1, 1, true,
+                landmarkIndex));
 
-            double rw = mu.get(3);
-            double rx = mu.get(4);
-            double ry = mu.get(5);
-            double rz = mu.get(6);
+        SimpleMatrix H = sensor_model_jacobian.apply(mu, new SimpleMatrix(1, 1, true,
+                landmarkIndex));
 
-            double x = mu.get(0);
-            double y = mu.get(1);
-            double z = mu.get(2);
-
-            SimpleMatrix sys = new SimpleMatrix(7, 1, true,
-                    rw * (dx * rw - dy * rz)
-                            + rx * (dx * rx + dy * ry)
-                            - ry * (dx * ry - dy * rx)
-                            - rz * (dx * rz + dy * rw)
-                            + x,
-                    rw * (dx * rz + dy * rw)
-                            + rx * (dx * ry - dy * rx)
-                            + ry * (dx * rx + dy * ry)
-                            + rz * (dx * rw - dy * rz)
-                            + y,
-                    -2 * dx * rw * ry
-                            + 2 * dx * rx * rz
-                            + 2 * dy * rw * rx
-                            + 2 * dy * ry * rz
-                            + z,
-                    rw * Math.cos(dtheta / 2) - rz * Math.sin(dtheta / 2),
-                    rx * Math.cos(dtheta / 2) - ry * Math.sin(dtheta / 2),
-                    rx * Math.sin(dtheta / 2) + ry * Math.cos(dtheta / 2),
-                    rw * Math.sin(dtheta / 2) + rz * Math.cos(dtheta / 2));
-
-            return F_x.transpose().mult(sys);
+        SimpleMatrix F_xj = new SimpleMatrix(14, mu.getNumRows());
+        for (int i = 0; i < 7; i++) {
+            F_xj.set(i, i, 1);
+            F_xj.set(i + 7, i + 7 * (landmarkIndex + 1), 1);
         }
+
+        SimpleMatrix Hi = H.mult(F_xj);
+
+        SimpleMatrix Q = SimpleMatrix.diag(0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1);
+
+        SimpleMatrix S = Hi.mult(sigma.mult(Hi.transpose())).plus(Q).invert();
+
+        SimpleMatrix K = sigma.mult(Hi.transpose()).mult(S);
+
+        mu = mu.plus(K.mult(subtractPose(z_obs, z_pred)));
+        sigma = (SimpleMatrix.identity(K.getNumRows()).minus(K.mult(Hi))).mult(sigma);
+
+        // Logger.recordOutput("SLAM/sigma", sigma.getDDRM().data);
+
+        Pose3d robotPose = getPose(mu, 0);
+
+        Transform3d pred = getTransform(z_pred, 0);
+
+        Pose3d[] landmarks = new Pose3d[seenLandmarks.length];
+
+        for (int i = 0; i < seenLandmarks.length; i++) {
+            if (seenLandmarks[i]) {
+                Pose3d landmark = getPose(mu, 7 * (i + 1));
+                landmarks[i] = landmark;
+            } else {
+                landmarks[i] = new Pose3d();
+            }
+        }
+
+        Logger.recordOutput("SLAM/landmarks", landmarks);
+        Logger.recordOutput("SLAM/predicted_z", robotPose.plus(pred));
+        Logger.recordOutput("SLAM/obs_z", robotPose.plus(tag));
+
+        return robotPose;
     }
 
-    private class MotionModelJacobian implements BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> {
-        private SimpleMatrix F_x;
-
-        public MotionModelJacobian(SimpleMatrix F_x) {
-            this.F_x = F_x;
+    private SimpleMatrix subtractPose(SimpleMatrix A, SimpleMatrix B) {
+        if (Math.signum(A.get(6)) != Math.signum(B.get(6))) {
+            A.set(3, 0, -A.get(3));
+            A.set(4, 0, -A.get(4));
+            A.set(5, 0, -A.get(5));
+            A.set(6, 0, -A.get(6));
         }
 
-        @Override
-        public SimpleMatrix apply(SimpleMatrix u, SimpleMatrix mu) {
-            double dx = u.get(0);
-            double dy = u.get(1);
-            double dtheta = u.get(2);
-
-            double rw = mu.get(3);
-            double rx = mu.get(4);
-            double ry = mu.get(5);
-            double rz = mu.get(6);
-
-            double[][] mat = {
-                    {
-                            1,
-                            0,
-                            0,
-                            2 * dx * rw - 2 * dy * rz,
-                            2 * dx * rx + 2 * dy * ry,
-                            -2 * dx * ry + 2 * dy * rx,
-                            -2 * dx * rz - 2 * dy * rw,
-                    },
-                    {
-                            0,
-                            1,
-                            0,
-                            2 * dx * rz + 2 * dy * rw,
-                            2 * dx * ry - 2 * dy * rx,
-                            2 * dx * rx + 2 * dy * ry,
-                            2 * dx * rw - 2 * dy * rz,
-                    },
-                    {
-                            0,
-                            0,
-                            1,
-                            -2 * dx * ry + 2 * dy * rx,
-                            2 * dx * rz + 2 * dy * rw,
-                            -2 * dx * rw + 2 * dy * rz,
-                            2 * dx * rx + 2 * dy * ry,
-                    },
-                    {
-                            0,
-                            0,
-                            0,
-                            Math.cos(dtheta / 2),
-                            0,
-                            0,
-                            -Math.sin(dtheta / 2)
-                    },
-                    {
-                            0,
-                            0,
-                            0,
-                            0,
-                            Math.cos(dtheta / 2),
-                            -Math.sin(dtheta / 2), 0
-                    },
-                    {
-                            0,
-                            0,
-                            0,
-                            0,
-                            Math.sin(dtheta / 2),
-                            Math.cos(dtheta / 2),
-                            0
-                    },
-                    {
-                            0,
-                            0,
-                            0,
-                            Math.sin(dtheta / 2),
-                            0,
-                            0,
-                            Math.cos(dtheta / 2)
-                    }
-            };
-
-            SimpleMatrix G = new SimpleMatrix(mat);
-
-            return F_x.transpose().mult(G).mult(F_x);
-        }
+        return A.minus(B);
     }
 
-    // private class SensorModel implements BiFunction<SimpleMatrix, SimpleMatrix,
-    // SimpleMatrix> {
-    // @Override
-    // public SimpleMatrix apply(SimpleMatrix mu, SimpleMatrix u) {
-    // throw new UnsupportedOperationException("Unimplemented method 'apply'");
-    // }
-    // }
+    private Transform3d getTransform(SimpleMatrix mu, int start) {
+        return new Transform3d(mu.get(0 + start), mu.get(1 + start), mu.get(2 + start),
+                new Rotation3d(
+                        new Quaternion(mu.get(3 + start), mu.get(4 + start), mu.get(5 + start), mu.get(6 + start))));
+    }
 
+    private Pose3d getPose(SimpleMatrix mu, int start) {
+        return new Pose3d(mu.get(0 + start), mu.get(1 + start), mu.get(2 + start),
+                new Rotation3d(
+                        new Quaternion(mu.get(3 + start), mu.get(4 + start), mu.get(5 + start), mu.get(6 + start))));
+    }
 }
