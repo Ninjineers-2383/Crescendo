@@ -12,6 +12,7 @@ import com.team2383.robot.autos.AutoChooser;
 import com.team2383.robot.autos.auto_blocks.Engage;
 import com.team2383.robot.autos.auto_blocks.FeedCone;
 import com.team2383.robot.autos.auto_blocks.FeedCube;
+import com.team2383.robot.autos.auto_blocks.PathfindCommandTeleOp;
 import com.team2383.robot.autos.auto_blocks.Retract;
 import com.team2383.robot.autos.auto_blocks.ScoreHighCommand;
 import com.team2383.robot.autos.auto_blocks.ScoreMiddleCommand;
@@ -194,6 +195,9 @@ public class RobotContainer {
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
 
+        new JoystickButton(m_driverController, 2)
+                .whileTrue(new PathfindCommandTeleOp("DriveToLoadingStation"));
+
         new JoystickButton(m_driverController, 3).onTrue(new InstantCommand(() -> {
             cubeMode = true;
         }));
@@ -248,7 +252,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("Feed Cone",
                 new FeedCone(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
 
-        NamedCommands.registerCommand("Feed Cube", new FeedCube(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
+        NamedCommands.registerCommand("Feed Cube",
+                new FeedCube(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
 
         NamedCommands.registerCommand("Retract Cone",
                 new Retract(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
@@ -267,6 +272,9 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Score Cone Middle",
                 new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
+
+        NamedCommands.registerCommand("Cone Slider", new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem,
+                BlizzardPresets.SLIDER));
 
     }
 }

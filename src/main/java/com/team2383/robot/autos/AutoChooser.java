@@ -81,6 +81,9 @@ public class AutoChooser {
                             question5.addDefaultOption("Engage", QuestionResponses.ENGAGEOUTSIDE);
                             question5.addOption("Stop", QuestionResponses.STOP);
                             break;
+                        case ENGAGECOMMUNITY:
+                            question4.addDefaultOption("N/A", QuestionResponses.NA);
+                            question5.addDefaultOption("N/A", QuestionResponses.NA);
                         default:
                             break;
                     }

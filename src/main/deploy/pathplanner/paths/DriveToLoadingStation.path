@@ -1,0 +1,62 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 12.005103101115292,
+        "y": 7.159974138130095
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 13.407947906804903,
+        "y": 7.223739811115985
+      },
+      "isLocked": false
+    },
+    {
+      "anchor": {
+        "x": 15.785496570993141,
+        "y": 7.342161775232642
+      },
+      "prevControl": {
+        "x": 14.036495254808688,
+        "y": 7.333052393377515
+      },
+      "nextControl": null,
+      "isLocked": false
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.25,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Cone Slider"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3,
+    "maxAcceleration": 3,
+    "maxAngularVelocity": 540,
+    "maxAngularAcceleration": 720
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0
+  },
+  "reversed": false,
+  "folder": "Feed"
+}
