@@ -37,7 +37,9 @@
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Question 1": "String Chooser",
       "/SmartDashboard/Question 2": "String Chooser",
-      "/SmartDashboard/Question 3": "String Chooser"
+      "/SmartDashboard/Question 3": "String Chooser",
+      "/SmartDashboard/Question 4": "String Chooser",
+      "/SmartDashboard/Question 5": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Auto": {
@@ -61,6 +63,16 @@
         }
       },
       "/SmartDashboard/Question 3": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Question 4": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Question 5": {
         "window": {
           "visible": true
         }

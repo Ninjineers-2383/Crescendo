@@ -45,7 +45,7 @@ public final class DriveConstants {
             new ReplanningConfig());
 
     public final static PathConstraints AUTO_CONSTRAINTS = new PathConstraints(
-            3.0, 4.0,
+            2, 2,
             Units.degreesToRadians(540), Units.degreesToRadians(720));
 
     public final static PIDController HEADING_CONTROLLER = new PIDController(1, 0, 0);

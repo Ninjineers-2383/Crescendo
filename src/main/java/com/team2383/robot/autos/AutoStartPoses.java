@@ -34,6 +34,9 @@ public class AutoStartPoses {
     public static Pose2d CONE6 = new Pose2d(FieldConstants.Grids.outerX + 0.42, FieldConstants.Grids.nodeY[8],
             Rotation2d.fromDegrees(180));
 
+    public static Pose2d MOBILITYDIRTY = new Pose2d(5.5, 0.7, Rotation2d.fromDegrees(180));
+    public static Pose2d MOBILITYCLEAN = new Pose2d(4.3, 4.8, Rotation2d.fromDegrees(180));
+
     public static Pose2d responseToPose(QuestionResponses response) {
         switch (response) {
             case CONE1:
