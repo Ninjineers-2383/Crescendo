@@ -6,11 +6,9 @@ package com.team2383.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
-import com.pathplanner.lib.path.PathConstraints;
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.autos.AutoChooser;
 import com.team2383.robot.autos.auto_blocks.Engage;
 import com.team2383.robot.autos.auto_blocks.FeedCone;
 import com.team2383.robot.autos.auto_blocks.Retract;
@@ -45,10 +43,8 @@ import com.team2383.robot.subsystems.wrist.WristIOSparkMax;
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -77,7 +73,8 @@ public class RobotContainer {
 
     private Boolean cubeMode = true;
 
-    LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto");
+    private final AutoChooser chooser;
+
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
     private boolean lwEnabled = false;
@@ -145,10 +142,14 @@ public class RobotContainer {
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
 
+        chooser = new AutoChooser(m_drivetrainSubsystem, m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem);
+
     }
 
     public void periodic() {
         SmartDashboard.putBoolean("Cube Mode", cubeMode);
+
+        chooser.periodic();
 
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
@@ -237,7 +238,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.get();
+        return chooser.getAutonomousCommand();
     }
 
     private void setAutoCommands() {
@@ -265,22 +266,6 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("Score Cone Middle",
                 new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
-
-        Command nullAuto = null;
-
-        autoChooser.addDefaultOption("No Auto :(", nullAuto);
-
-        autoChooser.addOption("Engage", new PathPlannerAuto("Cube2EngageAuto"));
-
-        autoChooser.addOption("Do whatever", AutoBuilder.pathfindToPose(
-                new Pose2d(10, 5, Rotation2d.fromDegrees(180)),
-                new PathConstraints(
-                        3.0, 4.0,
-                        Units.degreesToRadians(540), Units.degreesToRadians(720)),
-                0.0, // Goal end velocity in meters/sec
-                0.0 // Rotation delay distance in meters. This is how far the robot should travel
-                    // before attempting to rotate.
-        ));
 
     }
 }

@@ -1,5 +1,7 @@
 package com.team2383.robot.commands.blizzard;
 
+import com.team2383.robot.autos.AutoQuestionResponses.QuestionResponses;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 
 public class BlizzardPresets {
@@ -24,4 +26,16 @@ public class BlizzardPresets {
     public static final BlizzardPosition SLIDER = new BlizzardPosition(0.55,
             Rotation2d.fromRadians(1.46));
 
+    public static BlizzardPosition responseToPreset(QuestionResponses response) {
+        switch (response) {
+            case HYBRID:
+                return CONE_CHUTE;
+            case MEDIUM:
+                return MIDDLE;
+            case HIGH:
+                return HIGH;
+            default:
+                return null;
+        }
+    }
 }
