@@ -11,6 +11,7 @@ import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.autos.AutoChooser;
 import com.team2383.robot.autos.auto_blocks.Engage;
 import com.team2383.robot.autos.auto_blocks.FeedCone;
+import com.team2383.robot.autos.auto_blocks.FeedCube;
 import com.team2383.robot.autos.auto_blocks.Retract;
 import com.team2383.robot.autos.auto_blocks.ScoreHighCommand;
 import com.team2383.robot.autos.auto_blocks.ScoreMiddleCommand;
@@ -247,7 +248,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Feed Cone",
                 new FeedCone(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
 
-        NamedCommands.registerCommand("Feed Cube", new FeederVoltageCommand(m_feederSubsystem, () -> -0.5, false));
+        NamedCommands.registerCommand("Feed Cube", new FeedCube(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
 
         NamedCommands.registerCommand("Retract Cone",
                 new Retract(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
