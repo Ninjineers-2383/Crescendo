@@ -1,0 +1,21 @@
+⎡1  0  0  2⋅dx⋅rw - 2⋅dy⋅rz   2⋅dx⋅rx + 2⋅dy⋅ry  -2⋅dx⋅ry + 2⋅dy⋅rx  -2⋅dx⋅rz - 2⋅dy⋅rw⎤
+⎢                                                                                      ⎥
+⎢0  1  0  2⋅dx⋅rz + 2⋅dy⋅rw   2⋅dx⋅ry - 2⋅dy⋅rx  2⋅dx⋅rx + 2⋅dy⋅ry   2⋅dx⋅rw - 2⋅dy⋅rz ⎥
+⎢                                                                                      ⎥
+⎢0  0  1  -2⋅dx⋅ry + 2⋅dy⋅rx  2⋅dx⋅rz + 2⋅dy⋅rw  -2⋅dx⋅rw + 2⋅dy⋅rz  2⋅dx⋅rx + 2⋅dy⋅ry ⎥
+⎢                                                                                      ⎥
+⎢               ⎛dtheta⎞                                                    ⎛dtheta⎞   ⎥
+⎢0  0  0     cos⎜──────⎟              0                  0              -sin⎜──────⎟   ⎥
+⎢               ⎝  2   ⎠                                                    ⎝  2   ⎠   ⎥
+⎢                                                                                      ⎥
+⎢                                   ⎛dtheta⎞            ⎛dtheta⎞                       ⎥
+⎢0  0  0          0              cos⎜──────⎟        -sin⎜──────⎟             0         ⎥
+⎢                                   ⎝  2   ⎠            ⎝  2   ⎠                       ⎥
+⎢                                                                                      ⎥
+⎢                                   ⎛dtheta⎞           ⎛dtheta⎞                        ⎥
+⎢0  0  0          0              sin⎜──────⎟        cos⎜──────⎟              0         ⎥
+⎢                                   ⎝  2   ⎠           ⎝  2   ⎠                        ⎥
+⎢                                                                                      ⎥
+⎢               ⎛dtheta⎞                                                   ⎛dtheta⎞    ⎥
+⎢0  0  0     sin⎜──────⎟              0                  0              cos⎜──────⎟    ⎥
+⎣               ⎝  2   ⎠                                                   ⎝  2   ⎠    ⎦

@@ -33,9 +33,8 @@ public class TunableArmFeedforwardTest {
 
     @Test
     public void poseTesting() {
-        Pose3d tag = new Pose3d(2, 5, 8, new Rotation3d(0.12, 0.4, 0.01));
-
         Pose3d robot = new Pose3d(0, 1, 2, new Rotation3d(3, 1.2, -1));
+        Pose3d tag = new Pose3d(2, 5, 8, new Rotation3d(0.12, 0.4, 0.01));
 
         // calculate transform from robot to tag
         Pose3d robotToTag = tag.relativeTo(robot);
@@ -44,10 +43,10 @@ public class TunableArmFeedforwardTest {
 
         Transform3d robot_to_tag_2 = new Transform3d(robot, tag);
 
-        System.out.println(robot_to_tag_2.getTranslation());
-        System.out.println(robot_to_tag_2.getRotation().getX());
-        System.out.println(robot_to_tag_2.getRotation().getY());
-        System.out.println(robot_to_tag_2.getRotation().getZ());
+        System.out.println(robot);
+        System.out.println(tag);
+
+        System.out.println(robot_to_tag_2);
 
         assertEquals(tag, robot.plus(robotToTagTransform));
         assertEquals(tag, robot.plus(robot_to_tag_2));
