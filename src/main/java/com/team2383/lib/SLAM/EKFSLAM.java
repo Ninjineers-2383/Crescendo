@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.networktables.NetworkTableInstance;
 
 public class EKFSLAM {
     private final SimpleMatrix F_x;
@@ -38,13 +39,16 @@ public class EKFSLAM {
 
         sigma = new SimpleMatrix(7 * (numLandmarks + 1), 7 * (numLandmarks + 1));
 
-        sigma.fill(0.1);
-
         for (int i = 0; i < 7; i++) {
-            for (int j = 0; j < 63; j++) {
-                sigma.set(i, j, 0);
-                sigma.set(j, i, 0);
-            }
+            // for (int j = 0; j < 63; j++) {
+            // sigma.set(i, j, 0);
+            // sigma.set(j, i, 0);
+            // }
+            sigma.set(i, i, 0);
+        }
+
+        for (int i = 7; i < 7 * (numLandmarks + 1); i++) {
+            sigma.set(i, i, 0.5);
         }
 
         motion_model = new MotionModel(F_x);
@@ -140,6 +144,8 @@ public class EKFSLAM {
         sigma = (SimpleMatrix.identity(K.getNumRows()).minus(K.mult(Hi))).mult(sigma);
 
         // Logger.recordOutput("SLAM/sigma", sigma.getDDRM().data);
+
+        NetworkTableInstance.getDefault().getTable("SLAM").getEntry("sigma").setDoubleArray(sigma.getDDRM().data);
 
         Pose3d robotPose = getPose(mu, 0);
 

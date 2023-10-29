@@ -1,11 +1,14 @@
 package com.team2383.robot.subsystems.drivetrain.vision;
 
+import java.nio.file.Path;
+
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.RobotController;
 
 public class VisionIOSim implements VisionIO {
@@ -13,7 +16,8 @@ public class VisionIOSim implements VisionIO {
 
     public VisionIOSim() {
         try {
-            atfl = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+            atfl = new AprilTagFieldLayout(
+                    Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "2023-chargedup-shift.json"));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to load AprilTagFieldLayout");
