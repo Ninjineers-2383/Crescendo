@@ -39,6 +39,7 @@
         "CTRE",
         "diffy",
         "drivetrains",
+        "EKFSLAM",
         "Feedforward",
         "feedforwards",
         "Holonomic",

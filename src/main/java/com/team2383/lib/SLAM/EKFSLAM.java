@@ -3,54 +3,79 @@ package com.team2383.lib.SLAM;
 import java.util.function.BiFunction;
 
 import org.ejml.simple.SimpleMatrix;
-import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Quaternion;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.networktables.NetworkTableInstance;
 
+/**
+ * EKFSLAM is a Simultaneous Localization and Mapping algorithm that uses an
+ * extended Kalman filter to estimate the
+ * robot's pose and the pose of landmarks in the environment.
+ * <p>
+ * The state vector is a 7x1 matrix of the form [x, y, z, qw, qx, qy, qz] where
+ * x, y, and z are the robot's position in
+ * meters and qw, qx, qy, and qz are the components of the robot's quaternion
+ * orientation.
+ * The state vector is augmented with the pose of each landmark in the
+ * environment.
+ */
 public class EKFSLAM {
+    // F_X is a 7xN matrix that maps the robot state to the full state vector.
     private final SimpleMatrix F_x;
 
+    // mu is the mean of the state vector.
     private SimpleMatrix mu;
+    // sigma is the covariance of the state vector.
     private SimpleMatrix sigma;
 
+    // The motion model is a function that takes the robot's control input and the
+    // current state vector and returns the predicted change in the state vector.
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> motion_model;
+    // The motion model Jacobian is a function that takes the robot's control input
+    // and the current state vector and returns the Jacobian of the motion model
+    // w.r.t the state vector.
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> motion_model_jacobian;
+    // The sensor model is a function that takes the current state vector and a
+    // landmark index and returns the predicted observation of the landmark.
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> sensor_model;
+    // The sensor model Jacobian is a function that takes the current state vector
+    // and a landmark index and returns the Jacobian of the sensor model w.r.t the
+    // state vector of the robot and landmark.
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> sensor_model_jacobian;
 
-    boolean[] seenLandmarks;
+    // keeps track of which landmarks have been seen
+    private final boolean[] seenLandmarks;
 
+    /**
+     * Constructs an EKFSLAM object.
+     *
+     * @param numLandmarks
+     *            the number of landmarks in the environment
+     */
     public EKFSLAM(int numLandmarks) {
+        // Construct F_x matrix with 1s on the left block diagonal
         F_x = new SimpleMatrix(7, (numLandmarks + 1) * 7);
         for (int i = 0; i < 7; i++) {
             F_x.set(i, i, 1);
         }
 
+        // Initialize empty state vector
         mu = new SimpleMatrix(7 * (numLandmarks + 1), 1);
-        // Set 0 rotation
+        // Set 0 rotation quaternion
         for (int i = 0; i < 7 * (numLandmarks + 1); i += 7) {
             mu.set(i + 3, 0, 1);
         }
 
+        // Initialize covariance matrix
         sigma = new SimpleMatrix(7 * (numLandmarks + 1), 7 * (numLandmarks + 1));
-
-        for (int i = 0; i < 7; i++) {
-            // for (int j = 0; j < 63; j++) {
-            // sigma.set(i, j, 0);
-            // sigma.set(j, i, 0);
-            // }
-            sigma.set(i, i, 0);
-        }
-
         for (int i = 7; i < 7 * (numLandmarks + 1); i++) {
             sigma.set(i, i, 0.5);
         }
 
+        // Initialize motion model and sensor model
         motion_model = new MotionModel(F_x);
         motion_model_jacobian = new MotionModelJacobian(F_x);
         sensor_model = new SensorModelTag();
@@ -59,6 +84,20 @@ public class EKFSLAM {
         seenLandmarks = new boolean[numLandmarks];
     }
 
+    /**
+     * Seeds the EKFSLAM algorithm with the initial pose of landmarks in the
+     * environment. This should be called before the first call to predict() or
+     * correct().
+     * <p>
+     * If a landmark is not seen, the corresponding pose should be null.
+     * <p>
+     * Useful for seeding the algorithm with the official field map at the start
+     * of a match in order to get semi-accurate pose estimates before a map is
+     * constructed.
+     * 
+     * @param landmarks
+     *            an array of poses of the landmarks in the environment
+     */
     public void seedLandmarks(Pose3d[] landmarks) {
         for (int i = 0; i < landmarks.length; i++) {
             if (landmarks[i] != null) {
@@ -72,21 +111,20 @@ public class EKFSLAM {
                 seenLandmarks[i] = true;
             }
         }
-
-        Pose3d[] landmarks2 = new Pose3d[seenLandmarks.length];
-
-        for (int i = 0; i < seenLandmarks.length; i++) {
-            if (seenLandmarks[i]) {
-                Pose3d landmark = getPose(mu, 7 * (i + 1));
-                landmarks2[i] = landmark;
-            } else {
-                landmarks2[i] = new Pose3d();
-            }
-        }
-
-        Logger.recordOutput("SLAM/landmarks", landmarks2);
     }
 
+    /**
+     * Extended Kalman filter prediction step.
+     * <p>
+     * Updates the state vector and covariance matrix based on the robot's
+     * control input.
+     * 
+     * @param speeds
+     *            the robot's control input
+     * @param dt
+     *            the time elapsed since the last call to predict()
+     * @return the predicted pose of the robot
+     */
     public Pose3d predict(ChassisSpeeds speeds, double dt) {
         SimpleMatrix u = new SimpleMatrix(3, 1, true,
                 speeds.vxMetersPerSecond * dt, speeds.vyMetersPerSecond * dt, speeds.omegaRadiansPerSecond * dt);
@@ -99,6 +137,18 @@ public class EKFSLAM {
         return getPose(mu, 0);
     }
 
+    /**
+     * Extended Kalman filter correction step.
+     * <p>
+     * Updates the state vector and covariance matrix based on the robot's
+     * observation of a landmark.
+     * 
+     * @param robotToTag
+     *            the robot's observation of the landmark
+     * @param landmarkIndex
+     *            the index of the landmark in the state vector
+     * @return the corrected pose of the robot
+     */
     public Pose3d correct(Transform3d robotToTag, int landmarkIndex) {
         SimpleMatrix z_obs = new SimpleMatrix(7, 1, true,
                 robotToTag.getTranslation().getX(), robotToTag.getTranslation().getY(),
@@ -143,30 +193,50 @@ public class EKFSLAM {
         mu = mu.plus(K.mult(subtractPose(z_obs, z_pred)));
         sigma = (SimpleMatrix.identity(K.getNumRows()).minus(K.mult(Hi))).mult(sigma);
 
-        // Logger.recordOutput("SLAM/sigma", sigma.getDDRM().data);
-
-        NetworkTableInstance.getDefault().getTable("SLAM").getEntry("sigma").setDoubleArray(sigma.getDDRM().data);
-
         Pose3d robotPose = getPose(mu, 0);
-
-        Pose3d[] landmarks = new Pose3d[seenLandmarks.length];
-
-        for (int i = 0; i < seenLandmarks.length; i++) {
-            if (seenLandmarks[i]) {
-                Pose3d landmark = getPose(mu, 7 * (i + 1));
-                landmarks[i] = landmark;
-            } else {
-                landmarks[i] = new Pose3d();
-            }
-        }
-
-        Logger.recordOutput("SLAM/landmarks", landmarks);
-
         return robotPose;
     }
 
+    /**
+     * Returns the pose of the robot.
+     * 
+     * @return the pose of the robot
+     */
     public Pose3d getRobotPose() {
         return getPose(mu, 0);
+    }
+
+    /**
+     * Returns the pose of a landmark.
+     * 
+     * @param landmarkIndex
+     *            the index of the landmark in the state vector
+     * @return the pose of the landmark
+     */
+    public Pose3d getLandmarkPose(int landmarkIndex) {
+        return getPose(mu, 7 * (landmarkIndex + 1));
+    }
+
+    /**
+     * Returns the poses of all landmarks.
+     * 
+     * @return the poses of all landmarks
+     */
+    public Pose3d[] getLandmarkPoses() {
+        Pose3d[] poses = new Pose3d[(mu.getNumRows() - 7) / 7];
+        for (int i = 0; i < poses.length; i++) {
+            poses[i] = getPose(mu, 7 * (i + 1));
+        }
+        return poses;
+    }
+
+    /**
+     * Returns the covariance matrix
+     * 
+     * @return the covariance matrix: sigma
+     */
+    public SimpleMatrix getCovariance() {
+        return sigma;
     }
 
     private SimpleMatrix subtractPose(SimpleMatrix A, SimpleMatrix B) {

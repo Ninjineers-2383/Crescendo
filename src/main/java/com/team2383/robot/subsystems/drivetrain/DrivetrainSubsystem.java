@@ -222,6 +222,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         Logger.recordOutput("Vision/Targets", visionTargets);
+
+        Pose3d[] landmarks = m_slam.getLandmarkPoses();
+
+        Logger.recordOutput("SLAM/Landmarks", landmarks);
     }
 
     /**
