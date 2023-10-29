@@ -1,13 +1,10 @@
 package com.team2383.robot.subsystems.drivetrain;
 
-import java.util.Random;
-
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
-import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -32,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOInputsAutoLogged;
 import com.team2383.lib.SLAM.EKFSLAM;
-import com.team2383.robot.subsystems.drivetrain.vision.VisionConstants;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 
 public class DrivetrainSubsystem extends SubsystemBase {
@@ -64,7 +60,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final FieldObject2d m_COR;
 
     private int loop_cycle = 0;
-    private int buttons = 0;
 
     private double headingIntegral = 0;
 

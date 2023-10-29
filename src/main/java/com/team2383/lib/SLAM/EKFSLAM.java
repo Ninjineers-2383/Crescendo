@@ -180,12 +180,6 @@ public class EKFSLAM {
         return A.minus(B);
     }
 
-    private Transform3d getTransform(SimpleMatrix mu, int start) {
-        return new Transform3d(mu.get(0 + start), mu.get(1 + start), mu.get(2 + start),
-                new Rotation3d(
-                        new Quaternion(mu.get(3 + start), mu.get(4 + start), mu.get(5 + start), mu.get(6 + start))));
-    }
-
     private Pose3d getPose(SimpleMatrix mu, int start) {
         return new Pose3d(mu.get(0 + start), mu.get(1 + start), mu.get(2 + start),
                 new Rotation3d(
