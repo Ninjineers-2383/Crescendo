@@ -6,6 +6,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -94,6 +95,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         } catch (Exception e) {
             aprilTags = new AprilTagFieldLayout(null, 0, 0);
         }
+        aprilTags.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 
         m_lastStates = new SwerveModuleState[m_modules.length];
 
@@ -137,9 +139,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_gyro.updateInputs(m_gyroInputs);
         Logger.processInputs("Gyro", m_gyroInputs);
 
-        m_vision.updateInputs(m_visionInputs);
-        Logger.processInputs("Vision", m_visionInputs);
-
         for (CoaxialSwerveModule module : m_modules) {
             module.periodic();
         }
@@ -160,7 +159,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     getModulePositions());
         }
 
-        Pose2d pose2d = m_poseEstimator.getEstimatedPosition();
+        m_slam.predict(chassis, 0.02);
+
+        Pose2d estimatedPose = m_poseEstimator.getEstimatedPosition();
+
+        Pose3d robotPose = new Pose3d(new Translation3d(estimatedPose.getX(), estimatedPose.getY(), 0),
+                new Rotation3d(0, 0, estimatedPose.getRotation().getRadians()));
+
+        m_vision.updateInputs(m_visionInputs, robotPose);
+        Logger.processInputs("Vision", m_visionInputs);
+
+        Transform3d[] transform3ds = new Transform3d[m_visionInputs.connected.length];
+        int visibleLandmarks = 0;
 
         for (int i = 0; i < m_visionInputs.connected.length; i++) {
             if (!m_visionInputs.connected[i])
@@ -171,27 +181,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     m_visionInputs.y[i],
                     m_visionInputs.z[i]);
 
-            Rotation3d camRotation = new Rotation3d(
-                    m_visionInputs.roll[i],
-                    m_visionInputs.pitch[i],
-                    m_visionInputs.yaw[i]);
+            Rotation3d camRotation = new Rotation3d(new Quaternion(
+                    m_visionInputs.rw[i],
+                    m_visionInputs.rx[i],
+                    m_visionInputs.ry[i],
+                    m_visionInputs.rz[i]));
 
-            Pose3d camPose = new Pose3d(camTranslation, camRotation);
+            Transform3d robotToTag = new Transform3d(camTranslation, camRotation);
 
-            double variance = VisionConstants.POSE_VARIANCE_STATIC;
+            // double variance = VisionConstants.POSE_VARIANCE_STATIC;
 
-            if (camPose.toPose2d().getTranslation().getDistance(pose2d.getTranslation()) > 1) {
-                continue;
-            }
+            m_slam.correct(robotToTag, (int) m_visionInputs.tagId[i] - 1);
 
-            m_poseEstimator.addVisionMeasurement(camPose.toPose2d(),
-                    m_visionInputs.timestampSeconds[i],
-                    VecBuilder.fill(variance, variance, variance));
+            transform3ds[i] = robotToTag;
 
-            Logger.recordOutput("Vision/Raw Estimated Poses " + i, camPose);
+            visibleLandmarks++;
+
+            // Logger.recordOutput("Vision/Raw Estimated Poses " + i, camPose);
         }
-
-        Pose2d estimatedPose = m_poseEstimator.getEstimatedPosition();
 
         m_field.setRobotPose(estimatedPose);
 
@@ -205,52 +212,21 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Robot Pose", estimatedPose);
 
-        // SLAM Test
+        Pose3d slamPose3d = m_slam.getRobotPose();
 
-        Pose3d robot_pose = new Pose3d(
-                new Translation3d(estimatedPose.getTranslation().getX(), estimatedPose.getTranslation().getY(), 0),
-                new Rotation3d(0, 0, estimatedPose.getRotation().getRadians()));
+        Logger.recordOutput("SLAM/Pose", slamPose3d);
 
-        Pose3d SLAM = m_slam.predict(chassis.plus(noisySpeeds(0, 0.001)), 0.02);
+        Pose3d[] visionTargets = new Pose3d[visibleLandmarks];
 
-        int thisButtons = DriverStation.getStickButtons(2);
-
-        for (int i = 0; i < 8; i++) {
-            if ((((buttons ^ thisButtons) & thisButtons) & (1 << i)) != 0) {
-                Pose3d tag_pose = aprilTags.getTagPose(i + 1).get();
-                Transform3d robotToTag = new Transform3d(robot_pose, tag_pose).plus(noisyTransform(0, 0.01));
-
-                SLAM = m_slam.correct(robotToTag, i);
+        int j = 0;
+        for (int i = 0; i < transform3ds.length; i++) {
+            if (transform3ds[i] != null) {
+                visionTargets[j] = slamPose3d.plus(transform3ds[i]);
+                j++;
             }
         }
 
-        buttons = DriverStation.getStickButtons(2);
-
-        Logger.recordOutput("SLAM/Pose", SLAM);
-    }
-
-    private Transform3d noisyTransform(double mu, double sigma) {
-        Random r = new Random();
-
-        double x = r.nextGaussian() * sigma + mu;
-        double y = r.nextGaussian() * sigma + mu;
-        double z = r.nextGaussian() * sigma + mu;
-
-        double roll = r.nextGaussian() * sigma + mu;
-        double pitch = r.nextGaussian() * sigma + mu;
-        double yaw = r.nextGaussian() * sigma + mu;
-
-        return new Transform3d(new Translation3d(x, y, z), new Rotation3d(roll, pitch, yaw));
-    }
-
-    private ChassisSpeeds noisySpeeds(double mu, double sigma) {
-        Random r = new Random();
-
-        double vx = r.nextGaussian() * sigma + mu;
-        double vy = r.nextGaussian() * sigma + mu;
-        double omega = r.nextGaussian() * sigma + mu;
-
-        return new ChassisSpeeds(vx, vy, omega);
+        Logger.recordOutput("Vision/Targets", visionTargets);
     }
 
     /**

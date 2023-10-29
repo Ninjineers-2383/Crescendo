@@ -27,6 +27,7 @@ import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
+import com.team2383.robot.subsystems.drivetrain.vision.VisionIOSim;
 import com.team2383.robot.subsystems.elevator.ElevatorIO;
 import com.team2383.robot.subsystems.elevator.ElevatorIOFalcon500;
 import com.team2383.robot.subsystems.elevator.ElevatorIOSim;
@@ -102,7 +103,7 @@ public class RobotContainer {
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             new GyroIO() {},
-                            new VisionIO() {},
+                            new VisionIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim() {});

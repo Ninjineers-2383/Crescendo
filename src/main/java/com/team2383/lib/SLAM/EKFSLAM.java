@@ -95,17 +95,18 @@ public class EKFSLAM {
         return getPose(mu, 0);
     }
 
-    public Pose3d correct(Transform3d tag, int landmarkIndex) {
+    public Pose3d correct(Transform3d robotToTag, int landmarkIndex) {
         SimpleMatrix z_obs = new SimpleMatrix(7, 1, true,
-                tag.getTranslation().getX(), tag.getTranslation().getY(),
-                tag.getTranslation().getZ(),
-                tag.getRotation().getQuaternion().getW(),
-                tag.getRotation().getQuaternion().getX(),
-                tag.getRotation().getQuaternion().getY(),
-                tag.getRotation().getQuaternion().getZ());
+                robotToTag.getTranslation().getX(), robotToTag.getTranslation().getY(),
+                robotToTag.getTranslation().getZ(),
+                robotToTag.getRotation().getQuaternion().getW(),
+                robotToTag.getRotation().getQuaternion().getX(),
+                robotToTag.getRotation().getQuaternion().getY(),
+                robotToTag.getRotation().getQuaternion().getZ());
 
         if (!seenLandmarks[landmarkIndex]) {
             seenLandmarks[landmarkIndex] = true;
+            Pose3d tag = getRobotPose().plus(robotToTag);
             mu.set(7 * (landmarkIndex + 1), 0, tag.getTranslation().getX());
             mu.set(7 * (landmarkIndex + 1) + 1, 0, tag.getTranslation().getY());
             mu.set(7 * (landmarkIndex + 1) + 2, 0, tag.getTranslation().getZ());
@@ -142,8 +143,6 @@ public class EKFSLAM {
 
         Pose3d robotPose = getPose(mu, 0);
 
-        Transform3d pred = getTransform(z_pred, 0);
-
         Pose3d[] landmarks = new Pose3d[seenLandmarks.length];
 
         for (int i = 0; i < seenLandmarks.length; i++) {
@@ -156,10 +155,12 @@ public class EKFSLAM {
         }
 
         Logger.recordOutput("SLAM/landmarks", landmarks);
-        Logger.recordOutput("SLAM/predicted_z", robotPose.plus(pred));
-        Logger.recordOutput("SLAM/obs_z", robotPose.plus(tag));
 
         return robotPose;
+    }
+
+    public Pose3d getRobotPose() {
+        return getPose(mu, 0);
     }
 
     private SimpleMatrix subtractPose(SimpleMatrix A, SimpleMatrix B) {
