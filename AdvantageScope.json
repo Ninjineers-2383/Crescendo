@@ -12,19 +12,25 @@
           },
           "fields": [
             {
-              "key": "NT:/AdvantageKit/RealOutputs/Wrist/Set Position",
-              "color": "#af2437",
+              "key": "/RealOutputs/Wrist/Set Position",
+              "color": "#2b66a2",
               "show": true
             },
             {
-              "key": "NT:/AdvantageKit/Wrist/WristAngle",
-              "color": "#80588e",
+              "key": "/Wrist/WristAngle",
+              "color": "#e5b31b",
               "show": true
             }
           ]
         },
         "discrete": {
-          "fields": []
+          "fields": [
+            {
+              "key": "/DriverStation/Enabled",
+              "color": "#e48b32",
+              "show": true
+            }
+          ]
         },
         "right": {
           "lockedRange": null,
@@ -34,13 +40,13 @@
           },
           "fields": [
             {
-              "key": "NT:/AdvantageKit/RealOutputs/Wrist/Set Velocity",
-              "color": "#c0b487",
+              "key": "/RealOutputs/Wrist/Set Velocity",
+              "color": "#af2437",
               "show": true
             },
             {
-              "key": "NT:/AdvantageKit/Wrist/VelocityRadPerSec",
-              "color": "#858584",
+              "key": "/Wrist/VelocityRadPerSec",
+              "color": "#80588e",
               "show": true
             }
           ]
@@ -59,13 +65,13 @@
           },
           "fields": [
             {
-              "key": "NT:/AdvantageKit/RealOutputs/Elevator Set Position",
-              "color": "#af2437",
+              "key": "/RealOutputs/Elevator Set Position",
+              "color": "#2b66a2",
               "show": true
             },
             {
-              "key": "NT:/AdvantageKit/Elevator/PositionM",
-              "color": "#80588e",
+              "key": "/Elevator/PositionM",
+              "color": "#e5b31b",
               "show": true
             }
           ]
@@ -73,8 +79,8 @@
         "discrete": {
           "fields": [
             {
-              "key": "NT:/AdvantageKit/DriverStation/Enabled",
-              "color": "#e48b32",
+              "key": "/DriverStation/Enabled",
+              "color": "#af2437",
               "show": true
             }
           ]
@@ -87,13 +93,13 @@
           },
           "fields": [
             {
-              "key": "NT:/AdvantageKit/RealOutputs/Elevator Set Velocity",
-              "color": "#858584",
+              "key": "/RealOutputs/Elevator Set Velocity",
+              "color": "#80588e",
               "show": true
             },
             {
-              "key": "NT:/AdvantageKit/Elevator/VelocityMPS",
-              "color": "#3b875a",
+              "key": "/Elevator/VelocityMPS",
+              "color": "#e48b32",
               "show": true
             }
           ]
@@ -112,7 +118,7 @@
           },
           "fields": [
             {
-              "key": "NT:/AdvantageKit/PowerDistribution/Voltage",
+              "key": "/PowerDistribution/Voltage",
               "color": "#2b66a2",
               "show": true
             }
@@ -121,7 +127,7 @@
         "discrete": {
           "fields": [
             {
-              "key": "NT:/AdvantageKit/PowerDistribution/Faults",
+              "key": "/PowerDistribution/Faults",
               "color": "#e5b31b",
               "show": true
             }
@@ -135,7 +141,7 @@
           },
           "fields": [
             {
-              "key": "NT:/AdvantageKit/PowerDistribution/TotalCurrent",
+              "key": "/PowerDistribution/TotalCurrent",
               "color": "#af2437",
               "show": true
             }
@@ -151,29 +157,47 @@
         [
           {
             "type": "Component (Robot)",
-            "key": "NT:/AdvantageKit/RealOutputs/Components",
-            "sourceTypeIndex": 0,
-            "sourceType": 5
+            "key": "/RealOutputs/Components",
+            "sourceTypeIndex": 2,
+            "sourceType": "Pose3d[]"
+          },
+          {
+            "type": "AprilTag 16h5",
+            "key": "/RealOutputs/SLAM/Landmarks",
+            "sourceTypeIndex": 2,
+            "sourceType": "Pose3d[]"
+          },
+          {
+            "type": "Green Ghost",
+            "key": "/RealOutputs/SLAM/Pose",
+            "sourceTypeIndex": 1,
+            "sourceType": "Pose3d"
+          },
+          {
+            "type": "Vision Target",
+            "key": "/RealOutputs/Vision/Targets",
+            "sourceTypeIndex": 2,
+            "sourceType": "Pose3d[]"
           }
         ],
         [
           {
             "type": "Robot",
-            "key": "NT:/AdvantageKit/RealOutputs/Robot Pose",
-            "sourceTypeIndex": 0,
-            "sourceType": 5
+            "key": "/RealOutputs/Robot Pose",
+            "sourceTypeIndex": 1,
+            "sourceType": "Pose2d"
           },
           {
             "type": "Trajectory",
-            "key": "NT:/AdvantageKit/RealOutputs/Swerve/Auto Path",
-            "sourceTypeIndex": 0,
-            "sourceType": 5
+            "key": "/RealOutputs/Odometry/Trajectory",
+            "sourceTypeIndex": 2,
+            "sourceType": "Pose2d[]"
           }
         ]
       ],
       "options": {
         "field": "2023 Field",
-        "alliance": "auto",
+        "alliance": "blue",
         "robot": "Blizzard",
         "unitDistance": "meters",
         "unitRotation": "radians",
@@ -190,15 +214,15 @@
         [
           {
             "type": "Robot",
-            "key": "NT:/AdvantageKit/RealOutputs/Robot Pose",
-            "sourceTypeIndex": 0,
-            "sourceType": 5
+            "key": "/RealOutputs/Robot Pose",
+            "sourceTypeIndex": 1,
+            "sourceType": "Pose2d"
           },
           {
             "type": "Trajectory",
-            "key": "NT:/AdvantageKit/RealOutputs/Swerve/Auto Path",
-            "sourceTypeIndex": 0,
-            "sourceType": 5
+            "key": "/RealOutputs/Odometry/Trajectory",
+            "sourceTypeIndex": 2,
+            "sourceType": "Pose2d[]"
           }
         ]
       ],
@@ -209,7 +233,7 @@
         "origin": "right",
         "size": 0.75,
         "allianceBumpers": "auto",
-        "allianceOrigin": "red",
+        "allianceOrigin": "blue",
         "orientation": "blue left, red right"
       },
       "configHidden": false,
@@ -219,17 +243,17 @@
       "type": 9,
       "fields": [
         {
-          "key": "NT:/AdvantageKit/RealOutputs/Swerve/Real Module States",
-          "sourceTypeIndex": 0,
-          "sourceType": 5
+          "key": "/RealOutputs/Swerve/Real Module States",
+          "sourceTypeIndex": 1,
+          "sourceType": "SwerveModuleState[]"
         },
         {
-          "key": "NT:/AdvantageKit/RealOutputs/Swerve/Desired Module States",
-          "sourceTypeIndex": 0,
-          "sourceType": 5
+          "key": "/RealOutputs/Swerve/Desired Module States",
+          "sourceTypeIndex": 1,
+          "sourceType": "SwerveModuleState[]"
         },
         {
-          "key": "NT:/AdvantageKit/RealOutputs/Robot Pose/2",
+          "key": "/RealOutputs/Swerve/Chassis Heading",
           "sourceTypeIndex": 0,
           "sourceType": 2
         }
@@ -248,7 +272,7 @@
     },
     {
       "type": 3,
-      "field": "NT:/AdvantageKit/RealOutputs/Console",
+      "field": "/RealOutputs/Console",
       "title": "Console"
     },
     {
@@ -258,7 +282,7 @@
     {
       "type": 2,
       "fields": [
-        "NT:/AdvantageKit/DriverStation/GameSpecificMessage"
+        "/DriverStation/GameSpecificMessage"
       ],
       "title": "Table"
     }
