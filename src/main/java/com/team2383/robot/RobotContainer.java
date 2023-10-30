@@ -136,10 +136,11 @@ public class RobotContainer {
 
         new SimComponents(m_elevatorSubsystem, m_wristSubsystem);
 
-        // Configure the button bindings
-        configureButtonBindings();
+        
         configureDefaultCommands();
         setAutoCommands();
+        // Configure the button bindings
+        configureButtonBindings();
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
