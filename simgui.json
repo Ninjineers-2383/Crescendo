@@ -39,7 +39,8 @@
       "/SmartDashboard/Question 2": "String Chooser",
       "/SmartDashboard/Question 3": "String Chooser",
       "/SmartDashboard/Question 4": "String Chooser",
-      "/SmartDashboard/Question 5": "String Chooser"
+      "/SmartDashboard/Question 5": "String Chooser",
+      "/SmartDashboard/Question 6": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Auto": {

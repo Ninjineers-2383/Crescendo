@@ -6,6 +6,7 @@ import com.team2383.robot.autos.AutoStartPoses;
 import com.team2383.robot.autos.AutoQuestionResponses.QuestionResponses;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -76,5 +77,13 @@ public class PathfindCommand extends SequentialCommandGroup {
             default:
                 break;
         }
+    }
+
+    public PathfindCommand(Pose2d pose) {
+        addCommands(AutoBuilder.pathfindToPose(
+                pose,
+                DriveConstants.AUTO_CONSTRAINTS,
+                3,
+                0));
     }
 }

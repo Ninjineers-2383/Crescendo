@@ -18,6 +18,7 @@ public class AutoChooser {
     private final LoggedDashboardChooser<QuestionResponses> question3;
     private final LoggedDashboardChooser<QuestionResponses> question4;
     private final LoggedDashboardChooser<QuestionResponses> question5;
+    private final LoggedDashboardChooser<QuestionResponses> question6;
 
     private final DrivetrainSubsystem m_drive;
     private final ElevatorSubsystem m_elevator;
@@ -37,9 +38,11 @@ public class AutoChooser {
         question3 = new LoggedDashboardChooser<QuestionResponses>("Question 3");
         question4 = new LoggedDashboardChooser<QuestionResponses>("Question 4");
         question5 = new LoggedDashboardChooser<QuestionResponses>("Question 5");
+        question6 = new LoggedDashboardChooser<QuestionResponses>("Question 6");
 
         autoRoutineChooser.addDefaultOption("No Auto :(", "No Auto");
         autoRoutineChooser.addOption("One Piece Auto", "One Piece Auto");
+        autoRoutineChooser.addOption("Two Piece Auto", "Two Piece Auto");
     }
 
     public void periodic() {
@@ -88,10 +91,61 @@ public class AutoChooser {
                             break;
                     }
                 }
+                question6.addDefaultOption("N/A", QuestionResponses.NA);
+                break;
+            case "Two Piece Auto":
+                question1.addDefaultOption("Cone1", QuestionResponses.CONE1);
+                question1.addOption("Cube1", QuestionResponses.CUBE1);
+                question1.addOption("Cone2", QuestionResponses.CONE2);
+                question1.addOption("Cone3", QuestionResponses.CONE3);
+                question1.addOption("Cube2", QuestionResponses.CUBE2);
+                question1.addOption("Cone4", QuestionResponses.CONE4);
+                question1.addOption("Cone5", QuestionResponses.CONE5);
+                question1.addOption("Cube3", QuestionResponses.CUBE3);
+                question1.addOption("Cone6", QuestionResponses.CONE6);
 
+                question2.addDefaultOption("High", QuestionResponses.HIGH);
+                question2.addOption("Medium", QuestionResponses.MEDIUM);
+                question2.addOption("Hybrid", QuestionResponses.HYBRID);
+
+                question3.addDefaultOption("Mobility Clean", QuestionResponses.MOBILITYCLEAN);
+                question3.addOption("Mobility Dirty", QuestionResponses.MOBILITYDIRTY);
+
+                if (question3.get() != null) {
+                    switch (question3.get()) {
+                        case MOBILITYCLEAN:
+                            question4.addDefaultOption("Feed Cone", QuestionResponses.FEEDCONECLEAN);
+                            question4.addOption("Feed Cube", QuestionResponses.FEEDCUBECLEAN);
+                            break;
+                        case MOBILITYDIRTY:
+                            question4.addDefaultOption("Feed Cone", QuestionResponses.FEEDCONEDIRTY);
+                            question4.addOption("Feed Cube", QuestionResponses.FEEDCUBEDIRTY);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                question5.addDefaultOption("Cone1", QuestionResponses.CONE1);
+                question5.addOption("Cube1", QuestionResponses.CUBE1);
+                question5.addOption("Cone2", QuestionResponses.CONE2);
+                question5.addOption("Cone3", QuestionResponses.CONE3);
+                question5.addOption("Cube2", QuestionResponses.CUBE2);
+                question5.addOption("Cone4", QuestionResponses.CONE4);
+                question5.addOption("Cone5", QuestionResponses.CONE5);
+                question5.addOption("Cube3", QuestionResponses.CUBE3);
+                question5.addOption("Cone6", QuestionResponses.CONE6);
+
+                question6.addDefaultOption("High", QuestionResponses.HIGH);
+                question6.addOption("Medium", QuestionResponses.MEDIUM);
+                question6.addOption("Hybrid", QuestionResponses.HYBRID);
                 break;
             default:
-
+                question1.addDefaultOption("N/A", QuestionResponses.NA);
+                question2.addDefaultOption("N/A", QuestionResponses.NA);
+                question3.addDefaultOption("N/A", QuestionResponses.NA);
+                question4.addDefaultOption("N/A", QuestionResponses.NA);
+                question5.addDefaultOption("N/A", QuestionResponses.NA);
                 break;
 
         }
@@ -99,7 +153,7 @@ public class AutoChooser {
 
     public QuestionResponses[] getResponses() {
         return new QuestionResponses[] { question1.get(), question2.get(), question3.get(), question4.get(),
-                question5.get() };
+                question5.get(), question6.get() };
     }
 
     public Command getAutonomousCommand() {
@@ -107,6 +161,8 @@ public class AutoChooser {
         switch (autoRoutineChooser.get()) {
             case "One Piece Auto":
                 return new OnePieceAuto(m_drive, m_elevator, m_wrist, m_feeder, getResponses());
+            case "Two Piece Auto":
+                return new TwoPieceAuto(m_drive, m_elevator, m_wrist, m_feeder, getResponses());
             default:
                 return nullAuto;
         }
