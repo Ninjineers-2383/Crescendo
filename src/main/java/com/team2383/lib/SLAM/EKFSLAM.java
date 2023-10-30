@@ -23,30 +23,30 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
  * environment.
  */
 public class EKFSLAM {
-    // F_X is a 7xN matrix that maps the robot state to the full state vector.
+    // 7 x n matrix that maps the robot state to the full state vector.
     private final SimpleMatrix F_x;
 
-    // mu is the mean of the state vector.
+    // Mean of the state vector.
     private SimpleMatrix mu;
-    // sigma is the covariance of the state vector.
+    // Covariance of the state vector.
     private SimpleMatrix sigma;
 
-    // The motion model is a function that takes the robot's control input and the
+    // Function that takes the robot's control input and the
     // current state vector and returns the predicted change in the state vector.
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> motion_model;
-    // The motion model Jacobian is a function that takes the robot's control input
+    // Function that takes the robot's control input
     // and the current state vector and returns the Jacobian of the motion model
-    // w.r.t the state vector.
+    // w.r.t. the state vector.
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> motion_model_jacobian;
-    // The sensor model is a function that takes the current state vector and a
+    // Function that takes the current state vector and a
     // landmark index and returns the predicted observation of the landmark.
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> sensor_model;
-    // The sensor model Jacobian is a function that takes the current state vector
-    // and a landmark index and returns the Jacobian of the sensor model w.r.t the
+    // Function that takes the current state vector
+    // and a landmark index and returns the Jacobian of the sensor model w.r.t. the
     // state vector of the robot and landmark.
     private final BiFunction<SimpleMatrix, SimpleMatrix, SimpleMatrix> sensor_model_jacobian;
 
-    // keeps track of which landmarks have been seen
+    // Keeps track of which landmarks have been seen
     private final boolean[] seenLandmarks;
 
     /**
