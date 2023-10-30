@@ -79,11 +79,11 @@ public class PathfindCommand extends SequentialCommandGroup {
         }
     }
 
-    public PathfindCommand(Pose2d pose) {
+    public PathfindCommand(Pose2d pose, double endVelocity) {
         addCommands(AutoBuilder.pathfindToPose(
                 pose,
                 DriveConstants.AUTO_CONSTRAINTS,
-                3,
+                endVelocity,
                 0));
     }
 }

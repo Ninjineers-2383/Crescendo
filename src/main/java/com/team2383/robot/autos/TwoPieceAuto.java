@@ -22,7 +22,7 @@ public class TwoPieceAuto extends SequentialCommandGroup {
 
                 new PathfindCommand(responses[2]),
                 new PathfindCommand(responses[3]),
-                new PathfindCommand(AutoStartPoses.responseToPose(responses[4])),
+                new PathfindCommand(AutoStartPoses.responseToPose(responses[4]), 0),
                 new ScoreCommand(elevator, wrist, feeder, responses[4], responses[5]));
     }
 
