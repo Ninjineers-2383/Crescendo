@@ -45,13 +45,17 @@ public class SensorModelTag implements BiFunction<SimpleMatrix, SimpleMatrix, Si
                 + rz * (rx * (jx - x) + ry * (jy - y) + rz * (jz - z)))
                 / (Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2)));
         h.set(3, (jrw * rw + jrx * rx + jry * ry + jrz * rz)
-                / (Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2)));
+                / (Math.sqrt(Math.pow(jrw, 2) + Math.pow(jrx, 2) + Math.pow(jry, 2) + Math.pow(jrz, 2))
+                        * Math.sqrt(Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
         h.set(4, (-jrw * rx + jrx * rw + jry * rz - jrz * ry)
-                / (Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2)));
+                / (Math.sqrt(Math.pow(jrw, 2) + Math.pow(jrx, 2) + Math.pow(jry, 2) + Math.pow(jrz, 2))
+                        * Math.sqrt(Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
         h.set(5, (-jrw * ry - jrx * rz + jry * rw + jrz * rx)
-                / (Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2)));
+                / (Math.sqrt(Math.pow(jrw, 2) + Math.pow(jrx, 2) + Math.pow(jry, 2) + Math.pow(jrz, 2))
+                        * Math.sqrt(Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
         h.set(6, (-jrw * rz + jrx * ry - jry * rx + jrz * rw)
-                / (Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2)));
+                / (Math.sqrt(Math.pow(jrw, 2) + Math.pow(jrx, 2) + Math.pow(jry, 2) + Math.pow(jrz, 2))
+                        * Math.sqrt(Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2))));
 
         return h;
     }

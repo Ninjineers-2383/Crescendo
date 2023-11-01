@@ -59,6 +59,7 @@ def convert_to_java(string):
     )
 
     string = string.replace("pow", "Math.pow")
+    string = string.replace("sqrt", "Math.sqrt")
 
     return string
 

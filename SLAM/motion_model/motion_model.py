@@ -14,7 +14,9 @@ mu_t = Matrix([x, y, z, rw, rx, ry, rz])
 
 motion_command = Quaternion(0, dx, dy, 0)
 
-motion = Quaternion(rw, rx, ry, rz) * motion_command * Quaternion(rw, -rx, -ry, -rz)
+robot_rot = Quaternion(rw, rx, ry, rz).normalize()
+
+motion = robot_rot * motion_command * robot_rot.conjugate()
 
 rotation = Quaternion(cos(dtheta / 2), 0, 0, sin(dtheta / 2))
 

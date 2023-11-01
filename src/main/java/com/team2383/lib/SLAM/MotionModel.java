@@ -24,21 +24,16 @@ public class MotionModel implements BiFunction<SimpleMatrix, SimpleMatrix, Simpl
 
         SimpleMatrix g = new SimpleMatrix(7, 1);
 
-        g.set(0, rw * (dx * rw - dy * rz) + rx * (dx * rx + dy * ry) - ry * (dx * ry - dy * rx)
-                - rz * (dx * rz + dy * rw));
-
-        g.set(1, rw * (dx * rz + dy * rw) + rx * (dx * ry - dy * rx) + ry * (dx * rx + dy * ry)
-                + rz * (dx * rw - dy * rz));
-
-        g.set(2, -2 * dx * rw * ry + 2 * dx * rx * rz + 2 * dy * rw * rx + 2 * dy * ry * rz);
-
+        g.set(0, (rw * (dx * rw - dy * rz) + rx * (dx * rx + dy * ry) - ry * (dx * ry - dy * rx)
+                - rz * (dx * rz + dy * rw)) / (Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2)));
+        g.set(1, (rw * (dx * rz + dy * rw) + rx * (dx * ry - dy * rx) + ry * (dx * rx + dy * ry)
+                + rz * (dx * rw - dy * rz)) / (Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2)));
+        g.set(2, 2 * (-dx * rw * ry + dx * rx * rz + dy * rw * rx + dy * ry * rz)
+                / (Math.pow(rw, 2) + Math.pow(rx, 2) + Math.pow(ry, 2) + Math.pow(rz, 2)));
         g.set(3, (-rw * Math.sqrt(Math.pow(rw, 2) + Math.pow(rz, 2)) + rw * Math.cos((1.0 / 2.0) * dtheta)
                 - rz * Math.sin((1.0 / 2.0) * dtheta)) / Math.sqrt(Math.pow(rw, 2) + Math.pow(rz, 2)));
-
         g.set(4, -rx);
-
         g.set(5, -ry);
-
         g.set(6, (rw * Math.sin((1.0 / 2.0) * dtheta) - rz * Math.sqrt(Math.pow(rw, 2) + Math.pow(rz, 2))
                 + rz * Math.cos((1.0 / 2.0) * dtheta)) / Math.sqrt(Math.pow(rw, 2) + Math.pow(rz, 2)));
 

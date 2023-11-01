@@ -20,7 +20,7 @@ j = Matrix([jx, jy, jz, jrw, jrx, jry, jrz])
 zx, zy, zz, zrw, zrx, zry, zrz = symbols("zx zy zz zrw zrx zry zrz")
 z_r = Matrix([zx, zy, zz, zrw, zrx, zry, zrz])
 
-robot_rot = Quaternion(rw, rx, ry, rz)
+robot_rot = Quaternion(rw, rx, ry, rz).normalize()
 
 displacement = (j - mu)[0:3, 0]
 
@@ -33,7 +33,7 @@ z_bar_tran_quat = (
 z_bar_tran = Matrix([z_bar_tran_quat.b, z_bar_tran_quat.c, z_bar_tran_quat.d])
 
 # subtract the tag rotation from the robot rotation
-z_bar_rot = robot_rot.inverse() * Quaternion(jrw, jrx, jry, jrz)
+z_bar_rot = robot_rot.inverse() * Quaternion(jrw, jrx, jry, jrz).normalize()
 
 
 z_bar = Matrix(
