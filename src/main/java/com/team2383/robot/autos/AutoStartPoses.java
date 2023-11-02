@@ -5,6 +5,7 @@ import com.team2383.robot.autos.AutoQuestionResponses.QuestionResponses;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class AutoStartPoses {
     public static Pose2d CONE1 = new Pose2d(FieldConstants.Grids.outerX + 0.42, FieldConstants.Grids.nodeY[0],
@@ -62,4 +63,14 @@ public class AutoStartPoses {
         }
     }
 
+    public static Pose2d transformPoseForAlliance(Pose2d pose, DriverStation.Alliance alliance) {
+        if (alliance == DriverStation.Alliance.Red) {
+            Pose2d transformedPose = new Pose2d(
+                    FieldConstants.fieldLength - pose.getX(), pose.getY(),
+                    pose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
+            return transformedPose;
+        } else {
+            return pose;
+        }
+    }
 }

@@ -8,6 +8,7 @@ import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
@@ -15,7 +16,9 @@ public class OnePieceAuto extends SequentialCommandGroup {
     public OnePieceAuto(DrivetrainSubsystem drivetrain, ElevatorSubsystem elevator, WristSubsystem wrist,
             FeederSubsystem feeder, QuestionResponses[] responses) {
         addCommands(
-                new InstantCommand(() -> drivetrain.forceOdometry(AutoStartPoses.responseToPose(responses[0])),
+                new InstantCommand(
+                        () -> drivetrain.forceOdometry(
+                                AutoStartPoses.responseToPose(responses[0])),
                         drivetrain),
 
                 new ScoreCommand(elevator, wrist, feeder, responses[0], responses[1]),

@@ -105,6 +105,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds,
                 this::driveRobotRelative,
                 DriveConstants.CONFIG,
+                true,
                 this);
 
     }

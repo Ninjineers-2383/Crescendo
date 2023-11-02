@@ -11,11 +11,13 @@ import org.littletonrobotics.junction.networktables.NT4Publisher;
 import org.littletonrobotics.junction.wpilog.WPILOGReader;
 import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
+import com.pathplanner.lib.pathfinding.Pathfinder;
 import com.pathplanner.lib.pathfinding.Pathfinding;
 import com.pathplanner.lib.util.PathPlannerLogging;
 import com.team2383.robot.helpers.LocalADStarAK;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
@@ -30,6 +32,8 @@ public class Robot extends LoggedRobot {
     private Command autonomousCommand;
     private RobotContainer robotContainer;
 
+    private DriverStation.Alliance previousAlliance = DriverStation.Alliance.Blue;
+
     public Robot() {
         super();
         // Log robot code version
@@ -43,15 +47,15 @@ public class Robot extends LoggedRobot {
     @Override
     public void robotInit() {
         Pathfinding.setPathfinder(new LocalADStarAK());
-         PathPlannerLogging.setLogActivePathCallback(
-        (activePath) -> {
-          Logger.recordOutput(
-              "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-        });
-    PathPlannerLogging.setLogTargetPoseCallback(
-        (targetPose) -> {
-          Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-        });
+        PathPlannerLogging.setLogActivePathCallback(
+                (activePath) -> {
+                    Logger.recordOutput(
+                            "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
+                });
+        PathPlannerLogging.setLogTargetPoseCallback(
+                (targetPose) -> {
+                    Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
+                });
         // Record metadata
         Logger.recordMetadata("ProjectName", BuildConstants.MAVEN_NAME);
         Logger.recordMetadata("BuildDate", BuildConstants.BUILD_DATE);
@@ -114,6 +118,11 @@ public class Robot extends LoggedRobot {
         // the Command-based framework to work.
         CommandScheduler.getInstance().run();
         robotContainer.periodic();
+
+        // if (DriverStation.getAlliance().get() != previousAlliance) {
+        // Pathfinding.getPathfinder().changeObstaclesForAlliance(previousAlliance);
+        // }
+        //previousAlliance = DriverStation.getAlliance().get();
     }
 
     /** This function is called once when the robot is disabled. */

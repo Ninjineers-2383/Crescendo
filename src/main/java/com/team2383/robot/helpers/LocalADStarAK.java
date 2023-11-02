@@ -2,6 +2,8 @@ package com.team2383.robot.helpers;
 
 import edu.wpi.first.math.Pair;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
+
 import com.pathplanner.lib.path.GoalEndState;
 import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
@@ -110,6 +112,10 @@ public class LocalADStarAK implements Pathfinder {
         }
     }
 
+    public void changeObstaclesForAlliance(DriverStation.Alliance alliance) {
+        io.changeObstaclesForAlliance(alliance);
+    }
+
     private static class ADStarIO implements LoggableInputs {
         public LocalADStar adStar = new LocalADStar();
         public boolean isNewPathAvailable = false;
@@ -156,6 +162,10 @@ public class LocalADStarAK implements Pathfinder {
             } else {
                 currentPathPoints = Collections.emptyList();
             }
+        }
+
+        public void changeObstaclesForAlliance(DriverStation.Alliance alliance) {
+            adStar.changeObstaclesForAlliance(alliance);
         }
     }
 }
