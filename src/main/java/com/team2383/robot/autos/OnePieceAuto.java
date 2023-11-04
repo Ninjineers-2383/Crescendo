@@ -17,8 +17,8 @@ public class OnePieceAuto extends SequentialCommandGroup {
             FeederSubsystem feeder, QuestionResponses[] responses) {
         addCommands(
                 new InstantCommand(
-                        () -> drivetrain.forceOdometry(
-                                AutoStartPoses.responseToPose(responses[0])),
+                        () -> drivetrain.forceOdometry(AutoStartPoses.transformPoseForAlliance(
+                                AutoStartPoses.responseToPose(responses[0]), DriverStation.getAlliance().get())),
                         drivetrain),
 
                 new ScoreCommand(elevator, wrist, feeder, responses[0], responses[1]),
