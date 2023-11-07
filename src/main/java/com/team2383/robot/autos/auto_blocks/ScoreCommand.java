@@ -1,6 +1,6 @@
 package com.team2383.robot.autos.auto_blocks;
 
-import com.team2383.robot.autos.AutoQuestionResponses.QuestionResponses;
+import com.team2383.robot.autos.auto_chooser.AutoQuestionResponses.QuestionResponses;
 import com.team2383.robot.commands.FeederVoltageCommand;
 import com.team2383.robot.commands.blizzard.BlizzardCommand;
 import com.team2383.robot.commands.blizzard.BlizzardPresets;
@@ -24,5 +24,4 @@ public class ScoreCommand extends SequentialCommandGroup {
                 new FeederVoltageCommand(feeder, () -> 0, FeederConstants.responseToGamePiece(gamePiece))
                         .withTimeout(0.1));
     }
-
 }

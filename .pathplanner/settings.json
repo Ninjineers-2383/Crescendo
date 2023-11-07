@@ -3,8 +3,11 @@
   "robotLength": 0.787,
   "holonomicMode": true,
   "pathFolders": [
-    "Feed",
-    "Engage"
+    "Engage",
+    "Feed Clean",
+    "Feed Dirty",
+    "Mobility",
+    "Feed Charge"
   ],
   "autoFolders": []
 }

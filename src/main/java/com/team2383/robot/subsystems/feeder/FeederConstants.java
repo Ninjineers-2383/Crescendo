@@ -1,6 +1,6 @@
 package com.team2383.robot.subsystems.feeder;
 
-import com.team2383.robot.autos.AutoQuestionResponses.QuestionResponses;
+import com.team2383.robot.autos.auto_chooser.AutoQuestionResponses.QuestionResponses;
 
 public class FeederConstants {
     public static int kMotorID = 6;

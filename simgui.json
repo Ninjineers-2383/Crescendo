@@ -40,7 +40,10 @@
       "/SmartDashboard/Question 3": "String Chooser",
       "/SmartDashboard/Question 4": "String Chooser",
       "/SmartDashboard/Question 5": "String Chooser",
-      "/SmartDashboard/Question 6": "String Chooser"
+      "/SmartDashboard/Question 6": "String Chooser",
+      "/SmartDashboard/Question 7": "String Chooser",
+      "/SmartDashboard/TeleOp Score Chooser": "String Chooser",
+      "/SmartDashboard/TeleOp Scoring": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Auto": {
@@ -74,6 +77,21 @@
         }
       },
       "/SmartDashboard/Question 5": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Question 6": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Question 7": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/TeleOp Scoring": {
         "window": {
           "visible": true
         }

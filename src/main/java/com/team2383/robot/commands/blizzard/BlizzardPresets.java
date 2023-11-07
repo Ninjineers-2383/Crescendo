@@ -1,6 +1,6 @@
 package com.team2383.robot.commands.blizzard;
 
-import com.team2383.robot.autos.AutoQuestionResponses.QuestionResponses;
+import com.team2383.robot.autos.auto_chooser.AutoQuestionResponses.QuestionResponses;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 

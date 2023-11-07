@@ -1,10 +1,12 @@
 package com.team2383.robot.autos.auto_blocks;
 
+import java.util.function.Supplier;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.team2383.robot.autos.AutoStartPoses;
-import com.team2383.robot.autos.AutoQuestionResponses.QuestionResponses;
+import com.team2383.robot.autos.auto_chooser.AutoQuestionResponses.QuestionResponses;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
+import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -17,21 +19,23 @@ public class PathfindCommand extends SequentialCommandGroup {
                 DriveConstants.AUTO_CONSTRAINTS, 0));
     }
 
-    public PathfindCommand(QuestionResponses response) {
+    public PathfindCommand(DrivetrainSubsystem drivetrain, QuestionResponses response) {
         switch (response) {
             case ENGAGECOMMUNITY:
                 addCommands(
                         AutoBuilder.pathfindThenFollowPath(
                                 PathPlannerPath.fromPathFile("EngageCommunity"),
                                 DriveConstants.AUTO_CONSTRAINTS,
-                                0));
+                                0),
+                        new Engage(drivetrain, true));
                 break;
             case ENGAGEOUTSIDE:
                 addCommands(
                         AutoBuilder.pathfindThenFollowPath(
                                 PathPlannerPath.fromPathFile("EngageOutside"),
                                 DriveConstants.AUTO_CONSTRAINTS,
-                                0));
+                                0),
+                        new Engage(drivetrain, true));
                 break;
             case MOBILITYCLEAN:
                 addCommands(AutoBuilder.pathfindToPose(
@@ -45,6 +49,11 @@ public class PathfindCommand extends SequentialCommandGroup {
                         AutoStartPoses.MOBILITYDIRTY,
                         DriveConstants.AUTO_CONSTRAINTS,
                         3,
+                        0));
+            case MOBILITYCHARGE:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("MobilityCharge"),
+                        DriveConstants.AUTO_CONSTRAINTS,
                         0));
                 break;
             case STOP:
@@ -74,9 +83,28 @@ public class PathfindCommand extends SequentialCommandGroup {
                         DriveConstants.AUTO_CONSTRAINTS,
                         0));
                 break;
+            case FEEDCONECHARGE:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("ChargeFeedCone"),
+                        DriveConstants.AUTO_CONSTRAINTS,
+                        0));
+                break;
+            case FEEDCUBECHARGE:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("ChargeFeedCube"),
+                        DriveConstants.AUTO_CONSTRAINTS,
+                        0));
+                break;
             default:
                 break;
         }
+    }
+
+    public PathfindCommand(Supplier<QuestionResponses> response) {
+        addCommands(AutoBuilder.pathfindToPose(
+                AutoStartPoses.responseToPose(response.get()),
+                DriveConstants.AUTO_CONSTRAINTS,
+                0));
     }
 
     public PathfindCommand(Pose2d pose, double endVelocity) {

@@ -8,14 +8,15 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.autos.AutoChooser;
 import com.team2383.robot.autos.auto_blocks.Engage;
 import com.team2383.robot.autos.auto_blocks.FeedCone;
 import com.team2383.robot.autos.auto_blocks.FeedCube;
-import com.team2383.robot.autos.auto_blocks.PathfindCommandTeleOp;
+import com.team2383.robot.autos.auto_blocks.PathfindCommand;
 import com.team2383.robot.autos.auto_blocks.Retract;
 import com.team2383.robot.autos.auto_blocks.ScoreHighCommand;
 import com.team2383.robot.autos.auto_blocks.ScoreMiddleCommand;
+import com.team2383.robot.autos.auto_chooser.AutoChooser;
+import com.team2383.robot.autos.auto_chooser.TeleOpChooser;
 import com.team2383.robot.commands.ElevatorVelocityCommand;
 import com.team2383.robot.commands.FeederVoltageCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
@@ -75,7 +76,8 @@ public class RobotContainer {
 
     private Boolean cubeMode = true;
 
-    private final AutoChooser chooser;
+    private final AutoChooser autoChooser;
+    private final TeleOpChooser teleOpChooser;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -136,23 +138,23 @@ public class RobotContainer {
 
         new SimComponents(m_elevatorSubsystem, m_wristSubsystem);
 
-        
+        teleOpChooser = new TeleOpChooser();
+
         configureDefaultCommands();
-        setAutoCommands();
-        // Configure the button bindings
+        registerAutoCommands(); // Configure the button bindings
         configureButtonBindings();
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
 
-        chooser = new AutoChooser(m_drivetrainSubsystem, m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem);
+        autoChooser = new AutoChooser(m_drivetrainSubsystem, m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem);
 
     }
 
     public void periodic() {
         SmartDashboard.putBoolean("Cube Mode", cubeMode);
 
-        chooser.periodic();
+        autoChooser.periodic();
 
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
@@ -197,7 +199,10 @@ public class RobotContainer {
                         () -> -1));
 
         new JoystickButton(m_driverController, 2)
-                .whileTrue(new PathfindCommandTeleOp("DriveToLoadingStation"));
+                .whileTrue(new PathfindCommand("DriveToLoadingStation"));
+
+        new JoystickButton(m_driverController, 5)
+                .whileTrue(new PathfindCommand(teleOpChooser::getResponse));
 
         new JoystickButton(m_driverController, 3).onTrue(new InstantCommand(() -> {
             cubeMode = true;
@@ -244,10 +249,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return chooser.getAutonomousCommand();
+        return autoChooser.getAutonomousCommand();
     }
 
-    private void setAutoCommands() {
+    private void registerAutoCommands() {
         NamedCommands.registerCommand("Engage", new Engage(m_drivetrainSubsystem, true));
 
         NamedCommands.registerCommand("Feed Cone",

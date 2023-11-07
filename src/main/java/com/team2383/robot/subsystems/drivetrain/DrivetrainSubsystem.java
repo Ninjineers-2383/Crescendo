@@ -25,6 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOInputsAutoLogged;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.team2383.robot.FieldConstants;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionConstants;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 
@@ -272,12 +273,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public Pose2d correctToAlliance(Pose2d pose) {
-        if (DriverStation.getAlliance().equals(DriverStation.Alliance.Red)) {
-            Translation2d transformedTranslation = new Translation2d(pose.getX(),
-                    8.02 - pose.getY());
-            Rotation2d transformedHeading = pose.getRotation().plus(Rotation2d.fromDegrees(180));
-
-            pose = new Pose2d(transformedTranslation, transformedHeading);
+        try {
+            if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+                pose = new Pose2d(
+                        FieldConstants.fieldLength - pose.getX(), pose.getY(),
+                        pose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
+            }
+        } catch (Exception e) {
+            
         }
 
         return pose;
@@ -347,8 +350,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void forceOdometry(Pose2d pose) {
-        // correctToAlliance(pose);
-        // forceHeading(pose.getRotation());
+        m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
+        resetEncoders();
+    }
+
+    public void forceOdometry(Pose2d pose, boolean useAlliance) {
+        if (useAlliance) {
+            pose = correctToAlliance(pose);
+        }
+
         m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
         resetEncoders();
     }
