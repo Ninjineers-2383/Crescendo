@@ -73,6 +73,7 @@ public class EKFSLAM {
         sigma = new SimpleMatrix(7 * (numLandmarks + 1), 7 * (numLandmarks + 1));
         for (int i = 7; i < 7 * (numLandmarks + 1); i++) {
             sigma.set(i, i, 0.5);
+            // sigma.set(i, i, 0);
         }
 
         // Initialize motion model and sensor model
