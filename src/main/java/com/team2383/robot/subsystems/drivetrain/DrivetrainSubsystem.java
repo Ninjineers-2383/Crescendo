@@ -97,9 +97,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         resetHeading();
 
-        // headingIntegral =
-        // m_poseEstimator.getEstimatedPosition().getRotation().getRadians();
-
         AutoBuilder.configureHolonomic(
                 this::getPose,
                 this::forceOdometry,

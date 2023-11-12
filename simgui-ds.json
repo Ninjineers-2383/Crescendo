@@ -1,7 +1,7 @@
 {
-  "Joysticks": {
+  "Keyboard 0 Settings": {
     "window": {
-      "visible": false
+      "visible": true
     }
   },
   "System Joysticks": {
@@ -35,7 +35,7 @@
         67,
         86,
         66,
-        -1,
+        78,
         -1,
         -1
       ],

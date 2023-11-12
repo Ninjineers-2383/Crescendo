@@ -200,7 +200,10 @@ public class RobotContainer {
                         () -> -1));
 
         new JoystickButton(m_driverController, 2)
-                .whileTrue(new PathfindCommand("DriveToLoadingStation"));
+                .whileTrue(new PathfindCommand("DriveToSlider"));
+
+        new JoystickButton(m_driverController, 6)
+                .whileTrue(new PathfindCommand("DriveToChute"));
 
         new JoystickButton(m_driverController, 5)
                 .whileTrue(new AutoScoreCommand(m_drivetrainSubsystem, m_elevatorSubsystem, m_wristSubsystem,
@@ -284,5 +287,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("Cone Slider", new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem,
                 BlizzardPresets.SLIDER));
 
+        NamedCommands.registerCommand("Chute",
+                new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.CONE_CHUTE));
     }
 }

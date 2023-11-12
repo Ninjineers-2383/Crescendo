@@ -68,7 +68,7 @@ public class AutoStartPoses {
         if (alliance == DriverStation.Alliance.Red) {
             Pose2d transformedPose = new Pose2d(
                     FieldConstants.fieldLength - pose.getX(), pose.getY(),
-                    pose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
+                    Rotation2d.fromDegrees(180).minus(pose.getRotation()));
             return transformedPose;
         } else {
             return pose;
