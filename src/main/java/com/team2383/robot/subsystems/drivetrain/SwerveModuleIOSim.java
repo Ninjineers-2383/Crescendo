@@ -14,7 +14,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
 
     private final PIDController driveController = new PIDController(0.27135, 0, 0);
     private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0, 0.55, 0.015968);
-    private final PIDController angleController = new PIDController(10, 0, 0);
+    private final PIDController angleController = new PIDController(20, 0, 0);
 
     private double absolutePosition = Math.random();
 

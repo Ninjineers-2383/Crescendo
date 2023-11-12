@@ -86,9 +86,13 @@
     "maxAngularAcceleration": 720
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 1.0,
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Feed Charge"
+  "folder": "Feed Charge",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 1.0
+  }
 }

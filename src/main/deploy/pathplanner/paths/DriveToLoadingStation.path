@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 15.293589950816262,
-        "y": 6.039520169949431
+        "x": 15.138863435871288,
+        "y": 5.975754496963541
       },
       "isLocked": false
     },
@@ -58,5 +58,5 @@
     "rotation": 0
   },
   "reversed": false,
-  "folder": "Feed"
+  "folder": null
 }

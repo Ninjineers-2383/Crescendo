@@ -27,7 +27,19 @@
     }
   ],
   "rotationTargets": [],
-  "constraintZones": [],
+  "constraintZones": [
+    {
+      "name": "New Constraints Zone",
+      "minWaypointRelativePos": 0.2,
+      "maxWaypointRelativePos": 0.85,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 3,
+        "maxAngularVelocity": 540,
+        "maxAngularAcceleration": 720
+      }
+    }
+  ],
   "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3,
@@ -40,5 +52,9 @@
     "rotation": 180.0
   },
   "reversed": false,
-  "folder": "Mobility"
+  "folder": "Mobility",
+  "previewStartingState": {
+    "rotation": 180.0,
+    "velocity": 0
+  }
 }

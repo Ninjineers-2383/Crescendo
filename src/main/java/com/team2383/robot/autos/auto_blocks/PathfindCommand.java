@@ -39,14 +39,14 @@ public class PathfindCommand extends SequentialCommandGroup {
                 addCommands(AutoBuilder.pathfindToPose(
                         AutoStartPoses.MOBILITYCLEAN,
                         DriveConstants.AUTO_CONSTRAINTS,
-                        3,
+                        1,
                         0));
                 break;
             case MOBILITYDIRTY:
                 addCommands(AutoBuilder.pathfindToPose(
                         AutoStartPoses.MOBILITYDIRTY,
                         DriveConstants.AUTO_CONSTRAINTS,
-                        3,
+                        1,
                         0));
                 break;
             case MOBILITYCHARGE:
