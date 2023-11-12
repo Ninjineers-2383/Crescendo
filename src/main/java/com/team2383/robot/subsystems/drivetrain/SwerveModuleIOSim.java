@@ -56,6 +56,12 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
     }
 
     @Override
+    public void stop() {
+        desiredRps = 0.0;
+        desiredRotations = 0.0;
+    }
+
+    @Override
     public void setDesiredState(SwerveModuleState desiredState) {
         desiredRps = Conversions.MPSToFalconRPS(desiredState.speedMetersPerSecond,
                 DriveConstants.kDriveWheelCircumferenceMeters, DriveConstants.kDriveGearRatio);

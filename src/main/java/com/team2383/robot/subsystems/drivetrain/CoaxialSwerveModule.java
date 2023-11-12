@@ -59,6 +59,10 @@ public class CoaxialSwerveModule implements Sendable {
                 getAngle());
     }
 
+    public void stop() {
+        m_io.stop();
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Desired MPS", () -> m_desiredState.speedMetersPerSecond, null);

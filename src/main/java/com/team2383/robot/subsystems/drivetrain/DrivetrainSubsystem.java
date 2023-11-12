@@ -113,6 +113,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        if (DriverStation.isDisabled()) {
+            for (CoaxialSwerveModule module : m_modules) {
+                module.stop();
+            }
+        }
+
         if (loop_cycle == 200) {
             for (CoaxialSwerveModule module : m_modules) {
                 module.resetToAbsolute();
@@ -280,7 +286,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                         pose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
             }
         } catch (Exception e) {
-            
+
         }
 
         return pose;

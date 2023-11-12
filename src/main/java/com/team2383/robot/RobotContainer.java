@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.autos.auto_blocks.AutoScoreCommand;
 import com.team2383.robot.autos.auto_blocks.Engage;
 import com.team2383.robot.autos.auto_blocks.FeedCone;
 import com.team2383.robot.autos.auto_blocks.FeedCube;
@@ -202,7 +203,8 @@ public class RobotContainer {
                 .whileTrue(new PathfindCommand("DriveToLoadingStation"));
 
         new JoystickButton(m_driverController, 5)
-                .whileTrue(new PathfindCommand(teleOpChooser::getResponse));
+                .whileTrue(new AutoScoreCommand(m_drivetrainSubsystem, m_elevatorSubsystem, m_wristSubsystem,
+                        m_feederSubsystem, teleOpChooser::getResponses));
 
         new JoystickButton(m_driverController, 3).onTrue(new InstantCommand(() -> {
             cubeMode = true;

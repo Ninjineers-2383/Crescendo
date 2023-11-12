@@ -26,4 +26,7 @@ public interface SwerveModuleIO {
 
     public default void setDesiredState(SwerveModuleState desiredState) {
     }
+
+    public default void stop() {
+    }
 }

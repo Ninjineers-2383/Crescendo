@@ -1,7 +1,5 @@
 package com.team2383.robot.autos.auto_blocks;
 
-import java.util.function.Supplier;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.team2383.robot.autos.auto_chooser.AutoQuestionResponses.QuestionResponses;
@@ -50,6 +48,7 @@ public class PathfindCommand extends SequentialCommandGroup {
                         DriveConstants.AUTO_CONSTRAINTS,
                         3,
                         0));
+                break;
             case MOBILITYCHARGE:
                 addCommands(AutoBuilder.pathfindThenFollowPath(
                         PathPlannerPath.fromPathFile("MobilityCharge"),
@@ -98,13 +97,6 @@ public class PathfindCommand extends SequentialCommandGroup {
             default:
                 break;
         }
-    }
-
-    public PathfindCommand(Supplier<QuestionResponses> response) {
-        addCommands(AutoBuilder.pathfindToPose(
-                AutoStartPoses.responseToPose(response.get()),
-                DriveConstants.AUTO_CONSTRAINTS,
-                0));
     }
 
     public PathfindCommand(Pose2d pose, double endVelocity) {

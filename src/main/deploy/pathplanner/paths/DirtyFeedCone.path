@@ -1,0 +1,94 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 5.537182087202976,
+        "y": 1.1092394224731368
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.526335456517069,
+        "y": 1.5897623141400135
+      },
+      "isLocked": false
+    },
+    {
+      "anchor": {
+        "x": 7.623490428799039,
+        "y": 1.0475789133396456
+      },
+      "prevControl": {
+        "x": 7.933209411873369,
+        "y": 2.0587202992587814
+      },
+      "nextControl": {
+        "x": 7.556792673336055,
+        "y": 0.829830358739903
+      },
+      "isLocked": false
+    },
+    {
+      "anchor": {
+        "x": 5.883598494469716,
+        "y": 0.5101253838871318
+      },
+      "prevControl": {
+        "x": 6.739880388851686,
+        "y": 0.47368785646662204
+      },
+      "nextControl": null,
+      "isLocked": false
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 0.95,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Feed Cone"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "New Event Marker",
+      "waypointRelativePos": 1.75,
+      "command": {
+        "type": "sequential",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "Retract Cone"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3,
+    "maxAcceleration": 3,
+    "maxAngularVelocity": 540,
+    "maxAngularAcceleration": 720
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0
+  },
+  "reversed": false,
+  "folder": "Feed Dirty"
+}

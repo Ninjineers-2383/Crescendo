@@ -6,6 +6,7 @@ import com.team2383.robot.autos.auto_chooser.AutoQuestionResponses.QuestionRespo
 
 public class TeleOpChooser {
     private final LoggedDashboardChooser<QuestionResponses> teleOpRoutineChooser;
+    private final LoggedDashboardChooser<QuestionResponses> heightChooser;
 
     public TeleOpChooser() {
         teleOpRoutineChooser = new LoggedDashboardChooser<QuestionResponses>("TeleOp Scoring");
@@ -19,12 +20,18 @@ public class TeleOpChooser {
         teleOpRoutineChooser.addOption("Cone5", QuestionResponses.CONE5);
         teleOpRoutineChooser.addOption("Cube3", QuestionResponses.CUBE3);
         teleOpRoutineChooser.addOption("Cone6", QuestionResponses.CONE6);
+
+        heightChooser = new LoggedDashboardChooser<QuestionResponses>("TeleOp Height");
+
+        heightChooser.addDefaultOption("High", QuestionResponses.HIGH);
+        heightChooser.addOption("Middle", QuestionResponses.MEDIUM);
+        heightChooser.addOption("Low", QuestionResponses.HYBRID);
     }
 
-    public QuestionResponses getResponse() {
+    public QuestionResponses[] getResponses() {
         if (teleOpRoutineChooser.get() == null) {
-            return QuestionResponses.CUBE3;
+            return new QuestionResponses[] { QuestionResponses.CONE1, QuestionResponses.HIGH };
         }
-        return teleOpRoutineChooser.get();
+        return new QuestionResponses[] { teleOpRoutineChooser.get(), heightChooser.get() };
     }
 }

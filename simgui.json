@@ -9,6 +9,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/LiveWindow/DrivetrainSubsystem": "Subsystem",
       "/LiveWindow/ElevatorSubsystem": "Subsystem",
       "/LiveWindow/Ungrouped/DigitalInput[6]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[7]": "Digital Input",
@@ -21,7 +22,11 @@
       "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[15]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[16]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[17]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[18]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[19]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+      "/LiveWindow/Ungrouped/PIDController[20]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
       "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
@@ -42,6 +47,7 @@
       "/SmartDashboard/Question 5": "String Chooser",
       "/SmartDashboard/Question 6": "String Chooser",
       "/SmartDashboard/Question 7": "String Chooser",
+      "/SmartDashboard/TeleOp Height": "String Chooser",
       "/SmartDashboard/TeleOp Score Chooser": "String Chooser",
       "/SmartDashboard/TeleOp Scoring": "String Chooser"
     },
@@ -91,6 +97,11 @@
           "visible": true
         }
       },
+      "/SmartDashboard/TeleOp Height": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/TeleOp Scoring": {
         "window": {
           "visible": true
@@ -113,5 +124,8 @@
         "open": true
       }
     }
+  },
+  "NetworkTables View": {
+    "visible": false
   }
 }
