@@ -1,0 +1,1 @@
+This file is here so the logs-sim folder pops up on git and cloned projects do not break
