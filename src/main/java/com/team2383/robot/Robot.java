@@ -42,7 +42,7 @@ public class Robot extends LoggedRobot {
      */
     @Override
     public void robotInit() {
-        Pathfinding.setPathfinder(new LocalADStarAK());
+        Pathfinding.setPathfinder(new LocalADStarAK(true));
         PathPlannerLogging.setLogActivePathCallback(
                 (activePath) -> {
                     Logger.recordOutput(

@@ -41,12 +41,16 @@
       "/SmartDashboard/Enable LW": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Question 1": "String Chooser",
+      "/SmartDashboard/Question 10": "String Chooser",
+      "/SmartDashboard/Question 11": "String Chooser",
       "/SmartDashboard/Question 2": "String Chooser",
       "/SmartDashboard/Question 3": "String Chooser",
       "/SmartDashboard/Question 4": "String Chooser",
       "/SmartDashboard/Question 5": "String Chooser",
       "/SmartDashboard/Question 6": "String Chooser",
       "/SmartDashboard/Question 7": "String Chooser",
+      "/SmartDashboard/Question 8": "String Chooser",
+      "/SmartDashboard/Question 9": "String Chooser",
       "/SmartDashboard/TeleOp Height": "String Chooser",
       "/SmartDashboard/TeleOp Score Chooser": "String Chooser",
       "/SmartDashboard/TeleOp Scoring": "String Chooser"
@@ -63,6 +67,16 @@
         }
       },
       "/SmartDashboard/Question 1": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Question 10": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Question 11": {
         "window": {
           "visible": true
         }
@@ -93,6 +107,16 @@
         }
       },
       "/SmartDashboard/Question 7": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Question 8": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Question 9": {
         "window": {
           "visible": true
         }

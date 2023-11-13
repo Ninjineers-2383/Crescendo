@@ -58,39 +58,75 @@ public class PathfindCommand extends SequentialCommandGroup {
             case STOP:
                 addCommands(new InstantCommand());
                 break;
-            case FEEDCONECLEAN:
+            case FEEDCONECLEAN1:
                 addCommands(AutoBuilder.pathfindThenFollowPath(
-                        PathPlannerPath.fromPathFile("CleanFeedCone"),
+                        PathPlannerPath.fromPathFile("CleanFeedCone1"),
                         DriveConstants.AUTO_CONSTRAINTS,
                         0));
                 break;
-            case FEEDCUBECLEAN:
+            case FEEDCUBECLEAN1:
                 addCommands(AutoBuilder.pathfindThenFollowPath(
-                        PathPlannerPath.fromPathFile("CleanFeedCube"),
+                        PathPlannerPath.fromPathFile("CleanFeedCube1"),
                         DriveConstants.AUTO_CONSTRAINTS,
                         0));
                 break;
-            case FEEDCONEDIRTY:
+            case FEEDCONECLEAN2:
                 addCommands(AutoBuilder.pathfindThenFollowPath(
-                        PathPlannerPath.fromPathFile("DirtyFeedCone"),
+                        PathPlannerPath.fromPathFile("CleanFeedCone2"),
                         DriveConstants.AUTO_CONSTRAINTS,
                         0));
                 break;
-            case FEEDCUBEDIRTY:
+            case FEEDCUBECLEAN2:
                 addCommands(AutoBuilder.pathfindThenFollowPath(
-                        PathPlannerPath.fromPathFile("DirtyFeedCube"),
+                        PathPlannerPath.fromPathFile("CleanFeedCube2"),
                         DriveConstants.AUTO_CONSTRAINTS,
                         0));
                 break;
-            case FEEDCONECHARGE:
+            case FEEDCONEDIRTY1:
                 addCommands(AutoBuilder.pathfindThenFollowPath(
-                        PathPlannerPath.fromPathFile("ChargeFeedCone"),
+                        PathPlannerPath.fromPathFile("DirtyFeedCone1"),
                         DriveConstants.AUTO_CONSTRAINTS,
                         0));
                 break;
-            case FEEDCUBECHARGE:
+            case FEEDCUBEDIRTY1:
                 addCommands(AutoBuilder.pathfindThenFollowPath(
-                        PathPlannerPath.fromPathFile("ChargeFeedCube"),
+                        PathPlannerPath.fromPathFile("DirtyFeedCube1"),
+                        DriveConstants.AUTO_CONSTRAINTS,
+                        0));
+                break;
+            case FEEDCONEDIRTY2:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("DirtyFeedCone2"),
+                        DriveConstants.AUTO_CONSTRAINTS,
+                        0));
+                break;
+            case FEEDCUBEDIRTY2:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("DirtyFeedCube2"),
+                        DriveConstants.AUTO_CONSTRAINTS,
+                        0));
+                break;
+            case FEEDCONECHARGE1:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("ChargeFeedCone1"),
+                        DriveConstants.AUTO_CONSTRAINTS,
+                        0));
+                break;
+            case FEEDCUBECHARGE1:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("ChargeFeedCube1"),
+                        DriveConstants.AUTO_CONSTRAINTS,
+                        0));
+                break;
+            case FEEDCONECHARGE2:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("ChargeFeedCone2"),
+                        DriveConstants.AUTO_CONSTRAINTS,
+                        0));
+                break;
+            case FEEDCUBECHARGE2:
+                addCommands(AutoBuilder.pathfindThenFollowPath(
+                        PathPlannerPath.fromPathFile("ChargeFeedCube2"),
                         DriveConstants.AUTO_CONSTRAINTS,
                         0));
                 break;

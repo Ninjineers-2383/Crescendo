@@ -17,7 +17,11 @@ import org.littletonrobotics.junction.Logger;
 import org.littletonrobotics.junction.inputs.LoggableInputs;
 
 public class LocalADStarAK implements Pathfinder {
-    private final ADStarIO io = new ADStarIO();
+    private final ADStarIO io;
+
+    public LocalADStarAK(boolean useAllianceColor) {
+        io = new ADStarIO(useAllianceColor);
+    }
 
     /**
      * Get if a new path has been calculated since the last time a path was
@@ -112,9 +116,13 @@ public class LocalADStarAK implements Pathfinder {
     }
 
     private static class ADStarIO implements LoggableInputs {
-        public LocalADStar adStar = new LocalADStar();
+        public LocalADStar adStar;
         public boolean isNewPathAvailable = false;
         public List<PathPoint> currentPathPoints = Collections.emptyList();
+
+        public ADStarIO(boolean useAllianceColor) {
+            adStar = new LocalADStar(useAllianceColor);
+        }
 
         @Override
         public void toLog(LogTable table) {
