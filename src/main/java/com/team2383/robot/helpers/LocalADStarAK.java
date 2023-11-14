@@ -8,6 +8,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.pathplanner.lib.path.PathPoint;
 import com.pathplanner.lib.pathfinding.Pathfinder;
+import com.pathplanner.lib.util.FieldMirroring.MirroringType;
 import com.pathplanner.lib.pathfinding.LocalADStar;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,8 +20,8 @@ import org.littletonrobotics.junction.inputs.LoggableInputs;
 public class LocalADStarAK implements Pathfinder {
     private final ADStarIO io;
 
-    public LocalADStarAK(boolean useAllianceColor) {
-        io = new ADStarIO(useAllianceColor);
+    public LocalADStarAK(MirroringType mirroringType) {
+        io = new ADStarIO(mirroringType);
     }
 
     /**
@@ -120,8 +121,8 @@ public class LocalADStarAK implements Pathfinder {
         public boolean isNewPathAvailable = false;
         public List<PathPoint> currentPathPoints = Collections.emptyList();
 
-        public ADStarIO(boolean useAllianceColor) {
-            adStar = new LocalADStar(useAllianceColor);
+        public ADStarIO(MirroringType mirroringType) {
+            adStar = new LocalADStar(mirroringType);
         }
 
         @Override
@@ -171,5 +172,10 @@ public class LocalADStarAK implements Pathfinder {
     @Override
     public void changeObstaclesForAlliance() {
         io.adStar.changeObstaclesForAlliance();
+    }
+
+    @Override
+    public void changeObstaclesForAllianceMirrored() {
+        io.adStar.changeObstaclesForAllianceMirrored();
     }
 }

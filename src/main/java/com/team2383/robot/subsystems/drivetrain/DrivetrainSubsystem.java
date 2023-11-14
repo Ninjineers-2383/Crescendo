@@ -25,7 +25,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIOInputsAutoLogged;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.util.AllianceUtil;
+import com.pathplanner.lib.util.FieldMirroring.MirroringType;
 import com.team2383.robot.FieldConstants;
+import com.team2383.robot.helpers.LocalADStarAK;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionConstants;
 import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 
@@ -103,7 +106,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds,
                 this::driveRobotRelative,
                 DriveConstants.CONFIG,
-                true,
+                MirroringType.HORIZONTAL,
+                new LocalADStarAK(MirroringType.HORIZONTAL),
                 this);
 
     }
@@ -357,9 +361,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         resetEncoders();
     }
 
-    public void forceOdometry(Pose2d pose, boolean useAlliance) {
-        if (useAlliance) {
-            pose = correctToAlliance(pose);
+    public void forceOdometry(Pose2d pose, MirroringType mirroringType) {
+        if (mirroringType == MirroringType.HORIZONTAL) {
+            pose = AllianceUtil.transformPoseForAllianceMirrored(pose);
+        } else if (mirroringType == MirroringType.DIAGONAL) {
+            pose = AllianceUtil.transformPoseForAlliance(pose);
         }
 
         m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);

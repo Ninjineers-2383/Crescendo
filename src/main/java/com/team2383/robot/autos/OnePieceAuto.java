@@ -1,5 +1,6 @@
 package com.team2383.robot.autos;
 
+import com.pathplanner.lib.util.FieldMirroring.MirroringType;
 import com.team2383.robot.autos.auto_blocks.AutoStartPoses;
 import com.team2383.robot.autos.auto_blocks.PathfindCommand;
 import com.team2383.robot.autos.auto_blocks.ScoreCommand;
@@ -19,7 +20,7 @@ public class OnePieceAuto extends SequentialCommandGroup {
                 // Force odometry to the start pose of the auto
                 new InstantCommand(
                         () -> drivetrain.forceOdometry(
-                                AutoStartPoses.responseToPose(responses[0]), true),
+                                AutoStartPoses.responseToPose(responses[0]), MirroringType.HORIZONTAL),
                         drivetrain),
                 // Score at the specified level using the specified piece
                 new ScoreCommand(elevator, wrist, feeder, responses[0], responses[1]),
