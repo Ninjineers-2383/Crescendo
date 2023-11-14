@@ -49,6 +49,8 @@ public class EKFSLAM {
     // Keeps track of which landmarks have been seen
     private final boolean[] seenLandmarks;
 
+    private boolean enabled = false;
+
     /**
      * Constructs an EKFSLAM object.
      *
@@ -69,13 +71,6 @@ public class EKFSLAM {
             mu.set(i + 3, 0, 1);
         }
 
-        // Initialize covariance matrix
-        sigma = new SimpleMatrix(7 * (numLandmarks + 1), 7 * (numLandmarks + 1));
-        for (int i = 7; i < 7 * (numLandmarks + 1); i++) {
-            sigma.set(i, i, 0.5);
-            // sigma.set(i, i, 0);
-        }
-
         // Initialize motion model and sensor model
         motion_model = new MotionModel(F_x);
         motion_model_jacobian = new MotionModelJacobian(F_x);
@@ -83,6 +78,9 @@ public class EKFSLAM {
         sensor_model_jacobian = new SensorModelTagJacobian();
 
         seenLandmarks = new boolean[numLandmarks];
+
+        // Initialize covariance matrix
+        resetSigma();
     }
 
     /**
@@ -111,6 +109,33 @@ public class EKFSLAM {
                 mu.set(7 * (i + 1) + 6, 0, landmarks[i].getRotation().getQuaternion().getZ());
                 seenLandmarks[i] = true;
             }
+        }
+    }
+
+    public void setInitialRobotPose(Pose3d pose) {
+        mu.set(0, pose.getTranslation().getX());
+        mu.set(1, pose.getTranslation().getY());
+        mu.set(2, pose.getTranslation().getZ());
+        mu.set(3, pose.getRotation().getQuaternion().getW());
+        mu.set(4, pose.getRotation().getQuaternion().getX());
+        mu.set(5, pose.getRotation().getQuaternion().getY());
+        mu.set(6, pose.getRotation().getQuaternion().getZ());
+
+        resetSigma();
+
+        enabled = true;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    private void resetSigma() {
+        // Initialize covariance matrix
+        sigma = new SimpleMatrix(7 * (seenLandmarks.length + 1), 7 * (seenLandmarks.length + 1));
+        for (int i = 7; i < 7 * (seenLandmarks.length + 1); i++) {
+            sigma.set(i, i, 0.5);
+            // sigma.set(i, i, 0);
         }
     }
 
@@ -151,6 +176,9 @@ public class EKFSLAM {
      * @return the corrected pose of the robot
      */
     public Pose3d correct(Transform3d robotToTag, int landmarkIndex) {
+        if (!enabled) {
+            return getRobotPose();
+        }
         SimpleMatrix z_obs = new SimpleMatrix(7, 1, true,
                 robotToTag.getTranslation().getX(), robotToTag.getTranslation().getY(),
                 robotToTag.getTranslation().getZ(),

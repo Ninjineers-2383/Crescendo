@@ -227,6 +227,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Pose3d[] landmarks = new Pose3d[visionUpdates.size()];
         int i = 0;
         for (TimestampVisionUpdate update : visionUpdates) {
+            if (!m_slam.isEnabled()) {
+                m_slam.setInitialRobotPose(aprilTags.getTagPose(update.tagId()).get().plus(update.pose().inverse()));
+            }
             Pose3d tagPose = pose.plus(update.pose());
             landmarks[i] = tagPose;
             m_slam.correct(update.pose(), update.tagId() - 1);
