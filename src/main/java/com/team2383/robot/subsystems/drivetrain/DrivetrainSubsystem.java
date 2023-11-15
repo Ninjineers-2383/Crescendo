@@ -108,8 +108,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 this::driveRobotRelative,
                 DriveConstants.CONFIG,
                 MirroringType.HORIZONTAL,
-                Origin.BOTH,
-                new LocalADStarAK(MirroringType.HORIZONTAL, Origin.BOTH),
+                Origin.BLUE,
+                new LocalADStarAK(MirroringType.HORIZONTAL, Origin.BLUE),
                 this);
 
     }
