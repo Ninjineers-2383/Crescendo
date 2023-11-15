@@ -99,8 +99,7 @@ public class RobotContainer {
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     DriveConstants.rearRightEncoder, Constants.kCANivoreBus));
                     m_visionSubsystem = new VisionSubsystem(
-                            new VisionIONorthstar("northstar1"), new VisionIONorthstar("northstar2"),
-                            new VisionIONorthstar("northstar3"), new VisionIONorthstar("northstar4"));
+                            new VisionIONorthstar("northstar1"), new VisionIONorthstar("northstar2"));
                     m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getPose3d);
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOFalcon500(Constants.kCANivoreBus));
                     m_wristSubsystem = new WristSubsystem(new WristIOSparkMax());
@@ -113,7 +112,7 @@ public class RobotContainer {
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
                     m_visionSubsystem = new VisionSubsystem(
-                            new VisionIOSim(), new VisionIOSim(), new VisionIOSim(), new VisionIOSim());
+                            new VisionIOSim(), new VisionIOSim());
                     m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getEstimatorPose3d);
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim() {});
                     m_wristSubsystem = new WristSubsystem(new WristIOSim());
@@ -141,7 +140,7 @@ public class RobotContainer {
                 : new FeederSubsystem(new FeederIO() {});
 
         m_visionSubsystem = m_visionSubsystem != null ? m_visionSubsystem
-                : new VisionSubsystem(new VisionIO() {}, new VisionIO() {}, new VisionIO() {}, new VisionIO() {});
+                : new VisionSubsystem(new VisionIO() {}, new VisionIO() {});
 
         m_visionSubsystem.setVisionConsumer(m_drivetrainSubsystem::visionConsumer);
 
