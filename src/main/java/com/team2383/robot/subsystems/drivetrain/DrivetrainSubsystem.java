@@ -2,15 +2,15 @@ package com.team2383.robot.subsystems.drivetrain;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
+import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -23,15 +23,15 @@ import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import com.team2383.robot.subsystems.drivetrain.vision.VisionIOInputsAutoLogged;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.util.AllianceUtil;
 import com.pathplanner.lib.util.FieldMirroring.MirroringType;
 import com.pathplanner.lib.util.FieldMirroring.Origin;
-import com.team2383.robot.FieldConstants;
 import com.team2383.robot.helpers.LocalADStarAK;
-import com.team2383.robot.subsystems.drivetrain.vision.VisionConstants;
-import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
+import com.team2383.robot.subsystems.vision.VisionSubsystem.TimestampVisionUpdate;
+import com.team2383.lib.SLAM.EKFSLAM;
+
+import java.util.List;
 
 public class DrivetrainSubsystem extends SubsystemBase {
     private final CoaxialSwerveModule m_frontLeftModule;
@@ -41,9 +41,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final CoaxialSwerveModule[] m_modules;
     private final SwerveModuleState[] m_lastStates;
-
-    private final VisionIO m_vision;
-    private final VisionIOInputsAutoLogged m_visionInputs = new VisionIOInputsAutoLogged();
 
     private final GyroIO m_gyro;
     private final GyroIOInputsAutoLogged m_gyroInputs = new GyroIOInputsAutoLogged();
@@ -56,6 +53,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     private final SwerveDrivePoseEstimator m_poseEstimator;
 
+    private final EKFSLAM m_slam;
+
     private final Field2d m_field = new Field2d();
     private final FieldObject2d m_COR;
 
@@ -64,11 +63,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private double headingIntegral = 0;
 
     private ChassisSpeeds m_robotRelativeChassisSpeeds = new ChassisSpeeds();
+    private AprilTagFieldLayout aprilTags;
 
-    public DrivetrainSubsystem(GyroIO gyro, VisionIO vision, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
+    public DrivetrainSubsystem(GyroIO gyro, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
             SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
         m_gyro = gyro;
-        m_vision = vision;
 
         m_frontLeftModule = new CoaxialSwerveModule(frontLeftIO, "FL");
         m_frontRightModule = new CoaxialSwerveModule(frontRightIO, "FR");
@@ -83,6 +82,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new Rotation2d(),
                 getModulePositions(),
                 new Pose2d());
+
+        m_slam = new EKFSLAM(8);
+        try {
+            aprilTags = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+        } catch (Exception e) {
+            aprilTags = new AprilTagFieldLayout(null, 0, 0);
+        }
+        aprilTags.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 
         m_lastStates = new SwerveModuleState[m_modules.length];
 
@@ -112,6 +119,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new LocalADStarAK(MirroringType.HORIZONTAL, Origin.BLUE),
                 this);
 
+        Pose3d[] landmarks = new Pose3d[8];
+
+        for (int i = 1; i <= 8; i++) {
+            landmarks[i - 1] = aprilTags.getTagPose(i).get();
+        }
+
+        m_slam.seedLandmarks(landmarks);
     }
 
     @Override
@@ -133,9 +147,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_gyro.updateInputs(m_gyroInputs);
         Logger.processInputs("Gyro", m_gyroInputs);
 
-        m_vision.updateInputs(m_visionInputs);
-        Logger.processInputs("Vision", m_visionInputs);
-
         for (CoaxialSwerveModule module : m_modules) {
             module.periodic();
         }
@@ -156,36 +167,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     getModulePositions());
         }
 
-        Pose2d pose2d = m_poseEstimator.getEstimatedPosition();
-
-        for (int i = 0; i < m_visionInputs.connected.length; i++) {
-            if (!m_visionInputs.connected[i])
-                continue;
-
-            Translation3d camTranslation = new Translation3d(
-                    m_visionInputs.x[i],
-                    m_visionInputs.y[i],
-                    m_visionInputs.z[i]);
-
-            Rotation3d camRotation = new Rotation3d(
-                    m_visionInputs.roll[i],
-                    m_visionInputs.pitch[i],
-                    m_visionInputs.yaw[i]);
-
-            Pose3d camPose = new Pose3d(camTranslation, camRotation);
-
-            double variance = VisionConstants.POSE_VARIANCE_STATIC;
-
-            if (camPose.toPose2d().getTranslation().getDistance(pose2d.getTranslation()) > 1) {
-                continue;
-            }
-
-            m_poseEstimator.addVisionMeasurement(camPose.toPose2d(),
-                    m_visionInputs.timestampSeconds[i],
-                    VecBuilder.fill(variance, variance, variance));
-
-            Logger.recordOutput("Vision/Raw Estimated Poses " + i, camPose);
-        }
+        m_slam.predict(chassis, 0.02);
 
         Pose2d estimatedPose = m_poseEstimator.getEstimatedPosition();
 
@@ -195,11 +177,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Swerve/Real Module States", m_lastStates);
 
-        Logger.recordOutput("Swerve/Heading Integaral", headingIntegral);
+        Logger.recordOutput("Swerve/Heading Integral", headingIntegral);
 
         Logger.recordOutput("Swerve/Chassis Heading", chassis.omegaRadiansPerSecond);
 
         Logger.recordOutput("Robot Pose", estimatedPose);
+
+        Pose3d slamPose3d = m_slam.getRobotPose();
+
+        Logger.recordOutput("SLAM/Pose", slamPose3d);
+
+        Pose3d[] landmarks = m_slam.getLandmarkPoses();
+
+        Logger.recordOutput("SLAM/Landmarks", landmarks);
     }
 
     /**
@@ -268,6 +258,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
         // }
     }
 
+    public void visionConsumer(List<TimestampVisionUpdate> visionUpdates) {
+        Pose3d pose = getPose3d();
+
+        Pose3d[] landmarks = new Pose3d[visionUpdates.size()];
+        int i = 0;
+        for (TimestampVisionUpdate update : visionUpdates) {
+            if (!m_slam.isEnabled()) {
+                m_slam.setInitialRobotPose(aprilTags.getTagPose(update.tagId()).get().plus(update.pose().inverse()));
+            }
+            Pose3d tagPose = pose.plus(update.pose());
+            landmarks[i] = tagPose;
+            m_slam.correct(update.pose(), update.tagId() - 1);
+            i++;
+        }
+
+        Logger.recordOutput("Vision/Targets", landmarks);
+    }
+
     /**
      * Get the current robot heading
      * Note: This is normalized so that 0 is facing directly away from your alliance
@@ -279,20 +287,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
     public Rotation2d getHeading() {
         return m_poseEstimator.getEstimatedPosition().getRotation();
-    }
-
-    public Pose2d correctToAlliance(Pose2d pose) {
-        try {
-            if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-                pose = new Pose2d(
-                        FieldConstants.fieldLength - pose.getX(), pose.getY(),
-                        pose.getRotation().plus(Rotation2d.fromRadians(Math.PI)));
-            }
-        } catch (Exception e) {
-
-        }
-
-        return pose;
     }
 
     /**
@@ -351,6 +345,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return m_poseEstimator.getEstimatedPosition();
+    }
+
+    public Pose3d getEstimatorPose3d() {
+        return new Pose3d(getPose());
+    }
+
+    public Pose3d getPose3d() {
+        return m_slam.getRobotPose();
     }
 
     private SwerveModulePosition[] getModulePositions() {

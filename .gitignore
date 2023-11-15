@@ -167,3 +167,5 @@ bin/
 !repos/**/*
 
 src/main/java/com/team2383/robot/BuildConstants.java
+
+*.pyc

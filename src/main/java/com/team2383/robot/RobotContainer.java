@@ -31,7 +31,6 @@ import com.team2383.robot.subsystems.drivetrain.GyroIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
-import com.team2383.robot.subsystems.drivetrain.vision.VisionIO;
 import com.team2383.robot.subsystems.elevator.ElevatorIO;
 import com.team2383.robot.subsystems.elevator.ElevatorIOFalcon500;
 import com.team2383.robot.subsystems.elevator.ElevatorIOSim;
@@ -41,6 +40,10 @@ import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
 import com.team2383.robot.subsystems.feeder.FeederIOSim;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.sim_components.SimComponents;
+import com.team2383.robot.subsystems.vision.VisionIO;
+import com.team2383.robot.subsystems.vision.VisionIONorthstar;
+import com.team2383.robot.subsystems.vision.VisionIOSim;
+import com.team2383.robot.subsystems.vision.VisionSubsystem;
 import com.team2383.robot.subsystems.wrist.WristIO;
 import com.team2383.robot.subsystems.wrist.WristIOSim;
 import com.team2383.robot.subsystems.wrist.WristIOSparkMax;
@@ -74,6 +77,7 @@ public class RobotContainer {
     private ElevatorSubsystem m_elevatorSubsystem;
     private WristSubsystem m_wristSubsystem;
     private FeederSubsystem m_feederSubsystem;
+    private VisionSubsystem m_visionSubsystem;
 
     private Boolean cubeMode = true;
 
@@ -93,7 +97,6 @@ public class RobotContainer {
                 case ROBOT_COMP:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             new GyroIO() {},
-                            new VisionIO() {},
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     DriveConstants.frontLeftEncoder, Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
@@ -102,19 +105,26 @@ public class RobotContainer {
                                     DriveConstants.rearLeftEncoder, Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     DriveConstants.rearRightEncoder, Constants.kCANivoreBus));
+                    m_visionSubsystem = new VisionSubsystem(
+                            new VisionIONorthstar("northstar1"), new VisionIONorthstar("northstar2"));
+                    m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getPose3d);
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOFalcon500(Constants.kCANivoreBus));
                     m_wristSubsystem = new WristSubsystem(new WristIOSparkMax());
                     m_feederSubsystem = new FeederSubsystem(new FeederIOFalcon500());
+
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             new GyroIO() {},
-                            new VisionIO() {},
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
+                    m_visionSubsystem = new VisionSubsystem(
+                            new VisionIOSim(), new VisionIOSim());
+                    m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getEstimatorPose3d);
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim() {});
                     m_wristSubsystem = new WristSubsystem(new WristIOSim());
                     m_feederSubsystem = new FeederSubsystem(new FeederIOSim());
+
                     break;
                 default:
                     break;
@@ -124,7 +134,6 @@ public class RobotContainer {
         m_drivetrainSubsystem = m_drivetrainSubsystem != null ? m_drivetrainSubsystem
                 : new DrivetrainSubsystem(
                         new GyroIO() {},
-                        new VisionIO() {},
                         new SwerveModuleIO() {}, new SwerveModuleIO() {},
                         new SwerveModuleIO() {}, new SwerveModuleIO() {});
 
@@ -136,6 +145,11 @@ public class RobotContainer {
 
         m_feederSubsystem = m_feederSubsystem != null ? m_feederSubsystem
                 : new FeederSubsystem(new FeederIO() {});
+
+        m_visionSubsystem = m_visionSubsystem != null ? m_visionSubsystem
+                : new VisionSubsystem(new VisionIO() {}, new VisionIO() {});
+
+        m_visionSubsystem.setVisionConsumer(m_drivetrainSubsystem::visionConsumer);
 
         new SimComponents(m_elevatorSubsystem, m_wristSubsystem);
 

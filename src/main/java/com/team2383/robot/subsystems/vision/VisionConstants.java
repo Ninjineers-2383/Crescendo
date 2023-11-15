@@ -1,4 +1,4 @@
-package com.team2383.robot.subsystems.drivetrain.vision;
+package com.team2383.robot.subsystems.vision;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -17,30 +17,15 @@ public final class VisionConstants {
             Units.inchesToMeters(8),
             Units.inchesToMeters(12 / 2),
             Units.inchesToMeters(35));
+
     private static final Translation3d CAM_RIGHT = new Translation3d(
             Units.inchesToMeters(8),
             -Units.inchesToMeters(12 / 2),
             Units.inchesToMeters(35));
 
-    public static final class PhotonCameraData {
-        public final String name;
-        public final Transform3d transform;
-
-        public PhotonCameraData(String name, Transform3d transform) {
-            this.name = name;
-            this.transform = transform;
-        }
-    }
-
-    public static final PhotonCameraData[] kPhotonCameras = new PhotonCameraData[] {
-            new PhotonCameraData("Left",
-                    new Transform3d(
-                            CAM_LEFT,
-                            CAM_ROTATION)),
-            new PhotonCameraData("Right",
-                    new Transform3d(
-                            CAM_RIGHT,
-                            CAM_ROTATION))
+    public static final Transform3d[] camTransforms = new Transform3d[] {
+            new Transform3d(CAM_LEFT, CAM_ROTATION),
+            new Transform3d(CAM_RIGHT, CAM_ROTATION)
     };
 
 }
