@@ -23,11 +23,11 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
 
     private final Rotation2d m_angleOffset;
 
-    public SwerveModuleIOFalcon500(ModuleConstants constants, IAbsoluteEncoder angleEncoder, String CANbus) {
+    public SwerveModuleIOFalcon500(ModuleConstants constants, String CANbus) {
         this.m_angleMotor = new TalonFX(constants.kAngleMotorID, CANbus);
         this.m_driveMotor = new TalonFX(constants.kDriveMotorID, CANbus);
 
-        this.m_angleEncoder = angleEncoder;
+        this.m_angleEncoder = constants.kEncoder;
 
         this.m_angleOffset = constants.kAngleOffset;
 

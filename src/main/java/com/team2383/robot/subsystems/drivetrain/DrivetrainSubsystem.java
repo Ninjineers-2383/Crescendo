@@ -361,8 +361,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void forceOdometry(Pose2d pose) {
-        pose = AllianceUtil.transformPoseForAlliance(pose, AutoBuilder.getMirroringType(), AutoBuilder.getOrigin());
-
         m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
         resetEncoders();
     }
@@ -370,8 +368,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void forceOdometryAlliance(Pose2d pose) {
         pose = AllianceUtil.transformPoseForAlliance(pose, AutoBuilder.getMirroringType(), AutoBuilder.getOrigin());
 
-        m_poseEstimator.resetPosition(getHeading(), getModulePositions(), pose);
-        resetEncoders();
+        forceOdometry(pose);
     }
 
     public void setPosition(Translation2d position) {

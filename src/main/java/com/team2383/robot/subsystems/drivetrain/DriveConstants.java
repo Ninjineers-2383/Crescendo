@@ -62,7 +62,7 @@ public final class DriveConstants {
         public final int kAngleMotorID;
         public final int kDriveMotorID;
 
-        public final int kEncoderID;
+        public final IAbsoluteEncoder kEncoder;
 
         public final String name;
         public final Translation2d translation;
@@ -73,7 +73,7 @@ public final class DriveConstants {
 
         public ModuleConstants(double kS, double kV, double kA,
                 double kP, double kI, double kD,
-                int kAngleMotorID, int kDriveMotorID, int kEncoderID,
+                int kAngleMotorID, int kDriveMotorID, IAbsoluteEncoder kEncoder,
                 String name, Translation2d translation,
                 Rotation2d angleOffset) {
 
@@ -88,7 +88,7 @@ public final class DriveConstants {
             this.kAngleMotorID = kAngleMotorID;
             this.kDriveMotorID = kDriveMotorID;
 
-            this.kEncoderID = kEncoderID;
+            this.kEncoder = kEncoder;
 
             this.name = name;
             this.translation = translation;
@@ -142,7 +142,8 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.27135, 0, 0,
-            20, 21, 1,
+            20, 21,
+            new AbsoluteMagEncoder(6),
             "frontLeft",
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
@@ -154,7 +155,8 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.27135, 0, 0,
-            22, 23, 2,
+            22, 23,
+            new AbsoluteMagEncoder(7),
             "frontRight",
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
@@ -166,7 +168,8 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.27135, 0, 0,
-            24, 25, 3,
+            24, 25,
+            new AbsoluteMagEncoder(8),
             "rearLeft",
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
@@ -178,7 +181,8 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.27135, 0, 0,
-            26, 27, 3,
+            26, 27,
+            new AbsoluteMagEncoder(9),
             "rearRight",
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
@@ -197,9 +201,13 @@ public final class DriveConstants {
     // public final static IAbsoluteEncoder rearRightEncoder = new
     // AbsoluteCancoder(4, "Drive",
     // rearRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    public final static IAbsoluteEncoder frontLeftEncoder = new AbsoluteMagEncoder(6);
-    public final static IAbsoluteEncoder frontRightEncoder = new AbsoluteMagEncoder(7);
-    public final static IAbsoluteEncoder rearLeftEncoder = new AbsoluteMagEncoder(8);
-    public final static IAbsoluteEncoder rearRightEncoder = new AbsoluteMagEncoder(9);
+    // public final static IAbsoluteEncoder frontLeftEncoder = new
+    // AbsoluteMagEncoder(6);
+    // public final static IAbsoluteEncoder frontRightEncoder = new
+    // AbsoluteMagEncoder(7);
+    // public final static IAbsoluteEncoder rearLeftEncoder = new
+    // AbsoluteMagEncoder(8);
+    // public final static IAbsoluteEncoder rearRightEncoder = new
+    // AbsoluteMagEncoder(9);
 
 }

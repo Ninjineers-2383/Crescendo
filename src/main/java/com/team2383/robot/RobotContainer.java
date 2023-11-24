@@ -98,13 +98,13 @@ public class RobotContainer {
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             new GyroIO() {},
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
-                                    DriveConstants.frontLeftEncoder, Constants.kCANivoreBus),
+                                    Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
-                                    DriveConstants.frontRightEncoder, Constants.kCANivoreBus),
+                                    Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearLeftConstants,
-                                    DriveConstants.rearLeftEncoder, Constants.kCANivoreBus),
+                                    Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
-                                    DriveConstants.rearRightEncoder, Constants.kCANivoreBus));
+                                    Constants.kCANivoreBus));
                     m_visionSubsystem = new VisionSubsystem(
                             new VisionIONorthstar("northstar1"), new VisionIONorthstar("northstar2"));
                     m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getPose3d);
