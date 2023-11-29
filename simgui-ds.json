@@ -9,9 +9,9 @@
       "visible": true
     }
   },
-  "Keyboard 2 Settings": {
+  "System Joysticks": {
     "window": {
-      "visible": true
+      "visible": false
     }
   },
   "keyboardJoysticks": [
