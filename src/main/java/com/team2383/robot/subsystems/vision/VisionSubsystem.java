@@ -1,6 +1,5 @@
 package com.team2383.robot.subsystems.vision;
 
-import com.team2383.robot.Constants;
 import com.team2383.robot.subsystems.vision.VisionIO.VisionIOInputs;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -75,10 +74,10 @@ public class VisionSubsystem extends SubsystemBase {
 
                         if (error1 < error2) {
                             updates.add(new TimestampVisionUpdate(timestamp,
-                                    transform1.plus(VisionConstants.camTransforms[i]), tag));
+                                    VisionConstants.camTransforms[i].plus(transform1), tag));
                         } else {
                             updates.add(new TimestampVisionUpdate(timestamp,
-                                    transform2.plus(VisionConstants.camTransforms[i]), tag));
+                                    VisionConstants.camTransforms[i].plus(transform2), tag));
                         }
                         break;
                 }
