@@ -15,8 +15,9 @@ import java.util.Random;
 
 public class VisionIOSim implements VisionIO {
     AprilTagFieldLayout atfl;
+    Transform3d cameraTransform;
 
-    public VisionIOSim() {
+    public VisionIOSim(Transform3d cameraTransform) {
         try {
             atfl = new AprilTagFieldLayout(
                     Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "2023-chargedup-shift.json"));
@@ -26,20 +27,23 @@ public class VisionIOSim implements VisionIO {
         }
 
         atfl.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
+
+        this.cameraTransform = cameraTransform;
     }
 
     @Override
     public void updateInputs(VisionIOInputs inputs, Pose3d robotPose) {
+        Pose3d cameraPose = robotPose.plus(cameraTransform);
         ArrayList<AprilTag> tags = new ArrayList<>();
         for (AprilTag tag : atfl.getTags()) {
-            Transform3d robotToTag = new Transform3d(robotPose, atfl.getTagPose(tag.ID).get());
+            Transform3d robotToTag = new Transform3d(cameraPose, atfl.getTagPose(tag.ID).get());
             if (robotToTag.getTranslation().getNorm() < 4) {
                 tags.add(tag);
             }
         }
         if (tags.size() > 0) {
             AprilTag tag = tags.get(new Random().nextInt(tags.size()));
-            Transform3d robotToTag = new Transform3d(robotPose, atfl.getTagPose(tag.ID).get());
+            Transform3d robotToTag = new Transform3d(cameraPose, atfl.getTagPose(tag.ID).get());
             inputs.timestamps = new double[] { RobotController.getFPGATime() / 1000000.0 };
             inputs.frames = new double[][] { new double[] {
                     2, // 2 pose estimates

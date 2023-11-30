@@ -40,6 +40,7 @@ import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
 import com.team2383.robot.subsystems.feeder.FeederIOSim;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.sim_components.SimComponents;
+import com.team2383.robot.subsystems.vision.VisionConstants;
 import com.team2383.robot.subsystems.vision.VisionIO;
 import com.team2383.robot.subsystems.vision.VisionIONorthstar;
 import com.team2383.robot.subsystems.vision.VisionIOSim;
@@ -119,7 +120,8 @@ public class RobotContainer {
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
                     m_visionSubsystem = new VisionSubsystem(
-                            new VisionIOSim(), new VisionIOSim());
+                            new VisionIOSim(VisionConstants.camTransforms[0]),
+                            new VisionIOSim(VisionConstants.camTransforms[1]));
                     m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getEstimatorPose3d);
                     m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim() {});
                     m_wristSubsystem = new WristSubsystem(new WristIOSim());
