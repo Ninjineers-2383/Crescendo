@@ -272,7 +272,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * north
      */
     public void resetHeading() {
-        m_gyro.setHeading(Rotation2d.fromDegrees(getCompassHeading()));
+        m_gyro.setHeading(new Rotation2d());
         m_poseEstimator.resetPosition(getHeading(), getModulePositions(),
                 new Pose2d(m_poseEstimator.getEstimatedPosition().getTranslation(), getHeading()));
         resetEncoders();
@@ -286,7 +286,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * north
      */
     public void resetHeading(Rotation2d offset) {
-        m_gyro.setHeading(Rotation2d.fromDegrees(getCompassHeading() + offset.getDegrees()));
+        m_gyro.setHeading(offset);
         m_poseEstimator.resetPosition(getHeading(), getModulePositions(),
                 new Pose2d(m_poseEstimator.getEstimatedPosition().getTranslation(), getHeading()));
         resetEncoders();
@@ -332,24 +332,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void setPosition(Translation2d position) {
         m_poseEstimator.resetPosition(getHeading(), getModulePositions(), new Pose2d(position, getHeading()));
         resetEncoders();
-    }
-
-    public double getCompassHeading() {
-        // Compass is CW positive not CCW positive
-        // double fieldCompassHeading = Preferences.getDouble("Compass", 0);
-        // double currentCompassHeading = m_gyro.getComas().getValue();
-
-        // return currentCompassHeading - fieldCompassHeading;
-        return 0;
-    }
-
-    public void setCompassOffset() {
-        // Compass is CW positive not CCW positive
-        // double fieldCompassHeading = m_gyro.getCompassHeading();
-        // Preferences.setDouble("Compass", fieldCompassHeading);
-
-        // DataLogManager.log("INFO: Compass offset set to " + fieldCompassHeading +
-        // "\n");
     }
 
     @Override
