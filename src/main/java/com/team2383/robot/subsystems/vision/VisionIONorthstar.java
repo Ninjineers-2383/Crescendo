@@ -36,7 +36,7 @@ public class VisionIONorthstar implements VisionIO {
                 .getStringTopic("tag_layout")
                 .publish();
 
-        tagLayoutPublisher.set(null);
+        tagLayoutPublisher.set("");
 
         var outputTable = northstarTable.getSubTable("output");
         observationSubscriber = outputTable
