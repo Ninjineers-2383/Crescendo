@@ -8,47 +8,20 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.autos.auto_blocks.AutoScoreCommand;
 import com.team2383.robot.autos.auto_blocks.Engage;
-import com.team2383.robot.autos.auto_blocks.FeedCone;
-import com.team2383.robot.autos.auto_blocks.FeedCube;
 import com.team2383.robot.autos.auto_blocks.PathfindCommand;
-import com.team2383.robot.autos.auto_blocks.Retract;
-import com.team2383.robot.autos.auto_blocks.ScoreHighCommand;
-import com.team2383.robot.autos.auto_blocks.ScoreMiddleCommand;
-import com.team2383.robot.autos.auto_chooser.AutoChooser;
-import com.team2383.robot.autos.auto_chooser.TeleOpChooser;
-import com.team2383.robot.commands.ElevatorVelocityCommand;
-import com.team2383.robot.commands.FeederVoltageCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
-import com.team2383.robot.commands.WristVelocityCommand;
-import com.team2383.robot.commands.ZeroElevatorCommand;
-import com.team2383.robot.commands.blizzard.BlizzardCommand;
-import com.team2383.robot.commands.blizzard.BlizzardPresets;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
-import com.team2383.robot.subsystems.elevator.ElevatorIO;
-import com.team2383.robot.subsystems.elevator.ElevatorIOFalcon500;
-import com.team2383.robot.subsystems.elevator.ElevatorIOSim;
-import com.team2383.robot.subsystems.elevator.ElevatorSubsystem;
-import com.team2383.robot.subsystems.feeder.FeederIO;
-import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
-import com.team2383.robot.subsystems.feeder.FeederIOSim;
-import com.team2383.robot.subsystems.feeder.FeederSubsystem;
-import com.team2383.robot.subsystems.sim_components.SimComponents;
 import com.team2383.robot.subsystems.vision.VisionConstants;
 import com.team2383.robot.subsystems.vision.VisionIO;
 import com.team2383.robot.subsystems.vision.VisionIONorthstar;
 import com.team2383.robot.subsystems.vision.VisionIOSim;
 import com.team2383.robot.subsystems.vision.VisionSubsystem;
-import com.team2383.robot.subsystems.wrist.WristIO;
-import com.team2383.robot.subsystems.wrist.WristIOSim;
-import com.team2383.robot.subsystems.wrist.WristIOSparkMax;
-import com.team2383.robot.subsystems.wrist.WristSubsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -59,7 +32,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -72,18 +44,15 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
  */
 public class RobotContainer {
     private final GenericHID m_driverController = new GenericHID(0);
-    private final GenericHID m_operatorController = new GenericHID(1);
+    // private final GenericHID m_operatorController = new GenericHID(1);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
-    private ElevatorSubsystem m_elevatorSubsystem;
-    private WristSubsystem m_wristSubsystem;
-    private FeederSubsystem m_feederSubsystem;
     private VisionSubsystem m_visionSubsystem;
 
     private Boolean cubeMode = true;
 
-    private final AutoChooser autoChooser;
-    private final TeleOpChooser teleOpChooser;
+    // private final AutoChooser autoChooser;
+    // private final TeleOpChooser teleOpChooser;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -109,9 +78,6 @@ public class RobotContainer {
                     m_visionSubsystem = new VisionSubsystem(
                             new VisionIONorthstar("northstar1"), new VisionIONorthstar("northstar2"));
                     m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getPose3d);
-                    m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOFalcon500(Constants.kCANivoreBus));
-                    m_wristSubsystem = new WristSubsystem(new WristIOSparkMax());
-                    m_feederSubsystem = new FeederSubsystem(new FeederIOFalcon500());
 
                     break;
                 case ROBOT_SIM:
@@ -123,9 +89,6 @@ public class RobotContainer {
                             new VisionIOSim(VisionConstants.camTransforms[0]),
                             new VisionIOSim(VisionConstants.camTransforms[1]));
                     m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getEstimatorPose3d);
-                    m_elevatorSubsystem = new ElevatorSubsystem(new ElevatorIOSim() {});
-                    m_wristSubsystem = new WristSubsystem(new WristIOSim());
-                    m_feederSubsystem = new FeederSubsystem(new FeederIOSim());
 
                     break;
                 default:
@@ -139,23 +102,10 @@ public class RobotContainer {
                         new SwerveModuleIO() {}, new SwerveModuleIO() {},
                         new SwerveModuleIO() {}, new SwerveModuleIO() {});
 
-        m_elevatorSubsystem = m_elevatorSubsystem != null ? m_elevatorSubsystem
-                : new ElevatorSubsystem(new ElevatorIO() {});
-
-        m_wristSubsystem = m_wristSubsystem != null ? m_wristSubsystem
-                : new WristSubsystem(new WristIO() {});
-
-        m_feederSubsystem = m_feederSubsystem != null ? m_feederSubsystem
-                : new FeederSubsystem(new FeederIO() {});
-
         m_visionSubsystem = m_visionSubsystem != null ? m_visionSubsystem
                 : new VisionSubsystem(new VisionIO() {}, new VisionIO() {});
 
         m_visionSubsystem.setVisionConsumer(m_drivetrainSubsystem::visionConsumer);
-
-        new SimComponents(m_elevatorSubsystem, m_wristSubsystem);
-
-        teleOpChooser = new TeleOpChooser();
 
         configureDefaultCommands();
         registerAutoCommands(); // Configure the button bindings
@@ -164,14 +114,12 @@ public class RobotContainer {
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
 
-        autoChooser = new AutoChooser(m_drivetrainSubsystem, m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem);
-
     }
 
     public void periodic() {
         SmartDashboard.putBoolean("Cube Mode", cubeMode);
 
-        autoChooser.periodic();
+        // autoChooser.periodic();
 
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
@@ -183,26 +131,6 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        // Ground Intake
-        new JoystickButton(m_operatorController, 1)
-                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.GROUND_INTAKE));
-
-        // Cone Chute
-        new JoystickButton(m_operatorController, 2)
-                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.CONE_CHUTE));
-        // Middle
-        new JoystickButton(m_operatorController, 3)
-                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.MIDDLE));
-        // High
-        new JoystickButton(m_operatorController, 4)
-                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.HIGH));
-
-        new POVButton(m_operatorController, 0)
-                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.SLIDER));
-
-        new POVButton(m_operatorController, 90)
-                .onTrue(new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.HIGH_2));
-
         new JoystickButton(m_driverController, 1)
                 .toggleOnTrue(new JoystickDriveHeadingLock(m_drivetrainSubsystem,
                         () -> new Translation2d(
@@ -221,10 +149,6 @@ public class RobotContainer {
         new JoystickButton(m_driverController, 6)
                 .whileTrue(new PathfindCommand("DriveToChute"));
 
-        new JoystickButton(m_driverController, 5)
-                .whileTrue(new AutoScoreCommand(m_drivetrainSubsystem, m_elevatorSubsystem, m_wristSubsystem,
-                        m_feederSubsystem, teleOpChooser::getResponses));
-
         new JoystickButton(m_driverController, 3).onTrue(new InstantCommand(() -> {
             cubeMode = true;
         }));
@@ -237,7 +161,6 @@ public class RobotContainer {
                     m_drivetrainSubsystem.resetHeading();
                 }));
 
-        new JoystickButton(m_operatorController, 8).onTrue(new ZeroElevatorCommand(m_elevatorSubsystem));
     }
 
     private void configureDefaultCommands() {
@@ -252,16 +175,6 @@ public class RobotContainer {
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
 
-        m_feederSubsystem.setDefaultCommand(new FeederVoltageCommand(m_feederSubsystem,
-                () -> (m_driverController.getRawAxis(2) - m_driverController.getRawAxis(3)), () -> cubeMode));
-
-        m_wristSubsystem.setDefaultCommand(
-                new WristVelocityCommand(m_wristSubsystem,
-                        () -> -MathUtil.applyDeadband(m_operatorController.getRawAxis(1), 0.04)));
-
-        m_elevatorSubsystem.setDefaultCommand(
-                new ElevatorVelocityCommand(m_elevatorSubsystem,
-                        () -> -MathUtil.applyDeadband(m_operatorController.getRawAxis(5), 0.04)));
     }
 
     /**
@@ -270,40 +183,10 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return autoChooser.getAutonomousCommand();
+        return (Command) null;
     }
 
     private void registerAutoCommands() {
         NamedCommands.registerCommand("Engage", new Engage(m_drivetrainSubsystem, true));
-
-        NamedCommands.registerCommand("Feed Cone",
-                new FeedCone(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
-
-        NamedCommands.registerCommand("Feed Cube",
-                new FeedCube(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem));
-
-        NamedCommands.registerCommand("Retract Cone",
-                new Retract(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
-
-        NamedCommands.registerCommand("Retract Cube",
-                new Retract(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
-
-        NamedCommands.registerCommand("Score Cube High",
-                new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
-
-        NamedCommands.registerCommand("Score Cube Middle",
-                new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, true));
-
-        NamedCommands.registerCommand("Score Cone High",
-                new ScoreHighCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
-
-        NamedCommands.registerCommand("Score Cone Middle",
-                new ScoreMiddleCommand(m_elevatorSubsystem, m_wristSubsystem, m_feederSubsystem, false));
-
-        NamedCommands.registerCommand("Cone Slider", new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem,
-                BlizzardPresets.SLIDER));
-
-        NamedCommands.registerCommand("Chute",
-                new BlizzardCommand(m_elevatorSubsystem, m_wristSubsystem, BlizzardPresets.CONE_CHUTE));
     }
 }

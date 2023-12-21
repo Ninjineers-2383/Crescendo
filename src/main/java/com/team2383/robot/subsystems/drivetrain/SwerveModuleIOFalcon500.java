@@ -16,8 +16,8 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
 
     private final IAbsoluteEncoder m_angleEncoder;
 
-    private final VelocityVoltage m_velocityOut = new VelocityVoltage(0, 0, true, 0, 0, false);
-    private final PositionVoltage m_positionOut = new PositionVoltage(0, 0, true, 0, 0, false);
+    private final VelocityVoltage m_velocityOut = new VelocityVoltage(0);
+    private final PositionVoltage m_positionOut = new PositionVoltage(0);
 
     private Rotation2d m_lastAngle = new Rotation2d();
 

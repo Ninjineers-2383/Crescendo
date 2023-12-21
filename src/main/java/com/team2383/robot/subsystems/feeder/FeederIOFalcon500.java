@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 public class FeederIOFalcon500 implements FeederIO {
     final TalonFX motor = new TalonFX(FeederConstants.kMotorID);
 
-    final VoltageOut voltageOut = new VoltageOut(0, false, false);
+    final VoltageOut voltageOut = new VoltageOut(0);
 
     double voltage = 0;
 
