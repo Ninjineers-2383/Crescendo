@@ -17,11 +17,6 @@ import com.team2383.robot.subsystems.drivetrain.GyroIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
-import com.team2383.robot.subsystems.vision.VisionConstants;
-import com.team2383.robot.subsystems.vision.VisionIO;
-import com.team2383.robot.subsystems.vision.VisionIONorthstar;
-import com.team2383.robot.subsystems.vision.VisionIOSim;
-import com.team2383.robot.subsystems.vision.VisionSubsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -47,8 +42,6 @@ public class RobotContainer {
     // private final GenericHID m_operatorController = new GenericHID(1);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
-    private VisionSubsystem m_visionSubsystem;
-
     private Boolean cubeMode = true;
 
     // private final AutoChooser autoChooser;
@@ -75,9 +68,6 @@ public class RobotContainer {
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
-                    m_visionSubsystem = new VisionSubsystem(
-                            new VisionIONorthstar("northstar-1"), new VisionIONorthstar("northstar-2"));
-                    m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getPose3d);
 
                     break;
                 case ROBOT_SIM:
@@ -85,12 +75,6 @@ public class RobotContainer {
                             new GyroIO() {},
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
-                    m_visionSubsystem = new VisionSubsystem(
-                            new VisionIOSim(VisionConstants.camTransforms[0]),
-                            new VisionIOSim(VisionConstants.camTransforms[1]),
-                            new VisionIOSim(VisionConstants.camTransforms[2]),
-                            new VisionIOSim(VisionConstants.camTransforms[3]));
-                    m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getEstimatorPose3d);
 
                     break;
                 default:
@@ -103,11 +87,6 @@ public class RobotContainer {
                         new GyroIO() {},
                         new SwerveModuleIO() {}, new SwerveModuleIO() {},
                         new SwerveModuleIO() {}, new SwerveModuleIO() {});
-
-        m_visionSubsystem = m_visionSubsystem != null ? m_visionSubsystem
-                : new VisionSubsystem(new VisionIO() {}, new VisionIO() {});
-
-        m_visionSubsystem.setVisionConsumer(m_drivetrainSubsystem::visionConsumer);
 
         configureDefaultCommands();
         registerAutoCommands(); // Configure the button bindings
