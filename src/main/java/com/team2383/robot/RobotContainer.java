@@ -76,7 +76,7 @@ public class RobotContainer {
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
                     m_visionSubsystem = new VisionSubsystem(
-                            new VisionIONorthstar("northstar1"), new VisionIONorthstar("northstar2"));
+                            new VisionIONorthstar("northstar-1"), new VisionIONorthstar("northstar-2"));
                     m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getPose3d);
 
                     break;
@@ -87,7 +87,9 @@ public class RobotContainer {
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
                     m_visionSubsystem = new VisionSubsystem(
                             new VisionIOSim(VisionConstants.camTransforms[0]),
-                            new VisionIOSim(VisionConstants.camTransforms[1]));
+                            new VisionIOSim(VisionConstants.camTransforms[1]),
+                            new VisionIOSim(VisionConstants.camTransforms[2]),
+                            new VisionIOSim(VisionConstants.camTransforms[3]));
                     m_visionSubsystem.setPoseSupplier(m_drivetrainSubsystem::getEstimatorPose3d);
 
                     break;
