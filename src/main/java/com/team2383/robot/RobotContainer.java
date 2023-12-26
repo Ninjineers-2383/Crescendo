@@ -9,7 +9,6 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.autos.auto_blocks.Engage;
-import com.team2383.robot.autos.auto_blocks.PathfindCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
@@ -123,12 +122,6 @@ public class RobotContainer {
                                                 0.1)),
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
-
-        new JoystickButton(m_driverController, 2)
-                .whileTrue(new PathfindCommand("DriveToSlider"));
-
-        new JoystickButton(m_driverController, 6)
-                .whileTrue(new PathfindCommand("DriveToChute"));
 
         new JoystickButton(m_driverController, 3).onTrue(new InstantCommand(() -> {
             cubeMode = true;
