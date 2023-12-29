@@ -132,7 +132,7 @@ public class RobotContainer {
 
         new JoystickButton(m_driverController, 8)
                 .onTrue(new InstantCommand(() -> {
-                    m_drivetrainSubsystem.resetHeading();
+                    m_drivetrainSubsystem.forceHeading(new Rotation2d());
                 }));
 
     }

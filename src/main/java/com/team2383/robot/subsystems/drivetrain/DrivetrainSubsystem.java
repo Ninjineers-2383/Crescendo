@@ -12,22 +12,21 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.AllianceUtil;
 import com.pathplanner.lib.util.FieldMirroring.MirroringType;
 import com.pathplanner.lib.util.FieldMirroring.Origin;
 import com.team2383.robot.helpers.LocalADStarAK;
+import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
+import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMIOServer;
+import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMUpdate;
 
 public class DrivetrainSubsystem extends SubsystemBase {
     private final CoaxialSwerveModule m_frontLeftModule;
@@ -41,13 +40,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final GyroIO m_gyro;
     private final GyroIOInputsAutoLogged m_gyroInputs = new GyroIOInputsAutoLogged();
 
+    private final SLAMClient m_SLAMClient;
+
     public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             DriveConstants.frontLeftConstants.translation,
             DriveConstants.frontRightConstants.translation,
             DriveConstants.rearLeftConstants.translation,
             DriveConstants.rearRightConstants.translation);
 
-    private SwerveDriveOdometry m_odometry;
+    private Pose3d robotPose;
 
     private final Field2d m_field = new Field2d();
     private final FieldObject2d m_COR;
@@ -71,11 +72,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_modules = new CoaxialSwerveModule[] { m_frontLeftModule, m_frontRightModule, m_rearLeftModule,
                 m_rearRightModule };
 
-        m_odometry = new SwerveDriveOdometry(
-                m_kinematics,
-                new Rotation2d(),
-                getModulePositions());
-
         try {
             aprilTags = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
         } catch (Exception e) {
@@ -85,6 +81,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         m_lastStates = new SwerveModuleState[m_modules.length];
 
+        m_SLAMClient = new SLAMClient(new SLAMIOServer(m_kinematics, getModulePositions()));
+
         SmartDashboard.putData("Field", m_field);
         m_COR = m_field.getObject("COR");
 
@@ -93,12 +91,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         addChild(DriveConstants.rearLeftConstants.name, m_rearLeftModule);
         addChild(DriveConstants.rearRightConstants.name, m_rearRightModule);
 
-        if (RobotBase.isSimulation()) {
-            m_odometry.resetPosition(new Rotation2d(), getModulePositions(),
-                    new Pose2d(new Translation2d(0, 0), new Rotation2d()));
-        }
-
-        resetHeading();
+        forceHeading(new Rotation2d());
 
         AutoBuilder.configureHolonomic(
                 this::getPose,
@@ -150,17 +143,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         headingIntegral += chassis.omegaRadiansPerSecond * 0.02;
 
+        SLAMUpdate update;
         if (m_gyroInputs.connected) {
-            m_odometry.update(Rotation2d.fromDegrees(m_gyroInputs.headingDeg), getModulePositions());
+            update = m_SLAMClient.update(chassis, getModulePositions(),
+                    Rotation2d.fromDegrees(m_gyroInputs.headingDeg));
         } else {
-            m_odometry.update(
-                    Rotation2d.fromRadians(headingIntegral),
-                    getModulePositions());
+            update = m_SLAMClient.update(chassis, getModulePositions(), Rotation2d.fromRadians(headingIntegral));
         }
 
-        Pose2d estimatedPose = m_odometry.getPoseMeters();
-
-        m_field.setRobotPose(estimatedPose);
+        m_field.setRobotPose(update.pose().toPose2d());
 
         SmartDashboard.putNumber("Roll", getRoll());
 
@@ -170,7 +161,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Swerve/Chassis Heading", chassis.omegaRadiansPerSecond);
 
-        Logger.recordOutput("Robot Pose", estimatedPose);
+        Logger.recordOutput("Robot Pose", update.pose().toPose2d());
     }
 
     /**
@@ -233,12 +224,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
     }
 
-    public void resetEncoders() {
-        // for (CoaxialSwerveModule module : m_modules) {
-        // module.resetEncoders();
-        // }
-    }
-
     /**
      * Get the current robot heading
      * Note: This is normalized so that 0 is facing directly away from your alliance
@@ -249,7 +234,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @return The heading of the robot in a Rotation2D
      */
     public Rotation2d getHeading() {
-        return m_odometry.getPoseMeters().getRotation();
+        return Rotation2d.fromRadians(robotPose.getRotation().getZ());
     }
 
     /**
@@ -261,36 +246,19 @@ public class DrivetrainSubsystem extends SubsystemBase {
      *            facing directly towards the opposing alliance wall
      */
     public void forceHeading(Rotation2d currentHeading) {
-        // m_gyro.setHeading(currentHeading);
-        m_odometry.resetPosition(currentHeading, getModulePositions(), m_odometry.getPoseMeters());
+        m_SLAMClient.forceHeading(currentHeading, new Rotation2d(m_gyroInputs.headingDeg), getModulePositions());
     }
 
     /**
-     * Set the current heading to the calculated compass heading
-     * <p>
-     * Gyro offset needs to be saved to robot before this can be used.
-     * If the compass heading is not stored this will set the forward direction to
-     * north
+     * Force the current odometry pose of the robot to the pose passed into the
+     * parameter. Will not permanently change robot pose and will not do anything
+     * once vision measurements have been obtained
+     * 
+     * @param pose
+     *            Pose to force
      */
-    public void resetHeading() {
-        m_gyro.setHeading(new Rotation2d());
-        m_odometry.resetPosition(getHeading(), getModulePositions(),
-                new Pose2d(m_odometry.getPoseMeters().getTranslation(), getHeading()));
-        resetEncoders();
-    }
-
-    /**
-     * Set the current heading to the calculated compass heading
-     * <p>
-     * Gyro offset needs to be saved to robot before this can be used.
-     * If the compass heading is not stored this will set the forward direction to
-     * north
-     */
-    public void resetHeading(Rotation2d offset) {
-        m_gyro.setHeading(offset);
-        m_odometry.resetPosition(getHeading(), getModulePositions(),
-                new Pose2d(m_odometry.getPoseMeters().getTranslation(), getHeading()));
-        resetEncoders();
+    public void forceOdometry(Pose2d pose) {
+        m_SLAMClient.forceOdometry(pose, new Rotation2d(m_gyroInputs.headingDeg), getModulePositions());
     }
 
     /**
@@ -307,40 +275,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public Pose2d getPose() {
-        return m_odometry.getPoseMeters();
+        return robotPose.toPose2d();
     }
 
     public Pose3d getEstimatorPose3d() {
-        return new Pose3d(getPose());
-    }
-
-    public Pose3d getPose3d() {
-        throw new UnsupportedOperationException("Not implemented");
+        return robotPose;
     }
 
     private SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] { m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(),
                 m_rearLeftModule.getPosition(), m_rearRightModule.getPosition() };
-    }
-
-    public void forceOdometry(Pose2d pose) {
-        m_odometry.resetPosition(getHeading(), getModulePositions(), pose);
-        resetEncoders();
-    }
-
-    public void forceOdometryAlliance(Pose2d pose) {
-        pose = AllianceUtil.transformPoseForAlliance(pose, AutoBuilder.getMirroringType(), AutoBuilder.getOrigin());
-
-        forceOdometry(pose);
-    }
-
-    public void setPosition(Translation2d position) {
-        m_odometry.resetPosition(getHeading(), getModulePositions(), new Pose2d(position, getHeading()));
-        resetEncoders();
-    }
-
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        super.initSendable(builder);
     }
 }

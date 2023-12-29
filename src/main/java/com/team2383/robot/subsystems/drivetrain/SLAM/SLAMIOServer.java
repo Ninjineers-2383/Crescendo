@@ -1,4 +1,4 @@
-package com.team2383.robot.subsystems.SLAM;
+package com.team2383.robot.subsystems.drivetrain.SLAM;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -76,5 +76,15 @@ public class SLAMIOServer implements SLAMIO {
     public void seedLandmarks(Pose3d[] landmarks) {
         landmarksPub.set(landmarks);
         numLandmarksPub.set(landmarks.length);
+    }
+
+    @Override
+    public void forcePose(Pose2d pose, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
+        odometry.resetPosition(gyroAngle, positions, pose);
+    }
+
+    @Override
+    public void forceHeading(Rotation2d heading, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
+        odometry.resetPosition(gyroAngle, positions, new Pose2d(odometry.getPoseMeters().getTranslation(), heading));
     }
 }

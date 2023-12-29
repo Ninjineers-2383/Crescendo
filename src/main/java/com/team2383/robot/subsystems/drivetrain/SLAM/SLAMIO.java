@@ -1,14 +1,12 @@
-package com.team2383.robot.subsystems.SLAM;
+package com.team2383.robot.subsystems.drivetrain.SLAM;
 
-import org.littletonrobotics.junction.AutoLog;
-
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 public interface SLAMIO {
-    @AutoLog
     public static class SLAMIOInputs {
         public boolean connected = false;
         public boolean newValue = false;
@@ -26,5 +24,11 @@ public interface SLAMIO {
     }
 
     public default void seedLandmarks(Pose3d[] landmarks) {
+    }
+
+    public default void forceHeading(Rotation2d heading, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
+    }
+
+    public default void forcePose(Pose2d pose, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
     }
 }
