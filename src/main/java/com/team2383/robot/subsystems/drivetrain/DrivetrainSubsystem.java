@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -41,6 +42,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final GyroIOInputsAutoLogged m_gyroInputs = new GyroIOInputsAutoLogged();
 
     private final SLAMClient m_SLAMClient;
+    private final SwerveDriveOdometry m_deadReckoning;
 
     public final SwerveDriveKinematics m_kinematics = new SwerveDriveKinematics(
             DriveConstants.frontLeftConstants.translation,
@@ -48,7 +50,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             DriveConstants.rearLeftConstants.translation,
             DriveConstants.rearRightConstants.translation);
 
-    private Pose3d robotPose;
+    private Pose3d robotPose = new Pose3d();
 
     private final Field2d m_field = new Field2d();
     private final FieldObject2d m_COR;
@@ -82,6 +84,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_lastStates = new SwerveModuleState[m_modules.length];
 
         m_SLAMClient = new SLAMClient(new SLAMIOServer(m_kinematics, getModulePositions()));
+        m_deadReckoning = new SwerveDriveOdometry(m_kinematics, getHeading(), getModulePositions());
 
         SmartDashboard.putData("Field", m_field);
         m_COR = m_field.getObject("COR");
@@ -147,8 +150,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
         if (m_gyroInputs.connected) {
             update = m_SLAMClient.update(chassis, getModulePositions(),
                     Rotation2d.fromDegrees(m_gyroInputs.headingDeg));
+            m_deadReckoning.update(Rotation2d.fromDegrees(m_gyroInputs.headingDeg), getModulePositions());
         } else {
             update = m_SLAMClient.update(chassis, getModulePositions(), Rotation2d.fromRadians(headingIntegral));
+            m_deadReckoning.update(getHeading(), getModulePositions());
         }
 
         m_field.setRobotPose(update.pose().toPose2d());
@@ -280,6 +285,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public Pose3d getEstimatorPose3d() {
         return robotPose;
+    }
+
+    public Pose3d getDeadReckoningPose3d() {
+        return new Pose3d(m_deadReckoning.getPoseMeters());
     }
 
     private SwerveModulePosition[] getModulePositions() {

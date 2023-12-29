@@ -56,77 +56,7 @@
       "/SmartDashboard/TeleOp Scoring": "String Chooser"
     },
     "windows": {
-      "/SmartDashboard/Auto": {
-        "window": {
-          "visible": true
-        }
-      },
       "/SmartDashboard/Field": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 1": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 10": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 11": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 2": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 3": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 4": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 5": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 6": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 7": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 8": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Question 9": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/TeleOp Height": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/TeleOp Scoring": {
         "window": {
           "visible": true
         }
@@ -138,18 +68,35 @@
       "AdvantageKit": {
         "RealOutputs": {
           "open": true
-        },
-        "open": true
+        }
       },
       "SmartDashboard": {
         "Auto": {
           "open": true
         },
         "open": true
+      },
+      "northstar-1": {
+        "open": true
+      },
+      "northstar-2": {
+        "open": true,
+        "output": {
+          "double[]##v_/northstar-2/output/observations": {
+            "open": true
+          },
+          "open": true
+        }
+      },
+      "northstar-3": {
+        "open": true,
+        "output": {
+          "double[]##v_/northstar-3/output/observations": {
+            "open": true
+          },
+          "open": true
+        }
       }
     }
-  },
-  "NetworkTables View": {
-    "visible": false
   }
 }

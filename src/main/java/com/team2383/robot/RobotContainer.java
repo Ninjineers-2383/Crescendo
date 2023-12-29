@@ -10,12 +10,14 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.autos.auto_blocks.Engage;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
+import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
+import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -75,6 +77,13 @@ public class RobotContainer {
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
 
+                    new CameraSimSubsystem("northstar-1", SLAMConstantsConfig.camTransforms[0],
+                            m_drivetrainSubsystem::getDeadReckoningPose3d);
+                    new CameraSimSubsystem("northstar-2", SLAMConstantsConfig.camTransforms[1],
+                            m_drivetrainSubsystem::getDeadReckoningPose3d);
+                    // TODO: Northstar 3 should be BL and 4 should be BR
+                    new CameraSimSubsystem("northstar-3", SLAMConstantsConfig.camTransforms[3],
+                            m_drivetrainSubsystem::getDeadReckoningPose3d);
                     break;
                 default:
                     break;
