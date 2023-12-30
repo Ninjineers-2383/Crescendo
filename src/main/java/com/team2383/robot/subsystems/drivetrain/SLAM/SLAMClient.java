@@ -25,7 +25,7 @@ public class SLAMClient {
 
         slamio.updateInputs(inputs);
 
-        return new SLAMUpdate(inputs.pose, inputs.landmarks, inputs.seenLandmarks);
+        return new SLAMUpdate(inputs.pose, inputs.landmarks, inputs.seenLandmarks, inputs.newValue);
     }
 
     public void forceOdometry(Pose2d pose, Rotation2d gyroAngle, SwerveModulePosition[] positions) {

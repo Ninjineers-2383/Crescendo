@@ -11,6 +11,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.PubSubOption;
+import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructArraySubscriber;
 import edu.wpi.first.networktables.StructPublisher;
@@ -34,13 +36,15 @@ public class SLAMIOServer implements SLAMIO {
         odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(), positions);
         NetworkTable table = NetworkTableInstance.getDefault().getTable("slam_data");
 
-        pose = table.getStructTopic("pose", Pose3d.struct).subscribe(new Pose3d());
+        pose = table.getStructTopic("pose", Pose3d.struct)
+                .subscribe(new Pose3d(), PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
         landmarks = table.getStructArrayTopic("landmarks", Pose3d.struct).subscribe(new Pose3d[0]);
         seenLandmarks = table.getStructArrayTopic("seenLandmarks", Pose3d.struct).subscribe(new Pose3d[0]);
 
-        chassisSpeedsPub = table.getStructTopic("chassisSpeeds", ChassisSpeeds.struct).publish();
+        chassisSpeedsPub = table.getStructTopic("chassisSpeeds", ChassisSpeeds.struct)
+                .publish(PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true), PubSubOption.periodic(0));
         numLandmarksPub = table.getIntegerTopic("numLandmarks").publish();
-        landmarksPub = table.getStructArrayTopic("landmarks", Pose3d.struct).publish();
+        landmarksPub = table.getStructArrayTopic("seed-landmarks", Pose3d.struct).publish();
     }
 
     @Override
@@ -52,7 +56,8 @@ public class SLAMIOServer implements SLAMIO {
             Pose2d ref = odometry.getPoseMeters();
             inputs.pose = new Pose3d(
                     ref.getX(), ref.getY(), inputs.pose.getZ(),
-                    inputs.pose.getRotation().rotateBy(new Rotation3d(0, 0, ref.getRotation().getRadians())));
+                    new Rotation3d(inputs.pose.getRotation().getX(), inputs.pose.getRotation().getY(),
+                            ref.getRotation().getRadians()));
             return;
         }
 

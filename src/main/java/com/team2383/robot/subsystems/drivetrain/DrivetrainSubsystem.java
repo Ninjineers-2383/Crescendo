@@ -113,6 +113,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             landmarks[i - 1] = aprilTags.getTagPose(i).get();
         }
 
+        m_SLAMClient.seedSLAMLandmarks(landmarks);
     }
 
     @Override
@@ -153,7 +154,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_deadReckoning.update(Rotation2d.fromDegrees(m_gyroInputs.headingDeg), getModulePositions());
         } else {
             update = m_SLAMClient.update(chassis, getModulePositions(), Rotation2d.fromRadians(headingIntegral));
-            m_deadReckoning.update(getHeading(), getModulePositions());
+            m_deadReckoning.update(Rotation2d.fromRadians(headingIntegral), getModulePositions());
         }
 
         m_field.setRobotPose(update.pose().toPose2d());
@@ -167,6 +168,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("Swerve/Chassis Heading", chassis.omegaRadiansPerSecond);
 
         Logger.recordOutput("Robot Pose", update.pose().toPose2d());
+
+        Logger.recordOutput("SLAM/Robot Pose", update.pose());
+        Logger.recordOutput("SLAM/landmarks", update.landmarks());
+        Logger.recordOutput("SLAM/seenLandmarks", update.seenLandmarks());
+        Logger.recordOutput("SLAM/newValue", update.newValue());
     }
 
     /**
