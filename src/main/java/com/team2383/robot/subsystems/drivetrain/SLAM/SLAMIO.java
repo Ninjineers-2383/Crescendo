@@ -3,6 +3,7 @@ package com.team2383.robot.subsystems.drivetrain.SLAM;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
@@ -24,6 +25,9 @@ public interface SLAMIO {
     }
 
     public default void seedLandmarks(Pose3d[] landmarks) {
+    }
+
+    public default void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic) {
     }
 
     public default void forceHeading(Rotation2d heading, Rotation2d gyroAngle, SwerveModulePosition[] positions) {

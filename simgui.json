@@ -96,6 +96,17 @@
           },
           "open": true
         }
+      },
+      "slam_data": {
+        "ChassisSpeeds##v_/slam_data/chassisSpeeds": {
+          "open": true
+        },
+        "Transform3d[]##v_/slam_data/camTransforms": {
+          "Transform3d##v_[0]": {
+            "open": true
+          }
+        },
+        "open": true
       }
     }
   }

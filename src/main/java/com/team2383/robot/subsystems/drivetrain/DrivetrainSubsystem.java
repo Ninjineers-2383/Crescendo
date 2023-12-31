@@ -26,6 +26,7 @@ import com.pathplanner.lib.util.FieldMirroring.MirroringType;
 import com.pathplanner.lib.util.FieldMirroring.Origin;
 import com.team2383.robot.helpers.LocalADStarAK;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
+import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMIOServer;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMUpdate;
 
@@ -114,6 +115,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         m_SLAMClient.seedSLAMLandmarks(landmarks);
+
+        m_SLAMClient.setVisionConstants(
+                SLAMConstantsConfig.camTransforms,
+                SLAMConstantsConfig.POSE_VARIANCE_SCALE,
+                SLAMConstantsConfig.POSE_VARIANCE_STATIC);
     }
 
     @Override

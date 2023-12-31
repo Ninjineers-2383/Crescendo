@@ -4,15 +4,16 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
-import edu.wpi.first.networktables.PubSubOptions;
 import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructArraySubscriber;
 import edu.wpi.first.networktables.StructPublisher;
@@ -25,6 +26,10 @@ public class SLAMIOServer implements SLAMIO {
     private final StructSubscriber<Pose3d> pose;
     private final StructArraySubscriber<Pose3d> landmarks;
     private final StructArraySubscriber<Pose3d> seenLandmarks;
+
+    private final StructArrayPublisher<Transform3d> camTransformsPub;
+    private final DoublePublisher varianceScalePub;
+    private final DoublePublisher varianceStaticPub;
 
     private final IntegerPublisher numLandmarksPub;
     private final StructArrayPublisher<Pose3d> landmarksPub;
@@ -43,6 +48,11 @@ public class SLAMIOServer implements SLAMIO {
 
         chassisSpeedsPub = table.getStructTopic("chassisSpeeds", ChassisSpeeds.struct)
                 .publish(PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true), PubSubOption.periodic(0));
+
+        camTransformsPub = table.getStructArrayTopic("camTransforms", Transform3d.struct).publish();
+        varianceScalePub = table.getDoubleTopic("varianceScale").publish();
+        varianceStaticPub = table.getDoubleTopic("varianceStatic").publish();
+
         numLandmarksPub = table.getIntegerTopic("numLandmarks").publish();
         landmarksPub = table.getStructArrayTopic("seed-landmarks", Pose3d.struct).publish();
     }
@@ -81,6 +91,13 @@ public class SLAMIOServer implements SLAMIO {
     public void seedLandmarks(Pose3d[] landmarks) {
         landmarksPub.set(landmarks);
         numLandmarksPub.set(landmarks.length);
+    }
+
+    @Override
+    public void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic) {
+        camTransformsPub.set(camPoses);
+        varianceScalePub.set(varianceScale);
+        varianceStaticPub.set(varianceStatic);
     }
 
     @Override

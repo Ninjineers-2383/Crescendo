@@ -82,7 +82,10 @@ public class RobotContainer {
                     new CameraSimSubsystem("northstar-2", SLAMConstantsConfig.camTransforms[1],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     // TODO: Northstar 3 should be BL and 4 should be BR
-                    new CameraSimSubsystem("northstar-3", SLAMConstantsConfig.camTransforms[3],
+                    new CameraSimSubsystem("northstar-3", SLAMConstantsConfig.camTransforms[2],
+                            m_drivetrainSubsystem::getDeadReckoningPose3d);
+
+                    new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     break;
                 default:
