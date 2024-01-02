@@ -1,15 +1,26 @@
 package com.team2383.robot.subsystems.drivetrain.SLAM;
 
+import org.ejml.simple.SimpleMatrix;
+import org.littletonrobotics.junction.Logger;
+
+import edu.wpi.first.math.MathSharedStore;
+import edu.wpi.first.math.Matrix;
+import edu.wpi.first.math.VecBuilder;
+import edu.wpi.first.math.estimator.PoseEstimator;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.interpolation.TimeInterpolatableBuffer;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.DoubleSubscriber;
 import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -18,12 +29,14 @@ import edu.wpi.first.networktables.StructArrayPublisher;
 import edu.wpi.first.networktables.StructArraySubscriber;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.StructSubscriber;
+import edu.wpi.first.networktables.TimestampedDouble;
 import edu.wpi.first.networktables.TimestampedObject;
 
 public class SLAMIOServer implements SLAMIO {
-    public final SwerveDriveOdometry odometry;
+    public final SwerveDrivePoseEstimator odometry;
 
     private final StructSubscriber<Pose3d> pose;
+    private final DoubleSubscriber time;
     private final StructArraySubscriber<Pose3d> landmarks;
     private final StructArraySubscriber<Pose3d> seenLandmarks;
 
@@ -38,13 +51,16 @@ public class SLAMIOServer implements SLAMIO {
     private long latestTimestamp = 0;
 
     public SLAMIOServer(SwerveDriveKinematics kinematics, SwerveModulePosition[] positions) {
-        odometry = new SwerveDriveOdometry(kinematics, new Rotation2d(), positions);
+        odometry = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), positions, new Pose2d());
         NetworkTable table = NetworkTableInstance.getDefault().getTable("slam_data");
 
         pose = table.getStructTopic("pose", Pose3d.struct)
                 .subscribe(new Pose3d(), PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
+        time = table.getDoubleTopic("pose-time")
+                .subscribe(0, PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
         landmarks = table.getStructArrayTopic("landmarks", Pose3d.struct).subscribe(new Pose3d[0]);
-        seenLandmarks = table.getStructArrayTopic("seenLandmarks", Pose3d.struct).subscribe(new Pose3d[0]);
+        seenLandmarks = table.getStructArrayTopic("seenLandmarks", Pose3d.struct).subscribe(new Pose3d[0],
+                PubSubOption.keepDuplicates(true));
 
         chassisSpeedsPub = table.getStructTopic("chassisSpeeds", ChassisSpeeds.struct)
                 .publish(PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true), PubSubOption.periodic(0));
@@ -60,24 +76,33 @@ public class SLAMIOServer implements SLAMIO {
     @Override
     public void updateInputs(SLAMIOInputs inputs) {
         TimestampedObject<Pose3d> latestPose = pose.getAtomic();
+        TimestampedDouble latestTime = time.getAtomic();
 
         if (latestPose.timestamp == latestTimestamp) {
             inputs.newValue = false;
-            Pose2d ref = odometry.getPoseMeters();
-            inputs.pose = new Pose3d(
-                    ref.getX(), ref.getY(), inputs.pose.getZ(),
-                    new Rotation3d(inputs.pose.getRotation().getX(), inputs.pose.getRotation().getY(),
-                            ref.getRotation().getRadians()));
-            return;
+        } else if (latestPose.timestamp > latestTimestamp) {
+            odometry.addVisionMeasurement(latestPose.value.toPose2d(), latestTime.value,
+                    VecBuilder.fill(0.01, 0.01, 0.01));
+
+            inputs.connected = true;
+            inputs.newValue = true;
+            inputs.landmarks = landmarks.get();
+            inputs.seenLandmarks = seenLandmarks.get();
+
+            latestTimestamp = latestPose.timestamp;
+
+            if (MathSharedStore.getTimestamp() - latestTime.value > 1) {
+                inputs.connected = false;
+            }
         }
 
-        inputs.connected = true;
-        inputs.newValue = true;
-        inputs.pose = latestPose.value;
-        inputs.landmarks = landmarks.get();
-        inputs.seenLandmarks = seenLandmarks.get();
+        Pose2d ref = odometry.getEstimatedPosition();
+        inputs.pose = new Pose3d(
+                ref.getX(), ref.getY(), inputs.pose.getZ(),
+                new Rotation3d(inputs.pose.getRotation().getX(),
+                        inputs.pose.getRotation().getY(),
+                        ref.getRotation().getRadians()));
 
-        latestTimestamp = latestPose.timestamp;
     }
 
     @Override
@@ -107,6 +132,7 @@ public class SLAMIOServer implements SLAMIO {
 
     @Override
     public void forceHeading(Rotation2d heading, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
-        odometry.resetPosition(gyroAngle, positions, new Pose2d(odometry.getPoseMeters().getTranslation(), heading));
+        odometry.resetPosition(gyroAngle, positions,
+                new Pose2d(odometry.getEstimatedPosition().getTranslation(), heading));
     }
 }

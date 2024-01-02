@@ -1,7 +1,10 @@
 package com.team2383.robot.subsystems.drivetrain;
 
+import java.util.ArrayList;
+
 import org.littletonrobotics.junction.Logger;
 
+import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
@@ -80,6 +83,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         } catch (Exception e) {
             aprilTags = new AprilTagFieldLayout(null, 0, 0);
         }
+        // aprilTags = new AprilTagFieldLayout(new ArrayList<AprilTag>() {
+        // {
+        // add(new AprilTag(1, new Pose3d()));
+        // }
+        // }, 0, 0);
         aprilTags.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 
         m_lastStates = new SwerveModuleState[m_modules.length];
@@ -108,9 +116,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 new LocalADStarAK(MirroringType.HORIZONTAL, Origin.BLUE),
                 this);
 
-        Pose3d[] landmarks = new Pose3d[8];
+        Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
 
-        for (int i = 1; i <= 8; i++) {
+        for (int i = 1; i <= aprilTags.getTags().size(); i++) {
             landmarks[i - 1] = aprilTags.getTagPose(i).get();
         }
 
@@ -179,6 +187,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("SLAM/landmarks", update.landmarks());
         Logger.recordOutput("SLAM/seenLandmarks", update.seenLandmarks());
         Logger.recordOutput("SLAM/newValue", update.newValue());
+
+        Logger.recordOutput("Swerve/Dead Reckoning", m_deadReckoning.getPoseMeters());
     }
 
     /**

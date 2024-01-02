@@ -30,11 +30,18 @@ public class CameraSimSubsystem extends SubsystemBase {
     public CameraSimSubsystem(String camera_id, Transform3d cameraTransform, Supplier<Pose3d> poseSupplier) {
         try {
             atfl = new AprilTagFieldLayout(
-                    Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "2023-chargedup-shift.json"));
+                    Path.of(Filesystem.getDeployDirectory().getAbsolutePath(),
+                            "2023-chargedup-shift.json"));
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to load AprilTagFieldLayout");
         }
+
+        // atfl = new AprilTagFieldLayout(new ArrayList<AprilTag>() {
+        // {
+        // add(new AprilTag(1, new Pose3d()));
+        // }
+        // }, 0, 0);
 
         atfl.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 
