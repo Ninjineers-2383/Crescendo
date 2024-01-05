@@ -3,6 +3,8 @@ package com.team2383.robot.subsystems.drivetrain.SLAM;
 import org.ejml.simple.SimpleMatrix;
 import org.littletonrobotics.junction.Logger;
 
+import com.team2383.lib.util.TimedChassisSpeeds;
+
 import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
@@ -33,6 +35,8 @@ import edu.wpi.first.networktables.TimestampedDouble;
 import edu.wpi.first.networktables.TimestampedObject;
 
 public class SLAMIOServer implements SLAMIO {
+    private final NetworkTableInstance inst;
+
     public final SwerveDrivePoseEstimator odometry;
 
     private final StructSubscriber<Pose3d> pose;
@@ -46,13 +50,17 @@ public class SLAMIOServer implements SLAMIO {
 
     private final IntegerPublisher numLandmarksPub;
     private final StructArrayPublisher<Pose3d> landmarksPub;
-    private final StructPublisher<ChassisSpeeds> chassisSpeedsPub;
+    private final StructPublisher<TimedChassisSpeeds> chassisSpeedsPub;
 
     private long latestTimestamp = 0;
 
     public SLAMIOServer(SwerveDriveKinematics kinematics, SwerveModulePosition[] positions) {
+        inst = NetworkTableInstance.create();
+        inst.setServer(new String[] { "127.0.0.1" }, new int[] { 5811 });
+        inst.startClient4("SLAM-client");
+
         odometry = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), positions, new Pose2d());
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("slam_data");
+        NetworkTable table = inst.getTable("slam_data");
 
         pose = table.getStructTopic("pose", Pose3d.struct)
                 .subscribe(new Pose3d(), PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
@@ -62,7 +70,7 @@ public class SLAMIOServer implements SLAMIO {
         seenLandmarks = table.getStructArrayTopic("seenLandmarks", Pose3d.struct).subscribe(new Pose3d[0],
                 PubSubOption.keepDuplicates(true));
 
-        chassisSpeedsPub = table.getStructTopic("chassisSpeeds", ChassisSpeeds.struct)
+        chassisSpeedsPub = table.getStructTopic("chassisSpeeds", TimedChassisSpeeds.struct)
                 .publish(PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true), PubSubOption.periodic(0));
 
         camTransformsPub = table.getStructArrayTopic("camTransforms", Transform3d.struct).publish();
@@ -108,7 +116,7 @@ public class SLAMIOServer implements SLAMIO {
     @Override
     public void updateChassisSpeeds(ChassisSpeeds speeds, SwerveModulePosition[] modulePositions,
             Rotation2d gyroAngle) {
-        chassisSpeedsPub.set(speeds);
+        chassisSpeedsPub.set(new TimedChassisSpeeds(speeds, MathSharedStore.getTimestamp()));
         odometry.update(gyroAngle, modulePositions);
     }
 

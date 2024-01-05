@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class CameraSimSubsystem extends SubsystemBase {
+    private final NetworkTableInstance inst = NetworkTableInstance.create();
     private final AprilTagFieldLayout atfl;
     private final Transform3d cameraTransform;
 
@@ -28,6 +29,9 @@ public class CameraSimSubsystem extends SubsystemBase {
     private final DoubleArrayPublisher observationsPub;
 
     public CameraSimSubsystem(String camera_id, Transform3d cameraTransform, Supplier<Pose3d> poseSupplier) {
+        inst.setServer(new String[] { "127.0.0.1" }, new int[] { 5811 });
+        inst.startClient4("camera-sim");
+
         try {
             atfl = new AprilTagFieldLayout(
                     Path.of(Filesystem.getDeployDirectory().getAbsolutePath(),
@@ -48,7 +52,7 @@ public class CameraSimSubsystem extends SubsystemBase {
         this.cameraTransform = cameraTransform;
         this.poseSupplier = poseSupplier;
 
-        NetworkTable table = NetworkTableInstance.getDefault().getTable("/" + camera_id + "/output");
+        NetworkTable table = inst.getTable("/" + camera_id + "/output");
 
         fpsPub = table.getIntegerTopic("fps").publish();
         observationsPub = table.getDoubleArrayTopic("observations").publish(PubSubOption.periodic(0),
