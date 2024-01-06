@@ -1,10 +1,7 @@
 package com.team2383.robot.subsystems.drivetrain;
 
-import java.util.ArrayList;
-
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
@@ -83,11 +80,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         } catch (Exception e) {
             aprilTags = new AprilTagFieldLayout(null, 0, 0);
         }
-        // aprilTags = new AprilTagFieldLayout(new ArrayList<AprilTag>() {
-        // {
-        // add(new AprilTag(1, new Pose3d()));
-        // }
-        // }, 0, 0);
+
         aprilTags.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 
         m_lastStates = new SwerveModuleState[m_modules.length];

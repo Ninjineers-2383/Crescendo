@@ -6,9 +6,7 @@ package com.team2383.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
-import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.autos.auto_blocks.Engage;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
@@ -24,7 +22,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -43,7 +40,6 @@ public class RobotContainer {
     // private final GenericHID m_operatorController = new GenericHID(1);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
-    private Boolean cubeMode = true;
 
     // private final AutoChooser autoChooser;
     // private final TeleOpChooser teleOpChooser;
@@ -81,10 +77,8 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     new CameraSimSubsystem("northstar-2", SLAMConstantsConfig.camTransforms[1],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
-                    // TODO: Northstar 3 should be BL and 4 should be BR
                     new CameraSimSubsystem("northstar-3", SLAMConstantsConfig.camTransforms[2],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
-
                     new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     break;
@@ -100,7 +94,8 @@ public class RobotContainer {
                         new SwerveModuleIO() {}, new SwerveModuleIO() {});
 
         configureDefaultCommands();
-        registerAutoCommands(); // Configure the button bindings
+        registerAutoCommands();
+        // Configure the button bindings
         configureButtonBindings();
 
         enableLW.addDefaultOption("No", false);
@@ -109,8 +104,6 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        SmartDashboard.putBoolean("Cube Mode", cubeMode);
-
         // autoChooser.periodic();
 
         if (enableLW.get() && !lwEnabled) {
@@ -134,13 +127,6 @@ public class RobotContainer {
                                                 0.1)),
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
-
-        new JoystickButton(m_driverController, 3).onTrue(new InstantCommand(() -> {
-            cubeMode = true;
-        }));
-        new JoystickButton(m_driverController, 4).onTrue(new InstantCommand(() -> {
-            cubeMode = false;
-        }));
 
         new JoystickButton(m_driverController, 8)
                 .onTrue(new InstantCommand(() -> {
@@ -173,6 +159,5 @@ public class RobotContainer {
     }
 
     private void registerAutoCommands() {
-        NamedCommands.registerCommand("Engage", new Engage(m_drivetrainSubsystem, true));
     }
 }
