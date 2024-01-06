@@ -1,0 +1,17 @@
+{
+  "name": "2024 Field",
+  "sourceUrl": "https://cad.onshape.com/documents/dcbe49ce579f6342435bc298/w/b93673f5b2ec9c9bdcfec487/e/6ecb2d6b7590f4d1c820d5e3",
+  "rotations": [
+    {
+      "axis": "x",
+      "degrees": 90
+    },
+    {
+      "axis": "z",
+      "degrees": 180
+    }
+  ],
+  "widthInches": 651.25,
+  "heightInches": 323.25,
+  "defaultOrigin": "blue"
+}
