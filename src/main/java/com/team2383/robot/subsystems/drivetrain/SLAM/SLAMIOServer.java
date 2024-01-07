@@ -48,7 +48,7 @@ public class SLAMIOServer implements SLAMIO {
 
     public SLAMIOServer(SwerveDriveKinematics kinematics, SwerveModulePosition[] positions) {
         inst = NetworkTableInstance.create();
-        inst.setServer(new String[] { "127.0.0.1" }, new int[] { 5811 });
+        inst.setServer(new String[] { "127.0.0.1", "10.23.83.11" }, new int[] { 5811, 5810 });
         inst.startClient4("SLAM-client");
 
         odometry = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), positions, new Pose2d());

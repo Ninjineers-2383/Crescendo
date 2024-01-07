@@ -29,7 +29,7 @@ public class CameraSimSubsystem extends SubsystemBase {
     private final DoubleArrayPublisher observationsPub;
 
     public CameraSimSubsystem(String camera_id, Transform3d cameraTransform, Supplier<Pose3d> poseSupplier) {
-        inst.setServer(new String[] { "127.0.0.1" }, new int[] { 5811 });
+        inst.setServer(new String[] { "127.0.0.1", "10.23.83.11" }, new int[] { 5811, 5810 });
         inst.startClient4("camera-sim");
 
         try {
