@@ -22,9 +22,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.util.FieldMirroring.MirroringType;
-import com.pathplanner.lib.util.FieldMirroring.Origin;
-import com.team2383.robot.helpers.LocalADStarAK;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMIOServer;
@@ -104,9 +101,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 this::getRobotRelativeSpeeds,
                 this::driveRobotRelative,
                 DriveConstants.CONFIG,
-                MirroringType.HORIZONTAL,
-                Origin.BLUE,
-                new LocalADStarAK(MirroringType.HORIZONTAL, Origin.BLUE),
+                () -> true,
                 this);
 
         Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
