@@ -71,13 +71,13 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
 
     private void configAngleMotor(ModuleConstants constants) {
         m_angleMotor.getConfigurator().apply(constants.kHardwareConfigs.kAngleMotorConfigs);
-        m_angleMotor.setInverted(true);
+        m_angleMotor.setInverted(!constants.invertAzimuth);
         resetToAbsolute();
     }
 
     private void configDriveMotor(ModuleConstants constants) {
         m_driveMotor.getConfigurator().apply(constants.kHardwareConfigs.kDriveMotorConfigs);
-        m_driveMotor.setInverted(true);
+        m_driveMotor.setInverted(!constants.invertDrive);
         m_driveMotor.setPosition(0);
     }
 

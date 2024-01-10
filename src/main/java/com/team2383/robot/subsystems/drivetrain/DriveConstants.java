@@ -71,11 +71,14 @@ public final class DriveConstants {
 
         public final HardwareConfigs kHardwareConfigs;
 
+        public final boolean invertDrive;
+        public final boolean invertAzimuth;
+
         public ModuleConstants(double kS, double kV, double kA,
                 double kP, double kI, double kD,
                 int kAngleMotorID, int kDriveMotorID, IAbsoluteEncoder kEncoder,
                 String name, Translation2d translation,
-                Rotation2d angleOffset) {
+                Rotation2d angleOffset, boolean invertDrive, boolean invertAzimuth) {
 
             this.kS = kS;
             this.kV = kV;
@@ -96,6 +99,9 @@ public final class DriveConstants {
             this.kAngleOffset = angleOffset;
 
             this.kHardwareConfigs = new HardwareConfigs(kP, kI, kD, kS, kV);
+
+            this.invertDrive = invertDrive;
+            this.invertAzimuth = invertAzimuth;
         }
     }
 
@@ -148,7 +154,8 @@ public final class DriveConstants {
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromRadians(-1.500));
+            Rotation2d.fromRadians(-1.500),
+            false, true);
 
     public final static ModuleConstants frontRightConstants = new ModuleConstants(
             0.065635,
@@ -161,7 +168,8 @@ public final class DriveConstants {
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromRadians(2.792));
+            Rotation2d.fromRadians(2.792),
+            true, false);
 
     public final static ModuleConstants rearLeftConstants = new ModuleConstants(
             0.065635,
@@ -174,7 +182,8 @@ public final class DriveConstants {
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromRadians(0.070));
+            Rotation2d.fromRadians(0.070),
+            true, false);
 
     public final static ModuleConstants rearRightConstants = new ModuleConstants(
             0.065635,
@@ -187,7 +196,8 @@ public final class DriveConstants {
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromRadians(0.433));
+            Rotation2d.fromRadians(0.433),
+            false, true);
 
     // public final static IAbsoluteEncoder frontLeftEncoder = new
     // AbsoluteCancoder(1, "Drive",
