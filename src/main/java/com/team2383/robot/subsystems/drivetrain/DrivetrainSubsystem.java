@@ -73,7 +73,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 m_rearRightModule };
 
         try {
-            aprilTags = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2023ChargedUp.m_resourceFile);
+            aprilTags = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (Exception e) {
             aprilTags = new AprilTagFieldLayout(null, 0, 0);
         }

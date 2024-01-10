@@ -2,6 +2,7 @@ package com.team2383.robot.subsystems.cameraSim;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
@@ -33,9 +34,10 @@ public class CameraSimSubsystem extends SubsystemBase {
         inst.startClient4("camera-sim");
 
         try {
-            atfl = new AprilTagFieldLayout(
-                    Path.of(Filesystem.getDeployDirectory().getAbsolutePath(),
-                            "2023-chargedup-shift.json"));
+            // atfl = new AprilTagFieldLayout(
+            // Path.of(Filesystem.getDeployDirectory().getAbsolutePath(),
+            // "2023-chargedup-shift.json"));
+            atfl = new AprilTagFieldLayout(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to load AprilTagFieldLayout");
