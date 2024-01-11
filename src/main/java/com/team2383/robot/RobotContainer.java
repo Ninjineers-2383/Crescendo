@@ -20,6 +20,9 @@ import com.team2383.robot.subsystems.feeder.FeederConstants;
 import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
 import com.team2383.robot.subsystems.feeder.FeederIOSim;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
+import com.team2383.robot.subsystems.indexer.IndexerIONEO550;
+import com.team2383.robot.subsystems.indexer.IndexerIOSim;
+import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
 import com.team2383.robot.subsystems.pivot.PivotIOFalcon500;
 import com.team2383.robot.subsystems.pivot.PivotIOSim;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
@@ -54,12 +57,11 @@ public class RobotContainer {
     private FeederSubsystem m_leftFeederSubsystem;
     private FeederSubsystem m_rightFeederSubsystem;
 
+    private IndexerSubsystem m_indexerSubsystem;
+
     private PivotSubsystem m_pivotSubsystem;
 
     private ShooterSubsystem m_shooterSubsystem;
-
-    // private final AutoChooser autoChooser;
-    // private final TeleOpChooser teleOpChooser;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -86,6 +88,8 @@ public class RobotContainer {
                     m_leftFeederSubsystem = new FeederSubsystem(new FeederIOFalcon500(FeederConstants.kLeftMotorID));
                     m_rightFeederSubsystem = new FeederSubsystem(new FeederIOFalcon500(FeederConstants.kRightMotorID));
 
+                    m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO550());
+
                     m_pivotSubsystem = new PivotSubsystem(new PivotIOFalcon500());
 
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500());
@@ -107,6 +111,8 @@ public class RobotContainer {
 
                     m_leftFeederSubsystem = new FeederSubsystem(new FeederIOSim());
                     m_rightFeederSubsystem = new FeederSubsystem(new FeederIOSim());
+
+                    m_indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
 
                     m_pivotSubsystem = new PivotSubsystem(new PivotIOSim());
 
