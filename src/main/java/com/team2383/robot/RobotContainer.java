@@ -16,6 +16,16 @@ import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
+import com.team2383.robot.subsystems.feeder.FeederConstants;
+import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
+import com.team2383.robot.subsystems.feeder.FeederIOSim;
+import com.team2383.robot.subsystems.feeder.FeederSubsystem;
+import com.team2383.robot.subsystems.pivot.PivotIOFalcon500;
+import com.team2383.robot.subsystems.pivot.PivotIOSim;
+import com.team2383.robot.subsystems.pivot.PivotSubsystem;
+import com.team2383.robot.subsystems.shooter.ShooterIOFalcon500;
+import com.team2383.robot.subsystems.shooter.ShooterIOSim;
+import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -41,6 +51,13 @@ public class RobotContainer {
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
+    private FeederSubsystem m_leftFeederSubsystem;
+    private FeederSubsystem m_rightFeederSubsystem;
+
+    private PivotSubsystem m_pivotSubsystem;
+
+    private ShooterSubsystem m_shooterSubsystem;
+
     // private final AutoChooser autoChooser;
     // private final TeleOpChooser teleOpChooser;
 
@@ -54,7 +71,7 @@ public class RobotContainer {
     public RobotContainer() {
         if (Constants.getMode() != Mode.REPLAY) {
             switch (Constants.getRobot()) {
-                case ROBOT_COMP:
+                case ROBOT_PROTO:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             new GyroIO() {},
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
@@ -66,6 +83,12 @@ public class RobotContainer {
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
 
+                    m_leftFeederSubsystem = new FeederSubsystem(new FeederIOFalcon500(FeederConstants.kLeftMotorID));
+                    m_rightFeederSubsystem = new FeederSubsystem(new FeederIOFalcon500(FeederConstants.kRightMotorID));
+
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIOFalcon500());
+
+                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -81,6 +104,13 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
+
+                    m_leftFeederSubsystem = new FeederSubsystem(new FeederIOSim());
+                    m_rightFeederSubsystem = new FeederSubsystem(new FeederIOSim());
+
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIOSim());
+
+                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
                     break;
                 default:
                     break;

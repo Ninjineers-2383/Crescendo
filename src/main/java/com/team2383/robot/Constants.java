@@ -47,7 +47,7 @@ public final class Constants {
     }
 
     public static enum RobotType {
-        ROBOT_COMP, ROBOT_SIM
+        ROBOT_PROTO, ROBOT_COMP, ROBOT_SIM
     }
 
     public static enum Mode {

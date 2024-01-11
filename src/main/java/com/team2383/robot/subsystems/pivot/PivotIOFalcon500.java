@@ -19,7 +19,7 @@ public class PivotIOFalcon500 implements PivotIO {
 
     public void updateInputs(PivotIOInputs inputs) {
         inputs.current = motor.getSupplyCurrent().getValue();
-        inputs.appliedVoltage = motor.getSupplyVoltage().getValue();
+        inputs.appliedVolts = motor.getSupplyVoltage().getValue();
     }
 
     public void setVoltage(double voltage) {
