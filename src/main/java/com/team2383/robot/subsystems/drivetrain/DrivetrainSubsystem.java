@@ -58,6 +58,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private double headingIntegral = 0;
 
     private ChassisSpeeds m_robotRelativeChassisSpeeds = new ChassisSpeeds();
+
     private AprilTagFieldLayout aprilTags;
 
     public DrivetrainSubsystem(GyroIO gyro, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
@@ -167,7 +168,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Swerve/Heading Integral", headingIntegral);
 
-        Logger.recordOutput("Swerve/Chassis Heading", chassis.omegaRadiansPerSecond);
+        Logger.recordOutput("Swerve/Chassis Heading Velo", chassis.omegaRadiansPerSecond);
 
         Logger.recordOutput("Robot Pose", update.pose().toPose2d());
 
@@ -194,17 +195,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
     public void drive(Translation2d drive, Rotation2d angle, boolean fieldRelative,
             Translation2d centerOfRotation) {
-        ChassisSpeeds speeds;
 
         if (fieldRelative) {
-            speeds = ChassisSpeeds.fromFieldRelativeSpeeds(drive.getX(), drive.getY(), angle.getRadians(),
+            m_robotRelativeChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(drive.getX(), drive.getY(),
+                    angle.getRadians(),
                     getHeading());
         } else {
-            speeds = new ChassisSpeeds(drive.getX(), drive.getY(), angle.getRadians());
+            m_robotRelativeChassisSpeeds = new ChassisSpeeds(drive.getX(), drive.getY(), angle.getRadians());
         }
 
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
-                speeds,
+                m_robotRelativeChassisSpeeds,
                 centerOfRotation);
 
         setModuleStates(swerveModuleStates);
@@ -216,6 +217,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
         return m_robotRelativeChassisSpeeds;
+    }
+
+    public ChassisSpeeds getFieldRelativeSpeeds() {
+        return ChassisSpeeds.fromRobotRelativeSpeeds(m_robotRelativeChassisSpeeds, getHeading());
     }
 
     public void driveRobotRelative(ChassisSpeeds speeds) {
@@ -249,7 +254,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @return The heading of the robot in a Rotation2D
      */
     public Rotation2d getHeading() {
-        return Rotation2d.fromRadians(robotPose.getRotation().getZ());
+        return Rotation2d.fromRadians(headingIntegral);
     }
 
     /**

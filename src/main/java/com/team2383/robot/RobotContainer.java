@@ -16,6 +16,7 @@ import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
+import com.team2383.robot.subsystems.gamePieceSim.GamePieceSimSubsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -45,6 +46,8 @@ public class RobotContainer {
     // private final TeleOpChooser teleOpChooser;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
+
+    LoggedDashboardChooser<Boolean> shootingBoolean = new LoggedDashboardChooser<Boolean>("Shooting");
 
     private boolean lwEnabled = false;
 
@@ -81,6 +84,9 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
+
+                    new GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
+                            m_drivetrainSubsystem::getFieldRelativeSpeeds, shootingBoolean::get);
                     break;
                 default:
                     break;
@@ -100,6 +106,9 @@ public class RobotContainer {
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
+
+        shootingBoolean.addDefaultOption("No", false);
+        shootingBoolean.addOption("Yes", true);
 
     }
 

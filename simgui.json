@@ -51,12 +51,18 @@
       "/SmartDashboard/Question 7": "String Chooser",
       "/SmartDashboard/Question 8": "String Chooser",
       "/SmartDashboard/Question 9": "String Chooser",
+      "/SmartDashboard/Shooting": "String Chooser",
       "/SmartDashboard/TeleOp Height": "String Chooser",
       "/SmartDashboard/TeleOp Score Chooser": "String Chooser",
       "/SmartDashboard/TeleOp Scoring": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Shooting": {
         "window": {
           "visible": true
         }
@@ -109,6 +115,9 @@
         "open": true
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   },
   "NetworkTables View": {
     "visible": false
