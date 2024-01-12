@@ -3,7 +3,9 @@ package com.team2383.robot.subsystems.shooter;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-public class ShooterNEO implements ShooterIO {
+import edu.wpi.first.wpilibj.RobotController;
+
+public class ShooterIONEO implements ShooterIO {
     private final CANSparkMax leftMotor = new CANSparkMax(ShooterConstants.kLeftMotorID, MotorType.kBrushless);
     private final CANSparkMax rightMotor = new CANSparkMax(ShooterConstants.kRightMotorID, MotorType.kBrushless);
 
@@ -18,7 +20,7 @@ public class ShooterNEO implements ShooterIO {
 
     @Override
     public void setPower(double power) {
-        voltage = power * 12.0;
+        voltage = power * RobotController.getBatteryVoltage();
         leftMotor.setVoltage(voltage);
         rightMotor.setVoltage(voltage);
     }
