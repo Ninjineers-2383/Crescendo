@@ -6,7 +6,8 @@ public interface FeederIO {
     @AutoLog
     public static class FeederIOInputs {
         public double power = 0.0;
-        public double current = 0.0;
+        public double leftCurrent = 0.0;
+        // public double rightCurrent = 0.0;
     }
 
     public default void updateInputs(FeederIOInputs inputs) {

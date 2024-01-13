@@ -15,7 +15,7 @@ public class FeederIOSim implements FeederIO {
     @Override
     public void updateInputs(FeederIOInputs inputs) {
         inputs.power = m_power;
-        inputs.current = m_feederSim.getCurrentDrawAmps();
+        // inputs.current = m_feederSim.getCurrentDrawAmps();
     }
 
     @Override

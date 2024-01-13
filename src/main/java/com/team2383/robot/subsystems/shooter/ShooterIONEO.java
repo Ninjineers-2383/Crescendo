@@ -20,8 +20,11 @@ public class ShooterIONEO implements ShooterIO {
 
     @Override
     public void setPower(double power) {
-        voltage = power * RobotController.getBatteryVoltage();
-        leftMotor.setVoltage(voltage);
-        rightMotor.setVoltage(voltage);
+        // voltage = power * RobotController.getBatteryVoltage();
+        // leftMotor.setVoltage(voltage);
+        // rightMotor.setVoltage(voltage);
+
+        leftMotor.set(power);
+        rightMotor.set(power);
     }
 }

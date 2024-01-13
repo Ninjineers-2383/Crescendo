@@ -7,6 +7,7 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.commands.FeederPowerCommand;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
 import com.team2383.robot.commands.ShooterPowerCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
@@ -19,6 +20,7 @@ import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
 import com.team2383.robot.subsystems.feeder.FeederConstants;
 import com.team2383.robot.subsystems.feeder.FeederIOFalcon500;
+import com.team2383.robot.subsystems.feeder.FeederIONEO;
 import com.team2383.robot.subsystems.feeder.FeederIOSim;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.indexer.IndexerIONEO550;
@@ -65,6 +67,8 @@ public class RobotContainer {
 
     private ShooterSubsystem m_shooterSubsystem;
 
+    // private FeederSubsystem m_feederSubsystem;
+
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
     private boolean lwEnabled = false;
@@ -97,6 +101,7 @@ public class RobotContainer {
                     // m_pivotSubsystem = new PivotSubsystem(new PivotIOFalcon500());
 
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIONEO());
+                    // m_feederSubsystem = new FeederSubsystem(new FeederIONEO());
                     break;
                 case ROBOT_SIM:
                     // m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -177,10 +182,13 @@ public class RobotContainer {
 
         new JoystickButton(m_driverController, 3)
                 .whileTrue(new ShooterPowerCommand(m_shooterSubsystem, () -> -1.0));
+
     }
 
     private void configureDefaultCommands() {
         m_shooterSubsystem.setDefaultCommand(new ShooterPowerCommand(m_shooterSubsystem, () -> 0));
+        // m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
+        // () -> m_driverController.getRawAxis(3) - m_driverController.getRawAxis(2)));
         // m_drivetrainSubsystem.setDefaultCommand(
         // new JoystickDriveHeadingLock(m_drivetrainSubsystem,
         // () -> new Translation2d(
