@@ -40,6 +40,7 @@
       "/SmartDashboard/Auto Start Location": "String Chooser",
       "/SmartDashboard/Enable LW": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Intake": "String Chooser",
       "/SmartDashboard/Question 1": "String Chooser",
       "/SmartDashboard/Question 10": "String Chooser",
       "/SmartDashboard/Question 11": "String Chooser",
@@ -58,6 +59,11 @@
     },
     "windows": {
       "/SmartDashboard/Field": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Intake": {
         "window": {
           "visible": true
         }

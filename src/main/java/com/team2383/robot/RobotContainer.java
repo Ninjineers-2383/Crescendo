@@ -49,6 +49,8 @@ public class RobotContainer {
 
     LoggedDashboardChooser<Boolean> shootingBoolean = new LoggedDashboardChooser<Boolean>("Shooting");
 
+    LoggedDashboardChooser<Boolean> intakeBoolean = new LoggedDashboardChooser<Boolean>("Intake");
+
     private boolean lwEnabled = false;
 
     /**
@@ -86,7 +88,7 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
 
                     new GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
-                            m_drivetrainSubsystem::getFieldRelativeSpeeds, shootingBoolean::get);
+                            m_drivetrainSubsystem::getFieldRelativeSpeeds, shootingBoolean::get, intakeBoolean::get);
                     break;
                 default:
                     break;
@@ -110,6 +112,8 @@ public class RobotContainer {
         shootingBoolean.addDefaultOption("No", false);
         shootingBoolean.addOption("Yes", true);
 
+        intakeBoolean.addDefaultOption("No", false);
+        intakeBoolean.addOption("Yes", true);
     }
 
     public void periodic() {
