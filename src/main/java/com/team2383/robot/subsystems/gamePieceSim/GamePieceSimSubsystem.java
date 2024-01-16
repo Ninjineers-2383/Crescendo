@@ -24,6 +24,8 @@ public class GamePieceSimSubsystem extends SubsystemBase {
 
     private int shooterCounter = 0;
 
+    private ChassisSpeeds initialShootingSpeeds = new ChassisSpeeds();
+
     private Pose3d[] notes = GamePieceLocations.notes;
     private boolean[] notesHit = new boolean[notes.length];
 
@@ -68,7 +70,11 @@ public class GamePieceSimSubsystem extends SubsystemBase {
 
             if (notesHit[i] == true) {
                 if (shooting) {
-                    notes[i] = notes[i].exp(shoot(speeds, angle, RPM, shooterCounter));
+                    if (shooterCounter == 0) {
+                        initialShootingSpeeds = speeds;
+                    }
+
+                    notes[i] = notes[i].exp(shoot(initialShootingSpeeds, angle, RPM, shooterCounter));
 
                     shooterCounter++;
                 } else {
