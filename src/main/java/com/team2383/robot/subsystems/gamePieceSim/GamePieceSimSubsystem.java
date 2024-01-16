@@ -69,7 +69,13 @@ public class GamePieceSimSubsystem extends SubsystemBase {
             }
 
             if (notesHit[i] == true) {
-                if (shooting) {
+                if (getNoteRobotRelativeZ(i, angle) < 0) {
+                    notesHit[i] = false;
+                    notes[i] = new Pose3d(new Translation3d(notes[i].getX(), notes[i].getY(), 0),
+                            new Rotation3d(0, Math.toRadians(-90), 0).plus(pose.getRotation()));
+
+                    shooterCounter = 0;
+                } else if (shooting) {
                     if (shooterCounter == 0) {
                         initialShootingSpeeds = speeds;
                     }
@@ -77,6 +83,8 @@ public class GamePieceSimSubsystem extends SubsystemBase {
                     notes[i] = notes[i].exp(shoot(initialShootingSpeeds, angle, RPM, shooterCounter));
 
                     shooterCounter++;
+
+                    Logger.recordOutput("Note Z", getNoteRobotRelativeZ(i, angle));
                 } else {
                     notes[i] = new Pose3d(new Translation3d(pose.getX(), pose.getY(), 0.2),
                             new Rotation3d(0, Math.toRadians(-90) - angle.getRadians(), 0)
@@ -140,7 +148,6 @@ public class GamePieceSimSubsystem extends SubsystemBase {
         }
 
         Logger.recordOutput("Speeds Angle", speedsAngleDegrees);
-
     }
 
     public Rotation2d getCollisionAngle(Pose3d robotPose, Pose3d notePose) {
@@ -166,6 +173,11 @@ public class GamePieceSimSubsystem extends SubsystemBase {
         Logger.recordOutput("Collision Side", side);
         Logger.recordOutput("Collision Angle", collisionAngleDegrees);
         return side;
+    }
+
+    public double getNoteRobotRelativeZ(int noteIndex, Rotation2d shooterAngle) {
+
+        return notes[noteIndex].getZ() * shooterAngle.getSin();
     }
 
     public Twist3d shoot(ChassisSpeeds robotSpeed, Rotation2d shooterAngle, double shooterRPM, int counter) {
