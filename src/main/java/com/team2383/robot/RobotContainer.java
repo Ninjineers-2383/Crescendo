@@ -93,7 +93,7 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
 
                     new GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
-                            m_drivetrainSubsystem::getFieldRelativeSpeeds, shootingBoolean::get, intakeBoolean::get,
+                            m_drivetrainSubsystem::getRobotRelativeSpeeds, shootingBoolean::get, intakeBoolean::get,
                             shooterAngle::get, shooterRPM::get);
                     break;
                 default:
