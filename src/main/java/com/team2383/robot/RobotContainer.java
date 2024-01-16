@@ -5,6 +5,7 @@
 package com.team2383.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.commands.JoystickDriveHeadingLock;
@@ -51,6 +52,10 @@ public class RobotContainer {
 
     LoggedDashboardChooser<Boolean> intakeBoolean = new LoggedDashboardChooser<Boolean>("Intake");
 
+    LoggedDashboardNumber shooterAngle = new LoggedDashboardNumber("Shooter Angle", 45);
+
+    LoggedDashboardNumber shooterRPM = new LoggedDashboardNumber("RPM", 1000);
+
     private boolean lwEnabled = false;
 
     /**
@@ -88,7 +93,8 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
 
                     new GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
-                            m_drivetrainSubsystem::getFieldRelativeSpeeds, shootingBoolean::get, intakeBoolean::get);
+                            m_drivetrainSubsystem::getFieldRelativeSpeeds, shootingBoolean::get, intakeBoolean::get,
+                            shooterAngle::get, shooterRPM::get);
                     break;
                 default:
                     break;

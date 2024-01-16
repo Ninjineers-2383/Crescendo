@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.util.function.Supplier;
 import java.util.function.BooleanSupplier;
+import java.util.function.DoubleSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -18,16 +19,23 @@ public class GamePieceSimSubsystem extends SubsystemBase {
     private final Supplier<ChassisSpeeds> speedsSupplier;
     private BooleanSupplier shootingSupplier;
     private BooleanSupplier intakeSupplier;
+    private DoubleSupplier shooterAngle;
+    private DoubleSupplier shooterRPM;
+
+    private int shooterCounter = 0;
 
     private Pose3d[] notes = GamePieceLocations.notes;
     private boolean[] notesHit = new boolean[notes.length];
 
     public GamePieceSimSubsystem(Supplier<Pose3d> poseSupplier, Supplier<ChassisSpeeds> speedsSupplier,
-            BooleanSupplier shootingSupplier, BooleanSupplier intakeSupplier) {
+            BooleanSupplier shootingSupplier, BooleanSupplier intakeSupplier, DoubleSupplier shooterAngle,
+            DoubleSupplier shooterRPM) {
         this.poseSupplier = poseSupplier;
         this.speedsSupplier = speedsSupplier;
         this.shootingSupplier = shootingSupplier;
         this.intakeSupplier = intakeSupplier;
+        this.shooterAngle = shooterAngle;
+        this.shooterRPM = shooterRPM;
     }
 
     @Override
@@ -36,6 +44,8 @@ public class GamePieceSimSubsystem extends SubsystemBase {
         boolean intake = intakeSupplier.getAsBoolean();
         boolean shooting = shootingSupplier.getAsBoolean();
         ChassisSpeeds speeds = speedsSupplier.get();
+        Rotation2d angle = Rotation2d.fromDegrees(shooterAngle.getAsDouble());
+        double RPM = shooterRPM.getAsDouble();
 
         for (int i = 0; i < notes.length; i++) {
             if (pose.getTranslation().getDistance(notes[i].getTranslation()) < 0.5
@@ -58,11 +68,15 @@ public class GamePieceSimSubsystem extends SubsystemBase {
 
             if (notesHit[i] == true) {
                 if (shooting) {
-                    notes[i] = new Pose3d(new Translation3d(pose.getX(), pose.getY(), 1),
-                            new Rotation3d(0, Math.toRadians(-90), 0));
+                    notes[i] = notes[i].exp(shoot(speeds, angle, RPM, shooterCounter));
+
+                    shooterCounter++;
                 } else {
                     notes[i] = new Pose3d(new Translation3d(pose.getX(), pose.getY(), 0.2),
-                            new Rotation3d(0, Math.toRadians(-90), 0));
+                            new Rotation3d(0, Math.toRadians(-90) - angle.getRadians(), 0)
+                                    .rotateBy(pose.getRotation()));
+
+                    shooterCounter = 0;
                 }
             }
 
@@ -136,5 +150,20 @@ public class GamePieceSimSubsystem extends SubsystemBase {
         Logger.recordOutput("Collision Side", side);
         Logger.recordOutput("Collision Angle", collisionAngleDegrees);
         return side;
+    }
+
+    public Twist3d shoot(ChassisSpeeds robotSpeed, Rotation2d shooterAngle, double shooterRPM, int counter) {
+        double time = counter * 0.02;
+
+        double rotationsPerLoop = shooterRPM / 60;
+
+        double initialVeloX = rotationsPerLoop * shooterAngle.getCos();
+
+        double initialVeloY = rotationsPerLoop * shooterAngle.getSin();
+
+        double veloY = -9.8 * time + initialVeloY;
+
+        return new Twist3d(shooterAngle.getCos() * (veloY - initialVeloX) * 0.02, 0,
+                -shooterAngle.getSin() * (veloY + initialVeloY) * 0.02, 0, 0, 0);
     }
 }
