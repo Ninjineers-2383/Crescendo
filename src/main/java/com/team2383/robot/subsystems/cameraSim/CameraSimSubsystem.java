@@ -15,6 +15,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.nio.file.Path;
 import java.util.function.Supplier;
+
+import com.team2383.robot.helpers.Noise;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -36,17 +39,10 @@ public class CameraSimSubsystem extends SubsystemBase {
             atfl = new AprilTagFieldLayout(
                     Path.of(Filesystem.getDeployDirectory().getAbsolutePath(),
                             "2024-crescendo.json"));
-            // atfl = new AprilTagFieldLayout(AprilTagFields.k2024Crescendo.m_resourceFile);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("Failed to load AprilTagFieldLayout");
         }
-
-        // atfl = new AprilTagFieldLayout(new ArrayList<AprilTag>() {
-        // {
-        // add(new AprilTag(1, new Pose3d()));
-        // }
-        // }, 0, 0);
 
         atfl.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
 
@@ -76,6 +72,8 @@ public class CameraSimSubsystem extends SubsystemBase {
 
         AprilTag tag = tags.get(new Random().nextInt(tags.size()));
         Transform3d robotToTag = new Transform3d(cameraPose, atfl.getTagPose(tag.ID).get());
+        Transform3d noisyTransform = Noise.noisyTransform(0, 0.02);
+        robotToTag = robotToTag.plus(noisyTransform);
         double[] observation = new double[] {
                 2, // 2 pose estimates
                 0, // 0 error

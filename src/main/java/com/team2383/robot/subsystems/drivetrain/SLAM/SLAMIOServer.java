@@ -70,7 +70,8 @@ public class SLAMIOServer implements SLAMIO {
         varianceStaticPub = table.getDoubleTopic("varianceStatic").publish();
 
         numLandmarksPub = table.getIntegerTopic("numLandmarks").publish();
-        landmarksPub = table.getStructArrayTopic("seed-landmarks", Pose3d.struct).publish();
+        landmarksPub = table.getStructArrayTopic("seed-landmarks", Pose3d.struct)
+                .publish(PubSubOption.keepDuplicates(true));
     }
 
     @Override

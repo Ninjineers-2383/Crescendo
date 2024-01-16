@@ -1,5 +1,5 @@
 {
-  "version": "3.0.0-beta-5",
+  "version": "3.0.1",
   "layout": [
     {
       "type": 1,
@@ -162,7 +162,7 @@
             "sourceType": "Pose3d"
           },
           {
-            "type": "AprilTag 16h5",
+            "type": "AprilTag 36h11",
             "key": "/RealOutputs/SLAM/landmarks",
             "sourceTypeIndex": 2,
             "sourceType": "Pose3d[]"
@@ -174,15 +174,22 @@
             "sourceType": "Pose3d[]"
           }
         ],
-        []
+        [
+          {
+            "type": "Green Ghost",
+            "key": "/RealOutputs/Swerve/Dead Reckoning",
+            "sourceTypeIndex": 1,
+            "sourceType": "Pose2d"
+          }
+        ]
       ],
       "options": {
-        "field": "2023 Field",
+        "field": "2024 Field",
         "alliance": "blue",
         "robot": "Blizzard Chassis",
         "unitDistance": "meters",
         "unitRotation": "radians",
-        "cameraIndex": -2,
+        "cameraIndex": -1,
         "fov": 50
       },
       "configHidden": false,
