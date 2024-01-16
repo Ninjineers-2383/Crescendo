@@ -163,7 +163,8 @@ public class GamePieceSimSubsystem extends SubsystemBase {
 
         double veloY = -9.8 * time + initialVeloY;
 
-        return new Twist3d(shooterAngle.getCos() * (veloY - initialVeloX) * 0.02, 0,
-                -shooterAngle.getSin() * (veloY + initialVeloY) * 0.02, 0, 0, 0);
+        return new Twist3d(shooterAngle.getCos() * (veloY - initialVeloX - robotSpeed.vxMetersPerSecond) * 0.02,
+                robotSpeed.vyMetersPerSecond * 0.02,
+                -shooterAngle.getSin() * (veloY + initialVeloX + robotSpeed.vxMetersPerSecond) * 0.02, 0, 0, 0);
     }
 }
