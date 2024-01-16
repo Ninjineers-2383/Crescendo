@@ -54,7 +54,7 @@ public class GamePieceSimSubsystem extends SubsystemBase {
                     && notesHit[i] == false) {
                 int collisionSide = getCollisionSide(pose, notes[i]);
 
-                if (intake) {
+                if (intake && !pieceInRobot()) {
                     if (collisionSide == 2 || collisionSide == 3) {
                         notes[i] = new Pose3d(new Translation3d(pose.getX(), pose.getY(), 1),
                                 new Rotation3d(0, Math.toRadians(-90), 0));
@@ -88,6 +88,16 @@ public class GamePieceSimSubsystem extends SubsystemBase {
 
             Logger.recordOutput("Notes", notes);
         }
+    }
+
+    public boolean pieceInRobot() {
+        for (boolean notes : notesHit) {
+            if (notes) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void movePiece(int noteIndex, int collisionSide, Pose3d robotPose) {
@@ -161,15 +171,17 @@ public class GamePieceSimSubsystem extends SubsystemBase {
     public Twist3d shoot(ChassisSpeeds robotSpeed, Rotation2d shooterAngle, double shooterRPM, int counter) {
         double time = counter * 0.02;
 
-        double rotationsPerLoop = shooterRPM / 60;
+        double shooterLinearSpeed = (shooterRPM / 60) * 2 * Math.PI * GamePieceLocations.shooterRadiusMeters;
 
-        double initialVeloX = rotationsPerLoop * shooterAngle.getCos();
+        double initialVeloX = (shooterLinearSpeed * shooterAngle.getCos()) * (1 - GamePieceLocations.coefficientOfDrag);
 
-        double initialVeloY = rotationsPerLoop * shooterAngle.getSin();
+        double initialVeloY = shooterLinearSpeed * shooterAngle.getSin();
 
-        double veloY = -9.8 * time + initialVeloY;
+        double veloY = (-9.8 * time + initialVeloY) / (1 + GamePieceLocations.coefficientOfDrag);
 
-        return new Twist3d(shooterAngle.getCos() * (veloY - initialVeloX - robotSpeed.vxMetersPerSecond) * 0.02,
+        return new Twist3d(shooterAngle.getCos() * (veloY
+                - (initialVeloX + robotSpeed.vxMetersPerSecond))
+                * 0.02,
                 robotSpeed.vyMetersPerSecond * 0.02,
                 -shooterAngle.getSin() * (veloY + initialVeloX + robotSpeed.vxMetersPerSecond) * 0.02, 0, 0, 0);
     }

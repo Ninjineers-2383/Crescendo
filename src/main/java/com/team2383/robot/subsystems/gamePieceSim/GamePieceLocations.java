@@ -2,10 +2,15 @@ package com.team2383.robot.subsystems.gamePieceSim;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.util.Units;
 
 public class GamePieceLocations {
     public static double fieldLength = 16.54175;
     public static double fieldWidth = 8.21055;
+
+    public static double shooterRadiusMeters = Units.inchesToMeters(3);
+
+    public static double coefficientOfDrag = 0.1;
 
     public static Pose3d note1 = new Pose3d(2.8930346, fieldWidth - 1.2100052, 0,
             new Rotation3d(0, Math.toRadians(-90), 0));
