@@ -26,6 +26,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
  */
 public class Robot extends LoggedRobot {
     private Command autonomousCommand;
+    private Command testCommand;
     private RobotContainer robotContainer;
 
     public Robot() {
@@ -164,11 +165,16 @@ public class Robot extends LoggedRobot {
     public void testInit() {
         // Cancels all running commands at the start of test mode.
         CommandScheduler.getInstance().cancelAll();
+
+        testCommand = robotContainer.getTestCommand();
     }
 
     /** This function is called periodically during test mode. */
     @Override
     public void testPeriodic() {
+        if (testCommand != null) {
+            testCommand.schedule();
+        }
     }
 
     /** This function is called once when the robot is first started up. */

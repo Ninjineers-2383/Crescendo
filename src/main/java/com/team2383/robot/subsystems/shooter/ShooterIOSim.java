@@ -16,16 +16,16 @@ public class ShooterIOSim implements ShooterIO {
 
     @Override
     public void updateInputs(ShooterIOInputs inputs) {
-        inputs.power = m_power;
+        inputs.leftVoltage = m_power;
         inputs.leftCurrent = m_leftFlywheelSim.getCurrentDrawAmps();
         inputs.rightCurrent = m_rightFlywheelSim.getCurrentDrawAmps();
     }
 
     @Override
-    public void setPower(double power) {
-        m_leftFlywheelSim.setInputVoltage(power * 12);
-        m_rightFlywheelSim.setInputVoltage(power * 12);
+    public void setRPM(double RPM) {
+        m_leftFlywheelSim.setInputVoltage(RPM);
+        m_rightFlywheelSim.setInputVoltage(RPM);
 
-        m_power = power;
+        m_power = RPM;
     }
 }

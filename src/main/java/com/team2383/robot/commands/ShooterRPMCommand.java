@@ -6,19 +6,19 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class ShooterPowerCommand extends Command {
+public class ShooterRPMCommand extends Command {
     private final ShooterSubsystem shooter;
-    private final DoubleSupplier power;
+    private final DoubleSupplier RPM;
 
-    public ShooterPowerCommand(ShooterSubsystem shooter, DoubleSupplier power) {
+    public ShooterRPMCommand(ShooterSubsystem shooter, DoubleSupplier RPM) {
         this.shooter = shooter;
-        this.power = power;
+        this.RPM = RPM;
 
         addRequirements(shooter);
     }
 
     @Override
     public void execute() {
-        shooter.setPower(power.getAsDouble());
+        shooter.setRPM(RPM.getAsDouble());
     }
 }
