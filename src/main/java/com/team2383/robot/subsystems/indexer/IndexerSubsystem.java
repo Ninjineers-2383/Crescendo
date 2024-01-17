@@ -18,31 +18,16 @@ public class IndexerSubsystem extends SubsystemBase {
         Logger.processInputs("Indexer", inputs);
     }
 
-    public void feedLeft() {
-        indexer.setLeftPower(1);
-        indexer.setRightPower(0);
-    }
-
-    public void feedRight() {
-        indexer.setLeftPower(0);
-        indexer.setRightPower(1);
-    }
-
-    public void shoot() {
-        indexer.setLeftPower(1);
-        indexer.setRightPower(1);
+    public void feed() {
+        indexer.setPower(1);
     }
 
     public void stop() {
-        indexer.setLeftPower(0);
-        indexer.setRightPower(0);
+        indexer.setPower(0);
     }
 
-    public double getLeftPower() {
-        return inputs.leftPower;
+    public void setPower(double power) {
+        indexer.setPower(power);
     }
 
-    public double getRightPower() {
-        return inputs.rightPower;
-    }
 }

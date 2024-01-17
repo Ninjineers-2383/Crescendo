@@ -5,8 +5,8 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 public class ShooterIOFalcon500 implements ShooterIO {
-    private final TalonFX leftMotor = new TalonFX(ShooterConstants.kLeftMotorID);
-    private final TalonFX rightMotor = new TalonFX(ShooterConstants.kRightMotorID);
+    private final TalonFX leftMotor = new TalonFX(ShooterConstants.kLeftMotorID, "Drive");
+    private final TalonFX rightMotor = new TalonFX(ShooterConstants.kRightMotorID, "Drive");
 
     private final VelocityVoltage voltageOut = new VelocityVoltage(0);
 
