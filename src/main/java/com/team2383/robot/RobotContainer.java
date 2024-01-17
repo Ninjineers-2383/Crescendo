@@ -43,6 +43,8 @@ public class RobotContainer {
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
+    private GamePieceSimSubsystem m_gamePieceSimSubsystem;
+
     // private final AutoChooser autoChooser;
     // private final TeleOpChooser teleOpChooser;
 
@@ -55,6 +57,8 @@ public class RobotContainer {
     LoggedDashboardNumber shooterAngle = new LoggedDashboardNumber("Shooter Angle", 45);
 
     LoggedDashboardNumber shooterRPM = new LoggedDashboardNumber("RPM", 1000);
+
+    LoggedDashboardChooser<Integer> pieceIndexChooser = new LoggedDashboardChooser<Integer>("Piece Index");
 
     private boolean lwEnabled = false;
 
@@ -92,7 +96,7 @@ public class RobotContainer {
                     new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
 
-                    new GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
+                    m_gamePieceSimSubsystem = new GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
                             m_drivetrainSubsystem::getRobotRelativeSpeeds, shootingBoolean::get, intakeBoolean::get,
                             shooterAngle::get, shooterRPM::get);
                     break;
@@ -108,7 +112,9 @@ public class RobotContainer {
                         new SwerveModuleIO() {}, new SwerveModuleIO() {});
 
         configureDefaultCommands();
+
         registerAutoCommands();
+
         // Configure the button bindings
         configureButtonBindings();
 
@@ -120,6 +126,13 @@ public class RobotContainer {
 
         intakeBoolean.addDefaultOption("No", false);
         intakeBoolean.addOption("Yes", true);
+
+        pieceIndexChooser.addDefaultOption("0", 0);
+        pieceIndexChooser.addOption("1", 1);
+        pieceIndexChooser.addOption("2", 2);
+        pieceIndexChooser.addOption("3", 3);
+        pieceIndexChooser.addOption("4", 4);
+        pieceIndexChooser.addOption("5", 5);
     }
 
     public void periodic() {
@@ -166,6 +179,11 @@ public class RobotContainer {
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
 
+        m_gamePieceSimSubsystem.setDefaultCommand(new InstantCommand(() -> {
+            m_gamePieceSimSubsystem.movePiece(() -> m_driverController.getRawAxis(3),
+                    () -> m_driverController.getRawAxis(4), () -> m_driverController.getRawAxis(5),
+                    pieceIndexChooser::get);
+        }, m_gamePieceSimSubsystem));
     }
 
     /**

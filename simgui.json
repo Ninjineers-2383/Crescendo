@@ -41,6 +41,7 @@
       "/SmartDashboard/Enable LW": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Intake": "String Chooser",
+      "/SmartDashboard/Piece Index": "String Chooser",
       "/SmartDashboard/Question 1": "String Chooser",
       "/SmartDashboard/Question 10": "String Chooser",
       "/SmartDashboard/Question 11": "String Chooser",
@@ -64,6 +65,11 @@
         }
       },
       "/SmartDashboard/Intake": {
+        "window": {
+          "visible": true
+        }
+      },
+      "/SmartDashboard/Piece Index": {
         "window": {
           "visible": true
         }

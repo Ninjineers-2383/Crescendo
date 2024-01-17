@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.util.function.Supplier;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
+import java.util.function.IntSupplier;
 
 import org.littletonrobotics.junction.Logger;
 
@@ -78,26 +79,26 @@ public class GamePieceSimSubsystem extends SubsystemBase {
                 } else if (shooting) {
                     if (shooterCounter == 0) {
                         initialShootingSpeeds = speeds;
+                        Logger.recordOutput("Score", false);
+
+                    }
+
+                    Translation3d noteTranslation = getNoteFieldRelativeTranslation(i, angle);
+
+                    if (noteTranslation.getX() < 0 && noteTranslation.getY() < 6 && noteTranslation.getY() > 5
+                            && noteTranslation.getZ() > 2 && noteTranslation.getZ() < 2.5) {
+                        Logger.recordOutput("Score", true);
                     }
 
                     notes[i] = notes[i].exp(shoot(initialShootingSpeeds, angle, RPM, shooterCounter));
 
                     shooterCounter++;
-
-                    Logger.recordOutput("Note Z", getNoteFieldRelativeZ(i, angle));
-                    Logger.recordOutput("Note X", getNoteFieldRelativeX(i, angle));
-                    Logger.recordOutput("Note Y", getNoteFieldRelativeY(i, angle));
-
                 } else {
                     notes[i] = new Pose3d(new Translation3d(pose.getX(), pose.getY(), 0.2),
                             new Rotation3d(0, Math.toRadians(-90) - angle.getRadians(), 0)
                                     .rotateBy(pose.getRotation()));
 
                     shooterCounter = 0;
-                }
-
-                if (hasScored()) {
-                    System.out.println("Scored");
                 }
             }
 
@@ -177,9 +178,12 @@ public class GamePieceSimSubsystem extends SubsystemBase {
             side = 4;
         }
 
-        Logger.recordOutput("Collision Side", side);
-        Logger.recordOutput("Collision Angle", collisionAngleDegrees);
         return side;
+    }
+
+    public Translation3d getNoteFieldRelativeTranslation(int noteIndex, Rotation2d shooterAngle) {
+        return new Translation3d(notes[noteIndex].getX() * shooterAngle.getSin(), notes[noteIndex].getY(),
+                notes[noteIndex].getZ() * shooterAngle.getSin());
     }
 
     public double getNoteFieldRelativeZ(int noteIndex, Rotation2d shooterAngle) {
@@ -214,5 +218,11 @@ public class GamePieceSimSubsystem extends SubsystemBase {
 
     public boolean hasScored() {
         return false;
+    }
+
+    public void movePiece(DoubleSupplier xSpeed, DoubleSupplier ySpeed, DoubleSupplier zSpeed, IntSupplier noteIndex) {
+        notes[noteIndex.getAsInt()] = notes[noteIndex.getAsInt()].exp(new Twist3d(zSpeed.getAsDouble() * 0.1,
+                ySpeed.getAsDouble() * 0.1, -xSpeed.getAsDouble() * 0.1, 0, 0, 0));
+
     }
 }
