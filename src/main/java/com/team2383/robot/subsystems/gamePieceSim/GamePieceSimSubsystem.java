@@ -56,9 +56,9 @@ public class GamePieceSimSubsystem extends SubsystemBase {
                 int collisionSide = getCollisionSide(pose, notes[i]);
 
                 if (intake && !pieceInRobot()) {
-                    if (collisionSide == 2 || collisionSide == 3) {
+                    if (collisionSide == 1 || collisionSide == 4) {
                         notes[i] = new Pose3d(new Translation3d(pose.getX(), pose.getY(), 1),
-                                new Rotation3d(0, Math.toRadians(-90), 0));
+                                new Rotation3d(Math.toRadians(-90), 0, 0));
 
                         notesHit[i] = true;
                     } else {
@@ -73,7 +73,7 @@ public class GamePieceSimSubsystem extends SubsystemBase {
                 if (getNoteFieldRelativeZ(i, angle) < 0) {
                     notesHit[i] = false;
                     notes[i] = new Pose3d(new Translation3d(notes[i].getX(), notes[i].getY(), 0),
-                            new Rotation3d(0, Math.toRadians(-90), 0).plus(pose.getRotation()));
+                            new Rotation3d(Math.toRadians(-90), 0, 0).plus(pose.getRotation()));
 
                     shooterCounter = 0;
                 } else if (shooting) {
