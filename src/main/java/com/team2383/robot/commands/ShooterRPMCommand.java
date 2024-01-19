@@ -8,17 +8,20 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class ShooterRPMCommand extends Command {
     private final ShooterSubsystem shooter;
-    private final DoubleSupplier RPM;
+    private final DoubleSupplier topBottomRPM;
+    private final DoubleSupplier sideRPM;
 
-    public ShooterRPMCommand(ShooterSubsystem shooter, DoubleSupplier RPM) {
+    public ShooterRPMCommand(ShooterSubsystem shooter, DoubleSupplier topBottomRPM, DoubleSupplier sideRPM) {
         this.shooter = shooter;
-        this.RPM = RPM;
+        this.topBottomRPM = topBottomRPM;
+        this.sideRPM = sideRPM;
 
         addRequirements(shooter);
     }
 
     @Override
     public void execute() {
-        shooter.setRPM(RPM.getAsDouble());
+        shooter.setTopBottomRPM(topBottomRPM.getAsDouble());
+        shooter.setSideRPM(sideRPM.getAsDouble());
     }
 }

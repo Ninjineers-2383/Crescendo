@@ -12,7 +12,7 @@ import com.team2383.robot.commands.IndexerCommand;
 import com.team2383.robot.commands.ShooterRPMCommand;
 import com.team2383.robot.subsystems.indexer.IndexerIONEO;
 import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
-import com.team2383.robot.subsystems.shooter.ShooterIOFalcon500;
+import com.team2383.robot.subsystems.shooter.ShooterIOFalcon500Neo;
 import com.team2383.robot.subsystems.shooter.ShooterIOSim;
 import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 
@@ -40,7 +40,8 @@ public class RobotContainer {
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
-    LoggedDashboardNumber shooterRPM = new LoggedDashboardNumber("RPM", 0);
+    LoggedDashboardNumber shooterTopBottomRPM = new LoggedDashboardNumber("Top Bottom RPM", 0);
+    LoggedDashboardNumber shooterSideRPM = new LoggedDashboardNumber("Side RPM", 0);
 
     LoggedDashboardChooser<Command> sysIDashboardChooser = new LoggedDashboardChooser<Command>("SysID");
 
@@ -55,7 +56,7 @@ public class RobotContainer {
                 case ROBOT_PROTO:
                     m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
 
-                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500());
+                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
                     break;
                 case ROBOT_SIM:
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
@@ -91,18 +92,15 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(m_driverController, 3)
-                .whileTrue(new ShooterRPMCommand(m_shooterSubsystem, () -> 1000));
-
-        new JoystickButton(m_driverController, 4)
-                .whileTrue(new IndexerCommand(m_indexerSubsystem, () -> 1));
 
     }
 
     private void configureDefaultCommands() {
-        m_shooterSubsystem.setDefaultCommand(new ShooterRPMCommand(m_shooterSubsystem, shooterRPM::get));
-        m_indexerSubsystem.setDefaultCommand(new IndexerCommand(m_indexerSubsystem, () -> 0));
+        m_shooterSubsystem.setDefaultCommand(
+                new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get));
 
+        m_indexerSubsystem
+                .setDefaultCommand(new IndexerCommand(m_indexerSubsystem, () -> m_driverController.getRawAxis(3)));
     }
 
     /**

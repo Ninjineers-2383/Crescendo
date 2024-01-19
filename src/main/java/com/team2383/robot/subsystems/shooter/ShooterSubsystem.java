@@ -41,7 +41,8 @@ public class ShooterSubsystem extends SubsystemBase {
                 new SysIdRoutine.Mechanism(
                         // Tell SysId how to plumb the driving voltage to the motors.
                         (Measure<Voltage> volts) -> {
-                            shooter.setVoltage(volts.in(Volts));
+                            shooter.setTopBottomVoltage(volts.in(Volts));
+                            shooter.setSideVoltage(volts.in(Volts));
                         },
                         // Tell SysId how to record a frame of data for each motor on the mechanism
                         // being
@@ -50,20 +51,27 @@ public class ShooterSubsystem extends SubsystemBase {
                             // Record a frame for the left motors. Since these share an encoder, we consider
                             // the entire group to be one motor.
                             shooter.updateInputs(inputs);
-                            log.motor("left-shooter")
+                            log.motor("top-shooter")
                                     .voltage(
                                             m_appliedVoltage.mut_replace(
-                                                    inputs.leftVoltage, Volts))
-                                    .angularPosition(m_distance.mut_replace(inputs.leftPosition, Rotations))
+                                                    inputs.topVoltage, Volts))
+                                    .angularPosition(m_distance.mut_replace(inputs.topPosition, Rotations))
                                     .angularVelocity(
-                                            m_velocity.mut_replace(inputs.leftVelocity, RotationsPerSecond));
-                            log.motor("right-shooter")
+                                            m_velocity.mut_replace(inputs.topVelocity, RotationsPerSecond));
+                            log.motor("bottom-shooter")
                                     .voltage(
                                             m_appliedVoltage.mut_replace(
-                                                    inputs.rightVoltage, Volts))
-                                    .angularPosition(m_distance.mut_replace(inputs.rightPosition, Rotations))
+                                                    inputs.bottomVoltage, Volts))
+                                    .angularPosition(m_distance.mut_replace(inputs.bottomPosition, Rotations))
                                     .angularVelocity(
-                                            m_velocity.mut_replace(inputs.rightVelocity, RotationsPerSecond));
+                                            m_velocity.mut_replace(inputs.bottomVelocity, RotationsPerSecond));
+                            log.motor("side-shooter")
+                                    .voltage(
+                                            m_appliedVoltage.mut_replace(
+                                                    inputs.sideVoltage, Volts))
+                                    .angularPosition(m_distance.mut_replace(inputs.bottomPosition, Rotations))
+                                    .angularVelocity(
+                                            m_velocity.mut_replace(inputs.sideVelocity, RotationsPerSecond));
                         },
                         // Tell SysId to make generated commands require this subsystem, suffix test
                         // state in
@@ -77,8 +85,12 @@ public class ShooterSubsystem extends SubsystemBase {
         Logger.processInputs("Shooter", inputs);
     }
 
-    public void setRPM(double RPM) {
-        shooter.setRPM(RPM);
+    public void setTopBottomRPM(double RPM) {
+        shooter.setTopBottomRPM(RPM);
+    }
+
+    public void setSideRPM(double RPM) {
+        shooter.setSideRPM(RPM);
     }
 
     public Command getQuasiStatic(Direction direction) {
