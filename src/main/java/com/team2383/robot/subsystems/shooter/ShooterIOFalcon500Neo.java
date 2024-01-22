@@ -19,10 +19,10 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
 
         bottomMotor.getConfigurator().apply(ShooterConstants.kBottomConfigs);
 
-        sideMotor.getPIDController().setP(ShooterConstants.kBottomP);
-        sideMotor.getPIDController().setI(ShooterConstants.kBottomI);
-        sideMotor.getPIDController().setD(ShooterConstants.kBottomD);
-        sideMotor.getPIDController().setFF(ShooterConstants.kBottomF);
+        sideMotor.getPIDController().setP(ShooterConstants.kSideP, 0);
+        sideMotor.getPIDController().setI(ShooterConstants.kSideI, 0);
+        sideMotor.getPIDController().setD(ShooterConstants.kSideD, 0);
+        sideMotor.getPIDController().setFF(ShooterConstants.kSideA, 0);
     }
 
     @Override
@@ -52,7 +52,8 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
 
     @Override
     public void setSideRPM(double RPM) {
-        sideMotor.getPIDController().setReference(RPM, ControlType.kVelocity);
+        sideMotor.getPIDController().setReference(RPM, ControlType.kVelocity, 0,
+                ShooterConstants.kSideS * Math.signum(RPM));
     }
 
     @Override

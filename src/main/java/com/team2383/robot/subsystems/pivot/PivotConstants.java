@@ -4,7 +4,8 @@ public class PivotConstants {
 
     // TODO: put correct numbers
 
-    public static int kMotorID = 69;
+    public static int kLeftMotorID = 3;
+    public static int kRightMotorID = 4;
 
     // feedforward constants
     public static double kS = 0.0;
