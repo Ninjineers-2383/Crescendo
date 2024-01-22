@@ -53,7 +53,8 @@
       "/SmartDashboard/Question 9": "String Chooser",
       "/SmartDashboard/TeleOp Height": "String Chooser",
       "/SmartDashboard/TeleOp Score Chooser": "String Chooser",
-      "/SmartDashboard/TeleOp Scoring": "String Chooser"
+      "/SmartDashboard/TeleOp Scoring": "String Chooser",
+      "/SmartDashboard/Test Command": "String Chooser"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -109,6 +110,9 @@
         "open": true
       }
     }
+  },
+  "NetworkTables Info": {
+    "visible": true
   },
   "NetworkTables View": {
     "visible": false
