@@ -6,7 +6,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.team2383.lib.math.Conversions;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants.ModuleConstants;
-import com.team2383.robot.subsystems.orchestra.OrchestraSubsystem;
+import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -28,8 +28,8 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
         this.m_angleMotor = new TalonFX(constants.kAngleMotorID, CANbus);
         this.m_driveMotor = new TalonFX(constants.kDriveMotorID, CANbus);
 
-        OrchestraSubsystem.getInstance().addMotor(m_angleMotor);
-        OrchestraSubsystem.getInstance().addMotor(m_driveMotor);
+        OrchestraContainer.getInstance().addMotor(m_angleMotor);
+        OrchestraContainer.getInstance().addMotor(m_driveMotor);
 
         this.m_angleEncoder = constants.kEncoder;
 

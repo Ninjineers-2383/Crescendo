@@ -3,14 +3,14 @@ package com.team2383.robot.subsystems.orchestra;
 import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-public class OrchestraSubsystem {
-    public static OrchestraSubsystem m_instance;
+public class OrchestraContainer {
+    public static OrchestraContainer m_instance;
 
     private Orchestra orchestra = new Orchestra();
 
-    public static synchronized OrchestraSubsystem getInstance() {
+    public static synchronized OrchestraContainer getInstance() {
         if (m_instance == null) {
-            m_instance = new OrchestraSubsystem();
+            m_instance = new OrchestraContainer();
             return m_instance;
         }
 

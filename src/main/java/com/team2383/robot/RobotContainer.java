@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.commands.IndexerCommand;
+import com.team2383.robot.commands.OrchestraCommand;
 import com.team2383.robot.commands.ShooterRPMCommand;
 import com.team2383.robot.subsystems.indexer.IndexerIONEO;
 import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
@@ -130,5 +131,7 @@ public class RobotContainer {
 
         testDashboardChooser.addOption("Shooter Dynamic Reverse",
                 m_shooterSubsystem.getDynamic(Direction.kReverse));
+
+        testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("SeaShanry2.chrp"));
     }
 }

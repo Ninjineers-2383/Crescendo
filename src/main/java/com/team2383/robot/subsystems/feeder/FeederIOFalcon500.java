@@ -2,7 +2,7 @@ package com.team2383.robot.subsystems.feeder;
 
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.team2383.robot.subsystems.orchestra.OrchestraSubsystem;
+import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 
 public class FeederIOFalcon500 implements FeederIO {
     private final TalonFX motor;
@@ -13,7 +13,7 @@ public class FeederIOFalcon500 implements FeederIO {
 
     public FeederIOFalcon500(int motorID) {
         motor = new TalonFX(motorID);
-        OrchestraSubsystem.getInstance().addMotor(motor);
+        OrchestraContainer.getInstance().addMotor(motor);
 
         voltageOut = new VoltageOut(0, false, false, false, false);
     }
