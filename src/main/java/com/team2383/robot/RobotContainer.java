@@ -7,6 +7,7 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.commands.DrivetrainHeadingCommand;
 import com.team2383.robot.commands.JoystickDriveCommand;
 import com.team2383.robot.commands.OrchestraCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
@@ -24,6 +25,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -36,6 +38,8 @@ import edu.wpi.first.wpilibj2.command.Command;
  */
 public class RobotContainer {
     private final GenericHID m_driverController = new GenericHID(0);
+
+    private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
@@ -107,7 +111,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-
+        m_setHeadingZero.onTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
     }
 
     private void configureDefaultCommands() {
