@@ -150,6 +150,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_robotRelativeChassisSpeeds = m_kinematics.toChassisSpeeds(m_lastStates);
 
         headingIntegral += m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02;
+        headingIntegral %= (Math.PI);
 
         SLAMUpdate update;
         if (m_gyroInputs.connected) {
@@ -175,9 +176,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Swerve/Real Module States", m_lastStates);
 
-        Logger.recordOutput("Swerve/Heading Integral", headingIntegral);
+        Logger.recordOutput("Swerve/Chassis Heading", headingIntegral);
 
-        Logger.recordOutput("Swerve/Chassis Heading", m_robotRelativeChassisSpeeds.omegaRadiansPerSecond);
+        Logger.recordOutput("Swerve/Chassis Heading Velocity", m_robotRelativeChassisSpeeds.omegaRadiansPerSecond);
 
         Logger.recordOutput("Robot Pose", update.pose().toPose2d());
 
