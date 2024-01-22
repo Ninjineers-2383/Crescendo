@@ -3,6 +3,7 @@ package com.team2383.robot.subsystems.shooter;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.team2383.robot.subsystems.orchestra.OrchestraSubsystem;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
 
@@ -15,6 +16,9 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
     private final VelocityVoltage voltageOut = new VelocityVoltage(0);
 
     public ShooterIOFalcon500Neo() {
+        OrchestraSubsystem.getInstance().addMotor(topMotor);
+        OrchestraSubsystem.getInstance().addMotor(topMotor);
+
         topMotor.getConfigurator().apply(ShooterConstants.kTopConfigs);
 
         bottomMotor.getConfigurator().apply(ShooterConstants.kBottomConfigs);

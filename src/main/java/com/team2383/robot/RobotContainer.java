@@ -19,7 +19,6 @@ import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
@@ -43,7 +42,7 @@ public class RobotContainer {
     LoggedDashboardNumber shooterTopBottomRPM = new LoggedDashboardNumber("Top Bottom RPM", 0);
     LoggedDashboardNumber shooterSideRPM = new LoggedDashboardNumber("Side RPM", 0);
 
-    LoggedDashboardChooser<Command> sysIDashboardChooser = new LoggedDashboardChooser<Command>("SysID");
+    LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
     private boolean lwEnabled = false;
 
@@ -68,14 +67,12 @@ public class RobotContainer {
 
         configureDefaultCommands();
         registerAutoCommands();
+        registerTestCommands();
         // Configure the button bindings
         configureButtonBindings();
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
-
-        sysIDashboardChooser.addDefaultOption("Quasi Static", m_shooterSubsystem.getQuasiStatic(Direction.kForward));
-        sysIDashboardChooser.addDefaultOption("Dynamic", m_shooterSubsystem.getDynamic(Direction.kForward));
 
     }
 
@@ -113,9 +110,25 @@ public class RobotContainer {
     }
 
     public Command getTestCommand() {
-        return sysIDashboardChooser.get();
+        return testDashboardChooser.get();
     }
 
     private void registerAutoCommands() {
+    }
+
+    private void registerTestCommands() {
+        testDashboardChooser.addDefaultOption("None", (Command) null);
+
+        testDashboardChooser.addOption("Shooter Quasi Static Forward",
+                m_shooterSubsystem.getQuasiStatic(Direction.kForward));
+
+        testDashboardChooser.addOption("Shooter Quasi Static Reverse",
+                m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
+
+        testDashboardChooser.addOption("Shooter Dynamic Forward",
+                m_shooterSubsystem.getDynamic(Direction.kForward));
+
+        testDashboardChooser.addOption("Shooter Dynamic Reverse",
+                m_shooterSubsystem.getDynamic(Direction.kReverse));
     }
 }
