@@ -39,21 +39,7 @@ public class RobotContainer {
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
-    // private GamePieceSimSubsystem m_gamePieceSimSubsystem;
-
-    // private final AutoChooser autoChooser;
-    // private final TeleOpChooser teleOpChooser;
-
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
-
-    // private IndexerSubsystem m_indexerSubsystem;
-
-    // private ShooterSubsystem m_shooterSubsystem;
-
-    // LoggedDashboardNumber shooterTopBottomRPM = new LoggedDashboardNumber("Top
-    // Bottom RPM", 0);
-    // LoggedDashboardNumber shooterSideRPM = new LoggedDashboardNumber("Side RPM",
-    // 0);
 
     LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
@@ -76,10 +62,6 @@ public class RobotContainer {
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
-
-                    // m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
-
-                    // m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -94,15 +76,6 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
-
-                    // m_gamePieceSimSubsystem = new
-                    // GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
-                    // m_drivetrainSubsystem::getRobotRelativeSpeeds, shootingBoolean::get,
-                    // intakeBoolean::get,
-                    // shooterAngle::get, shooterRPM::get);
-                    // m_indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
-
-                    // m_shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
                     break;
                 default:
                     break;
@@ -119,19 +92,6 @@ public class RobotContainer {
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
-
-        // shootingBoolean.addDefaultOption("No", false);
-        // shootingBoolean.addOption("Yes", true);
-
-        // intakeBoolean.addDefaultOption("No", false);
-        // intakeBoolean.addOption("Yes", true);
-
-        // pieceIndexChooser.addDefaultOption("0", 0);
-        // pieceIndexChooser.addOption("1", 1);
-        // pieceIndexChooser.addOption("2", 2);
-        // pieceIndexChooser.addOption("3", 3);
-        // pieceIndexChooser.addOption("4", 4);
-        // pieceIndexChooser.addOption("5", 5);
     }
 
     public void periodic() {
@@ -161,21 +121,6 @@ public class RobotContainer {
                                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1)),
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
-
-        // m_gamePieceSimSubsystem.setDefaultCommand(new InstantCommand(() -> {
-        // m_gamePieceSimSubsystem.movePiece(() -> m_driverController.getRawAxis(3),
-        // () -> m_driverController.getRawAxis(4), () ->
-        // m_driverController.getRawAxis(5),
-        // pieceIndexChooser::get);
-        // }, m_gamePieceSimSubsystem));
-
-        // m_shooterSubsystem.setDefaultCommand(
-        // new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get,
-        // shooterSideRPM::get));
-
-        // m_indexerSubsystem
-        // .setDefaultCommand(new IndexerCommand(m_indexerSubsystem, () ->
-        // m_driverController.getRawAxis(3)));
     }
 
     /**
@@ -196,18 +141,6 @@ public class RobotContainer {
 
     private void registerTestCommands() {
         testDashboardChooser.addDefaultOption("None", (Command) null);
-
-        // testDashboardChooser.addOption("Shooter Quasi Static Forward",
-        // m_shooterSubsystem.getQuasiStatic(Direction.kForward));
-
-        // testDashboardChooser.addOption("Shooter Quasi Static Reverse",
-        // m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
-
-        // testDashboardChooser.addOption("Shooter Dynamic Forward",
-        // m_shooterSubsystem.getDynamic(Direction.kForward));
-
-        // testDashboardChooser.addOption("Shooter Dynamic Reverse",
-        // m_shooterSubsystem.getDynamic(Direction.kReverse));
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("SeaShanry2.chrp"));
     }
