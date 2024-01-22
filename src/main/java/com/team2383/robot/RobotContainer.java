@@ -5,19 +5,18 @@
 package com.team2383.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
-import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.commands.JoystickDriveHeadingLock;
+import com.team2383.robot.commands.JoystickDriveCommand;
+import com.team2383.robot.commands.OrchestraCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
-import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
+import com.team2383.robot.subsystems.drivetrain.GyroIOPigeon;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
-import com.team2383.robot.subsystems.gamePieceSim.GamePieceSimSubsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -25,8 +24,6 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -39,26 +36,26 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
     private final GenericHID m_driverController = new GenericHID(0);
-    // private final GenericHID m_operatorController = new GenericHID(1);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
-    private GamePieceSimSubsystem m_gamePieceSimSubsystem;
+    // private GamePieceSimSubsystem m_gamePieceSimSubsystem;
 
     // private final AutoChooser autoChooser;
     // private final TeleOpChooser teleOpChooser;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
-    LoggedDashboardChooser<Boolean> shootingBoolean = new LoggedDashboardChooser<Boolean>("Shooting");
+    // private IndexerSubsystem m_indexerSubsystem;
 
-    LoggedDashboardChooser<Boolean> intakeBoolean = new LoggedDashboardChooser<Boolean>("Intake");
+    // private ShooterSubsystem m_shooterSubsystem;
 
-    LoggedDashboardNumber shooterAngle = new LoggedDashboardNumber("Shooter Angle", 45);
+    // LoggedDashboardNumber shooterTopBottomRPM = new LoggedDashboardNumber("Top
+    // Bottom RPM", 0);
+    // LoggedDashboardNumber shooterSideRPM = new LoggedDashboardNumber("Side RPM",
+    // 0);
 
-    LoggedDashboardNumber shooterRPM = new LoggedDashboardNumber("RPM", 1000);
-
-    LoggedDashboardChooser<Integer> pieceIndexChooser = new LoggedDashboardChooser<Integer>("Piece Index");
+    LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
     private boolean lwEnabled = false;
 
@@ -68,9 +65,9 @@ public class RobotContainer {
     public RobotContainer() {
         if (Constants.getMode() != Mode.REPLAY) {
             switch (Constants.getRobot()) {
-                case ROBOT_COMP:
+                case ROBOT_PROTO:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            new GyroIO() {},
+                            new GyroIOPigeon(5, "drive"),
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
@@ -80,13 +77,15 @@ public class RobotContainer {
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
 
+                    // m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
+
+                    // m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             new GyroIO() {},
                             new SwerveModuleIOSim(), new SwerveModuleIOSim(),
                             new SwerveModuleIOSim(), new SwerveModuleIOSim());
-
                     new CameraSimSubsystem("northstar-1", SLAMConstantsConfig.camTransforms[0],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     new CameraSimSubsystem("northstar-2", SLAMConstantsConfig.camTransforms[1],
@@ -96,43 +95,43 @@ public class RobotContainer {
                     new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
 
-                    m_gamePieceSimSubsystem = new GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
-                            m_drivetrainSubsystem::getRobotRelativeSpeeds, shootingBoolean::get, intakeBoolean::get,
-                            shooterAngle::get, shooterRPM::get);
+                    // m_gamePieceSimSubsystem = new
+                    // GamePieceSimSubsystem(m_drivetrainSubsystem::getDeadReckoningPose3d,
+                    // m_drivetrainSubsystem::getRobotRelativeSpeeds, shootingBoolean::get,
+                    // intakeBoolean::get,
+                    // shooterAngle::get, shooterRPM::get);
+                    // m_indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
+
+                    // m_shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
                     break;
                 default:
                     break;
             }
         }
 
-        m_drivetrainSubsystem = m_drivetrainSubsystem != null ? m_drivetrainSubsystem
-                : new DrivetrainSubsystem(
-                        new GyroIO() {},
-                        new SwerveModuleIO() {}, new SwerveModuleIO() {},
-                        new SwerveModuleIO() {}, new SwerveModuleIO() {});
-
         configureDefaultCommands();
 
         registerAutoCommands();
 
+        registerTestCommands();
         // Configure the button bindings
         configureButtonBindings();
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
 
-        shootingBoolean.addDefaultOption("No", false);
-        shootingBoolean.addOption("Yes", true);
+        // shootingBoolean.addDefaultOption("No", false);
+        // shootingBoolean.addOption("Yes", true);
 
-        intakeBoolean.addDefaultOption("No", false);
-        intakeBoolean.addOption("Yes", true);
+        // intakeBoolean.addDefaultOption("No", false);
+        // intakeBoolean.addOption("Yes", true);
 
-        pieceIndexChooser.addDefaultOption("0", 0);
-        pieceIndexChooser.addOption("1", 1);
-        pieceIndexChooser.addOption("2", 2);
-        pieceIndexChooser.addOption("3", 3);
-        pieceIndexChooser.addOption("4", 4);
-        pieceIndexChooser.addOption("5", 5);
+        // pieceIndexChooser.addDefaultOption("0", 0);
+        // pieceIndexChooser.addOption("1", 1);
+        // pieceIndexChooser.addOption("2", 2);
+        // pieceIndexChooser.addOption("3", 3);
+        // pieceIndexChooser.addOption("4", 4);
+        // pieceIndexChooser.addOption("5", 5);
     }
 
     public void periodic() {
@@ -148,28 +147,12 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        new JoystickButton(m_driverController, 1)
-                .toggleOnTrue(new JoystickDriveHeadingLock(m_drivetrainSubsystem,
-                        () -> new Translation2d(
-                                MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveX) * 0.5, .1),
-                                MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveY) * 0.5, .1)),
-                        () -> Rotation2d
-                                .fromDegrees(100 * MathUtil
-                                        .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega) * 0.5,
-                                                0.1)),
-                        () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
-                        () -> -1));
-
-        new JoystickButton(m_driverController, 8)
-                .onTrue(new InstantCommand(() -> {
-                    m_drivetrainSubsystem.forceHeading(new Rotation2d());
-                }));
 
     }
 
     private void configureDefaultCommands() {
         m_drivetrainSubsystem.setDefaultCommand(
-                new JoystickDriveHeadingLock(m_drivetrainSubsystem,
+                new JoystickDriveCommand(m_drivetrainSubsystem,
                         () -> new Translation2d(
                                 MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveX), .1),
                                 MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveY), .1)),
@@ -179,11 +162,20 @@ public class RobotContainer {
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
 
-        m_gamePieceSimSubsystem.setDefaultCommand(new InstantCommand(() -> {
-            m_gamePieceSimSubsystem.movePiece(() -> m_driverController.getRawAxis(3),
-                    () -> m_driverController.getRawAxis(4), () -> m_driverController.getRawAxis(5),
-                    pieceIndexChooser::get);
-        }, m_gamePieceSimSubsystem));
+        // m_gamePieceSimSubsystem.setDefaultCommand(new InstantCommand(() -> {
+        // m_gamePieceSimSubsystem.movePiece(() -> m_driverController.getRawAxis(3),
+        // () -> m_driverController.getRawAxis(4), () ->
+        // m_driverController.getRawAxis(5),
+        // pieceIndexChooser::get);
+        // }, m_gamePieceSimSubsystem));
+
+        // m_shooterSubsystem.setDefaultCommand(
+        // new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get,
+        // shooterSideRPM::get));
+
+        // m_indexerSubsystem
+        // .setDefaultCommand(new IndexerCommand(m_indexerSubsystem, () ->
+        // m_driverController.getRawAxis(3)));
     }
 
     /**
@@ -195,6 +187,28 @@ public class RobotContainer {
         return (Command) null;
     }
 
+    public Command getTestCommand() {
+        return testDashboardChooser.get();
+    }
+
     private void registerAutoCommands() {
+    }
+
+    private void registerTestCommands() {
+        testDashboardChooser.addDefaultOption("None", (Command) null);
+
+        // testDashboardChooser.addOption("Shooter Quasi Static Forward",
+        // m_shooterSubsystem.getQuasiStatic(Direction.kForward));
+
+        // testDashboardChooser.addOption("Shooter Quasi Static Reverse",
+        // m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
+
+        // testDashboardChooser.addOption("Shooter Dynamic Forward",
+        // m_shooterSubsystem.getDynamic(Direction.kForward));
+
+        // testDashboardChooser.addOption("Shooter Dynamic Reverse",
+        // m_shooterSubsystem.getDynamic(Direction.kReverse));
+
+        testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("SeaShanry2.chrp"));
     }
 }

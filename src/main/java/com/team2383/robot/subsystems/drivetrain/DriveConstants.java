@@ -198,26 +198,4 @@ public final class DriveConstants {
                     -DriveConstants.kTrackWidthMeters / 2),
             Rotation2d.fromRadians(0.433),
             false, true);
-
-    // public final static IAbsoluteEncoder frontLeftEncoder = new
-    // AbsoluteCancoder(1, "Drive",
-    // frontLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    // public final static IAbsoluteEncoder frontRightEncoder = new
-    // AbsoluteCancoder(2, "Drive",
-    // frontRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    // public final static IAbsoluteEncoder rearLeftEncoder = new
-    // AbsoluteCancoder(3, "Drive",
-    // rearLeftConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    // public final static IAbsoluteEncoder rearRightEncoder = new
-    // AbsoluteCancoder(4, "Drive",
-    // rearRightConstants.kHardwareConfigs.kAngleEncoderConfigs);
-    // public final static IAbsoluteEncoder frontLeftEncoder = new
-    // AbsoluteMagEncoder(6);
-    // public final static IAbsoluteEncoder frontRightEncoder = new
-    // AbsoluteMagEncoder(7);
-    // public final static IAbsoluteEncoder rearLeftEncoder = new
-    // AbsoluteMagEncoder(8);
-    // public final static IAbsoluteEncoder rearRightEncoder = new
-    // AbsoluteMagEncoder(9);
-
 }

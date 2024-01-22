@@ -1,134 +1,135 @@
 {
-  "HALProvider": {
-    "Other Devices": {
-      "window": {
-        "visible": false
-      }
-    }
-  },
-  "NTProvider": {
-    "types": {
-      "/FMSInfo": "FMSInfo",
-      "/LiveWindow/DrivetrainSubsystem": "Subsystem",
-      "/LiveWindow/ElevatorSubsystem": "Subsystem",
-      "/LiveWindow/Ungrouped/DigitalInput[6]": "Digital Input",
-      "/LiveWindow/Ungrouped/DigitalInput[7]": "Digital Input",
-      "/LiveWindow/Ungrouped/DigitalInput[8]": "Digital Input",
-      "/LiveWindow/Ungrouped/DigitalInput[9]": "Digital Input",
-      "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[13]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[15]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[16]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[17]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[18]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[19]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[20]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
-      "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
-      "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
-      "/SmartDashboard/Auto": "String Chooser",
-      "/SmartDashboard/Auto Start Location": "String Chooser",
-      "/SmartDashboard/Enable LW": "String Chooser",
-      "/SmartDashboard/Field": "Field2d",
-      "/SmartDashboard/Intake": "String Chooser",
-      "/SmartDashboard/Piece Index": "String Chooser",
-      "/SmartDashboard/Question 1": "String Chooser",
-      "/SmartDashboard/Question 10": "String Chooser",
-      "/SmartDashboard/Question 11": "String Chooser",
-      "/SmartDashboard/Question 2": "String Chooser",
-      "/SmartDashboard/Question 3": "String Chooser",
-      "/SmartDashboard/Question 4": "String Chooser",
-      "/SmartDashboard/Question 5": "String Chooser",
-      "/SmartDashboard/Question 6": "String Chooser",
-      "/SmartDashboard/Question 7": "String Chooser",
-      "/SmartDashboard/Question 8": "String Chooser",
-      "/SmartDashboard/Question 9": "String Chooser",
-      "/SmartDashboard/Shooting": "String Chooser",
-      "/SmartDashboard/TeleOp Height": "String Chooser",
-      "/SmartDashboard/TeleOp Score Chooser": "String Chooser",
-      "/SmartDashboard/TeleOp Scoring": "String Chooser"
+    "HALProvider": {
+        "Other Devices": {
+            "window": {
+                "visible": false
+            }
+        }
     },
-    "windows": {
-      "/SmartDashboard/Field": {
-        "window": {
-          "visible": true
+    "NTProvider": {
+        "types": {
+            "/FMSInfo": "FMSInfo",
+            "/LiveWindow/DrivetrainSubsystem": "Subsystem",
+            "/LiveWindow/ElevatorSubsystem": "Subsystem",
+            "/LiveWindow/Ungrouped/DigitalInput[6]": "Digital Input",
+            "/LiveWindow/Ungrouped/DigitalInput[7]": "Digital Input",
+            "/LiveWindow/Ungrouped/DigitalInput[8]": "Digital Input",
+            "/LiveWindow/Ungrouped/DigitalInput[9]": "Digital Input",
+            "/LiveWindow/Ungrouped/PIDController[10]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[11]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[12]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[13]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[14]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[15]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[16]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[17]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[18]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[19]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[1]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[20]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[2]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[3]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[4]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[5]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[6]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[7]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[8]": "PIDController",
+            "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
+            "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
+            "/SmartDashboard/Auto": "String Chooser",
+            "/SmartDashboard/Auto Start Location": "String Chooser",
+            "/SmartDashboard/Enable LW": "String Chooser",
+            "/SmartDashboard/Field": "Field2d",
+            "/SmartDashboard/Intake": "String Chooser",
+            "/SmartDashboard/Piece Index": "String Chooser",
+            "/SmartDashboard/Question 1": "String Chooser",
+            "/SmartDashboard/Question 10": "String Chooser",
+            "/SmartDashboard/Question 11": "String Chooser",
+            "/SmartDashboard/Question 2": "String Chooser",
+            "/SmartDashboard/Question 3": "String Chooser",
+            "/SmartDashboard/Question 4": "String Chooser",
+            "/SmartDashboard/Question 5": "String Chooser",
+            "/SmartDashboard/Question 6": "String Chooser",
+            "/SmartDashboard/Question 7": "String Chooser",
+            "/SmartDashboard/Question 8": "String Chooser",
+            "/SmartDashboard/Question 9": "String Chooser",
+            "/SmartDashboard/Shooting": "String Chooser",
+            "/SmartDashboard/TeleOp Height": "String Chooser",
+            "/SmartDashboard/TeleOp Score Chooser": "String Chooser",
+            "/SmartDashboard/TeleOp Scoring": "String Chooser",
+            "/SmartDashboard/Test Command": "String Chooser"
+        },
+        "windows": {
+            "/SmartDashboard/Field": {
+                "window": {
+                    "visible": true
+                }
+            },
+            "/SmartDashboard/Intake": {
+                "window": {
+                    "visible": true
+                }
+            },
+            "/SmartDashboard/Piece Index": {
+                "window": {
+                    "visible": true
+                }
+            },
+            "/SmartDashboard/Shooting": {
+                "window": {
+                    "visible": true
+                }
+            }
         }
-      },
-      "/SmartDashboard/Intake": {
-        "window": {
-          "visible": true
+    },
+    "NetworkTables": {
+        "transitory": {
+            "AdvantageKit": {
+                "RealOutputs": {
+                    "open": true
+                }
+            },
+            "SmartDashboard": {
+                "Auto": {
+                    "open": true
+                },
+                "open": true
+            },
+            "northstar-1": {
+                "open": true
+            },
+            "northstar-2": {
+                "open": true,
+                "output": {
+                    "double[]##v_/northstar-2/output/observations": {
+                        "open": true
+                    },
+                    "open": true
+                }
+            },
+            "northstar-3": {
+                "open": true,
+                "output": {
+                    "double[]##v_/northstar-3/output/observations": {
+                        "open": true
+                    },
+                    "open": true
+                }
+            },
+            "slam_data": {
+                "ChassisSpeeds##v_/slam_data/chassisSpeeds": {
+                    "open": true
+                },
+                "Transform3d[]##v_/slam_data/camTransforms": {
+                    "Transform3d##v_[0]": {
+                        "open": true
+                    }
+                },
+                "open": true
+            }
         }
-      },
-      "/SmartDashboard/Piece Index": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Shooting": {
-        "window": {
-          "visible": true
-        }
-      }
+    },
+    "NetworkTables Info": {
+        "visible": true
     }
-  },
-  "NetworkTables": {
-    "transitory": {
-      "AdvantageKit": {
-        "RealOutputs": {
-          "open": true
-        }
-      },
-      "SmartDashboard": {
-        "Auto": {
-          "open": true
-        },
-        "open": true
-      },
-      "northstar-1": {
-        "open": true
-      },
-      "northstar-2": {
-        "open": true,
-        "output": {
-          "double[]##v_/northstar-2/output/observations": {
-            "open": true
-          },
-          "open": true
-        }
-      },
-      "northstar-3": {
-        "open": true,
-        "output": {
-          "double[]##v_/northstar-3/output/observations": {
-            "open": true
-          },
-          "open": true
-        }
-      },
-      "slam_data": {
-        "ChassisSpeeds##v_/slam_data/chassisSpeeds": {
-          "open": true
-        },
-        "Transform3d[]##v_/slam_data/camTransforms": {
-          "Transform3d##v_[0]": {
-            "open": true
-          }
-        },
-        "open": true
-      }
-    }
-  },
-  "NetworkTables Info": {
-    "visible": true
-  }
 }
