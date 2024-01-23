@@ -15,6 +15,9 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
 
     private final VelocityVoltage voltageOut = new VelocityVoltage(0);
 
+    private double topBottomSetpoint = 0.0;
+    private double sideSetpoint = 0.0;
+
     public ShooterIOFalcon500Neo() {
         OrchestraContainer.getInstance().addMotor(topMotor);
         OrchestraContainer.getInstance().addMotor(topMotor);
@@ -26,7 +29,7 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
         sideMotor.getPIDController().setP(ShooterConstants.kSideP, 0);
         sideMotor.getPIDController().setI(ShooterConstants.kSideI, 0);
         sideMotor.getPIDController().setD(ShooterConstants.kSideD, 0);
-        sideMotor.getPIDController().setFF(ShooterConstants.kSideA, 0);
+        sideMotor.getPIDController().setFF(ShooterConstants.kSideV, 0);
     }
 
     @Override
@@ -46,18 +49,25 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
         inputs.topVelocity = topMotor.getVelocity().getValue();
         inputs.bottomVelocity = bottomMotor.getVelocity().getValue();
         inputs.sideVelocity = sideMotor.getEncoder().getVelocity();
+
+        inputs.topBottomSetpointRPM = topBottomSetpoint;
+        inputs.sideSetpointRPM = sideSetpoint;
     }
 
     @Override
     public void setTopBottomRPM(double RPM) {
         topMotor.setControl(voltageOut.withVelocity(RPM / 60.0));
         bottomMotor.setControl(voltageOut.withVelocity(RPM / 60.0));
+
+        topBottomSetpoint = RPM / 60.0;
     }
 
     @Override
     public void setSideRPM(double RPM) {
         sideMotor.getPIDController().setReference(RPM, ControlType.kVelocity, 0,
                 ShooterConstants.kSideS * Math.signum(RPM));
+
+        sideSetpoint = RPM;
     }
 
     @Override
