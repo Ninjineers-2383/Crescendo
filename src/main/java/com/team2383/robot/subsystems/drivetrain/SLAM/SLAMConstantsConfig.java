@@ -11,8 +11,8 @@ public final class SLAMConstantsConfig {
     private static final Rotation3d CAM_ROTATION_BL = new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-290));
     private static final Rotation3d CAM_ROTATION_BR = new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-200));
 
-    public static final double POSE_VARIANCE_SCALE = 0.04;
-    public static final double POSE_VARIANCE_STATIC = 1E-1;
+    public static final double POSE_VARIANCE_SCALE = 0.01;
+    public static final double POSE_VARIANCE_STATIC = 1E-3;
 
     private static final Translation3d CAM_FRONT_LEFT = new Translation3d(
             0.257,
