@@ -55,9 +55,9 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
     }
 
     @Override
-    public void setTopBottomRPM(double RPM) {
-        topMotor.setControl(voltageOut.withVelocity(RPM / 60.0));
-        bottomMotor.setControl(voltageOut.withVelocity(RPM / 60.0));
+    public void setTopBottomRPM(double RPM, double differential) {
+        topMotor.setControl(voltageOut.withVelocity((RPM - differential) / 60.0));
+        bottomMotor.setControl(voltageOut.withVelocity((RPM + differential) / 60.0));
 
         topBottomSetpoint = RPM / 60.0;
     }

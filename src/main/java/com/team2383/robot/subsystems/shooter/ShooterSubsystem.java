@@ -85,8 +85,12 @@ public class ShooterSubsystem extends SubsystemBase {
         Logger.processInputs("Shooter", inputs);
     }
 
+    public void setTopBottomRPM(double RPM, double differential) {
+        shooter.setTopBottomRPM(RPM, differential);
+    }
+
     public void setTopBottomRPM(double RPM) {
-        shooter.setTopBottomRPM(RPM);
+        setTopBottomRPM(RPM, 0);
     }
 
     public void setSideRPM(double RPM) {

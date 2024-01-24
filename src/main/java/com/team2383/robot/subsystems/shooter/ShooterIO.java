@@ -29,7 +29,7 @@ public interface ShooterIO {
     public default void updateInputs(ShooterIOInputs inputs) {
     }
 
-    public default void setTopBottomRPM(double RPM) {
+    public default void setTopBottomRPM(double RPM, double differential) {
     }
 
     public default void setSideRPM(double RPM) {

@@ -47,6 +47,7 @@ public class RobotContainer {
 
     LoggedDashboardNumber shooterTopBottomRPM = new LoggedDashboardNumber("Top Bottom RPM", 0);
     LoggedDashboardNumber shooterSideRPM = new LoggedDashboardNumber("Side RPM", 0);
+    LoggedDashboardNumber shooterDifferentialRPM = new LoggedDashboardNumber("Differential RPM", 0);
 
     LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
@@ -135,7 +136,8 @@ public class RobotContainer {
         // () -> -1));
 
         m_shooterSubsystem.setDefaultCommand(
-                new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get));
+                new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get,
+                        shooterDifferentialRPM::get));
 
         m_indexerSubsystem
                 .setDefaultCommand(new IndexerCommand(m_indexerSubsystem,
