@@ -18,6 +18,10 @@ import com.team2383.robot.subsystems.drivetrain.GyroIOPigeon;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
+import com.team2383.robot.subsystems.pivot.PivotIONeo;
+import com.team2383.robot.subsystems.pivot.PivotIOSim;
+import com.team2383.robot.subsystems.pivot.PivotSubsystem;
+import com.team2383.robot.subsystems.sim_components.SimComponents;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -42,6 +46,7 @@ public class RobotContainer {
     private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
+    private PivotSubsystem m_pivotSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -66,6 +71,8 @@ public class RobotContainer {
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
+
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIONeo());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -80,11 +87,15 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
+
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIOSim());
                     break;
                 default:
                     break;
             }
         }
+
+        new SimComponents(m_pivotSubsystem);
 
         configureDefaultCommands();
 
