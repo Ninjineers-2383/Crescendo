@@ -4,10 +4,10 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
 
 public class PivotIOSim implements PivotIO {
-    private final DCMotor m_motorModel = DCMotor.getNEO(1);
+    private final DCMotor m_motorModel = DCMotor.getNEO(2);
     private final SingleJointedArmSim m_sim = new SingleJointedArmSim(m_motorModel,
             PivotConstants.kPivotMotorGearRatio, 1, 1, Math.toRadians(0),
-            Math.toRadians(60), true, 0);
+            Math.toRadians(360), false, 0);
 
     private double volts;
 

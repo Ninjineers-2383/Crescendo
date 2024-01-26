@@ -13,6 +13,8 @@ public class PivotVelocityCommand extends Command {
     public PivotVelocityCommand(PivotSubsystem pivot, DoubleSupplier velocity) {
         this.pivot = pivot;
         this.velocity = velocity;
+
+        addRequirements(pivot);
     }
 
     @Override

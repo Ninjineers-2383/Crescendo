@@ -13,6 +13,8 @@ public class PivotPositionCommand extends Command {
     public PivotPositionCommand(PivotSubsystem pivot, DoubleSupplier angle) {
         this.pivot = pivot;
         this.angle = angle;
+
+        addRequirements(pivot);
     }
 
     @Override
