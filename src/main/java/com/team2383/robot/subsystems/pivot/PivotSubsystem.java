@@ -61,8 +61,8 @@ public class PivotSubsystem extends SubsystemBase {
                         setpoint.position);
     }
 
-    public void setPosition(double positionMeters) {
-        goal = new TrapezoidProfile.State(positionMeters, 0.0);
+    public void setPosition(double angleRads) {
+        goal = new TrapezoidProfile.State(angleRads, 0.0);
     }
 
     public boolean isFinished() {
