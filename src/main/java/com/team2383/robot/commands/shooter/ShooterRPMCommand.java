@@ -1,4 +1,4 @@
-package com.team2383.robot.commands;
+package com.team2383.robot.commands.shooter;
 
 import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 

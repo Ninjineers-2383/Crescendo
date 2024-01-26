@@ -1,4 +1,4 @@
-package com.team2383.robot.commands;
+package com.team2383.robot.commands.indexer;
 
 import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
 

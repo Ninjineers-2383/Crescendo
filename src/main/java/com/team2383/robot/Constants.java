@@ -11,7 +11,7 @@ import edu.wpi.first.wpilibj.RobotBase;
  * https://www.desmos.com/calculator/jj9i5bdjhe
  * <p>
  * The circle function is used in
- * {@link com.team2383.robot.commands.JoystickDriveCommand#getCenterOfRotation
+ * {@link com.team2383.robot.commands.drivetrain.JoystickDriveCommand#getCenterOfRotation
  * JoystickDriveCommand}
  */
 

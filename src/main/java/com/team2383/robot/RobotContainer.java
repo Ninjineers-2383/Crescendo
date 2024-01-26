@@ -7,9 +7,9 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.commands.DrivetrainHeadingCommand;
-import com.team2383.robot.commands.JoystickDriveCommand;
-import com.team2383.robot.commands.OrchestraCommand;
+import com.team2383.robot.commands.drivetrain.DrivetrainHeadingCommand;
+import com.team2383.robot.commands.drivetrain.JoystickDriveCommand;
+import com.team2383.robot.commands.orchestra.OrchestraCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
