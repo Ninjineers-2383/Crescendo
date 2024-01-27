@@ -11,8 +11,8 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
 public class CoaxialSwerveModule implements Sendable {
-    private final SwerveModuleIO m_io;
-    private final SwerveModuleIOInputsAutoLogged m_inputs = new SwerveModuleIOInputsAutoLogged();
+    public final SwerveModuleIO m_io;
+    public final SwerveModuleIOInputsAutoLogged m_inputs = new SwerveModuleIOInputsAutoLogged();
 
     private final String m_logName;
 
@@ -49,7 +49,7 @@ public class CoaxialSwerveModule implements Sendable {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(
-                m_inputs.velocityMPS,
+                m_inputs.driveVelocityMPS,
                 getAngle());
     }
 
@@ -63,11 +63,15 @@ public class CoaxialSwerveModule implements Sendable {
         m_io.stop();
     }
 
+    public void setVoltage(double voltage) {
+        m_io.setVoltage(voltage);
+    }
+
     @Override
     public void initSendable(SendableBuilder builder) {
         builder.addDoubleProperty("Desired MPS", () -> m_desiredState.speedMetersPerSecond, null);
         builder.addDoubleProperty("Desired Angle", () -> m_desiredState.angle.getDegrees(), null);
-        builder.addDoubleProperty("Actual MPS", () -> m_inputs.velocityMPS, null);
+        builder.addDoubleProperty("Actual MPS", () -> m_inputs.driveVelocityMPS, null);
         builder.addDoubleProperty("Actual Angle", () -> Math.toDegrees(m_inputs.angleRad), null);
     }
 }

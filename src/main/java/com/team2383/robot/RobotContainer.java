@@ -18,12 +18,26 @@ import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
 import com.team2383.robot.subsystems.drivetrain.GyroIOPigeon;
+import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
+import com.team2383.robot.subsystems.feeder.FeederIO;
+import com.team2383.robot.subsystems.feeder.FeederIONEO;
+import com.team2383.robot.subsystems.feeder.FeederIOSim;
+import com.team2383.robot.subsystems.feeder.FeederSubsystem;
+import com.team2383.robot.subsystems.indexer.IndexerIO;
+import com.team2383.robot.subsystems.indexer.IndexerIONEO;
+import com.team2383.robot.subsystems.indexer.IndexerIOSim;
+import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
+import com.team2383.robot.subsystems.pivot.PivotIO;
 import com.team2383.robot.subsystems.pivot.PivotIONeo;
 import com.team2383.robot.subsystems.pivot.PivotIOSim;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
+import com.team2383.robot.subsystems.shooter.ShooterIO;
+import com.team2383.robot.subsystems.shooter.ShooterIOFalcon500Neo;
+import com.team2383.robot.subsystems.shooter.ShooterIOSim;
+import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 import com.team2383.robot.subsystems.sim_components.SimComponents;
 
 import edu.wpi.first.math.MathUtil;
@@ -33,6 +47,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -54,6 +69,9 @@ public class RobotContainer {
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
     private PivotSubsystem m_pivotSubsystem;
+    private FeederSubsystem m_feederSubsystem;
+    private IndexerSubsystem m_indexerSubsystem;
+    private ShooterSubsystem m_shooterSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -80,6 +98,12 @@ public class RobotContainer {
                                     Constants.kCANivoreBus));
 
                     m_pivotSubsystem = new PivotSubsystem(new PivotIONeo());
+
+                    m_feederSubsystem = new FeederSubsystem(new FeederIONEO());
+
+                    m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
+
+                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -96,11 +120,31 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
 
                     m_pivotSubsystem = new PivotSubsystem(new PivotIOSim());
+
+                    m_feederSubsystem = new FeederSubsystem(new FeederIOSim());
+
+                    m_indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
+
+                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
+
                     break;
                 default:
                     break;
             }
         }
+
+        m_drivetrainSubsystem = m_drivetrainSubsystem == null
+                ? new DrivetrainSubsystem(new GyroIO() {}, new SwerveModuleIO() {}, new SwerveModuleIO() {},
+                        new SwerveModuleIO() {}, new SwerveModuleIO() {})
+                : m_drivetrainSubsystem;
+
+        m_pivotSubsystem = m_pivotSubsystem == null ? new PivotSubsystem(new PivotIO() {}) : m_pivotSubsystem;
+
+        m_feederSubsystem = m_feederSubsystem == null ? new FeederSubsystem(new FeederIO() {}) : m_feederSubsystem;
+
+        m_indexerSubsystem = m_indexerSubsystem == null ? new IndexerSubsystem(new IndexerIO() {}) : m_indexerSubsystem;
+
+        m_shooterSubsystem = m_shooterSubsystem == null ? new ShooterSubsystem(new ShooterIO() {}) : m_shooterSubsystem;
 
         new SimComponents(m_pivotSubsystem);
 
@@ -170,6 +214,30 @@ public class RobotContainer {
 
     private void registerTestCommands() {
         testDashboardChooser.addDefaultOption("None", (Command) null);
+
+        testDashboardChooser.addOption("Drivetrain Dynamic Forward",
+                m_drivetrainSubsystem.getDynamic(Direction.kForward));
+
+        testDashboardChooser.addOption("Drivetrain Dynamic Reverse",
+                m_drivetrainSubsystem.getDynamic(Direction.kReverse));
+
+        testDashboardChooser.addOption("Drivetrain Quasistatic Forward",
+                m_drivetrainSubsystem.getQuasiStatic(Direction.kForward));
+
+        testDashboardChooser.addOption("Drivetrain Quasistatic Reverse",
+                m_drivetrainSubsystem.getQuasiStatic(Direction.kReverse));
+
+        testDashboardChooser.addOption("Shooter Dynamic Forward",
+                m_shooterSubsystem.getDynamic(Direction.kForward));
+
+        testDashboardChooser.addOption("Shooter Dynamic Reverse",
+                m_shooterSubsystem.getDynamic(Direction.kReverse));
+
+        testDashboardChooser.addOption("Shooter Quasistatic Forward",
+                m_shooterSubsystem.getQuasiStatic(Direction.kForward));
+
+        testDashboardChooser.addOption("Shooter Quasistatic Reverse",
+                m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("SeaShanty2.chrp"));
     }

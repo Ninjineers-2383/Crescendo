@@ -43,7 +43,7 @@ public class SwerveModuleIOSim implements SwerveModuleIO {
         absolutePosition += angleSim.getAngularVelocityRPM() / 60.0 * 0.02;
         driveRotations += driveSim.getAngularVelocityRPM() / 60.0 * 0.02;
 
-        inputs.velocityMPS = Conversions.RPSToMPS(driveSim.getAngularVelocityRPM() / 60.0,
+        inputs.azimuthVelocityRPM = Conversions.RPSToMPS(driveSim.getAngularVelocityRPM() / 60.0,
                 DriveConstants.kDriveWheelCircumferenceMeters, DriveConstants.kDriveGearRatio);
         inputs.angleRad = Math
                 .toRadians(Conversions.rotationsToDegrees(absolutePosition, DriveConstants.kAngleGearRatio));
