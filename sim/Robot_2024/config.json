@@ -15,6 +15,16 @@
         0,
         0.055
     ],
+    "components": [
+        {
+            "zeroedRotations": [],
+            "zeroedPosition": [
+                0,
+                0,
+                0
+            ]
+        }
+    ],
     "cameras": [
         {
             "name": "Front Left",

@@ -7,9 +7,12 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 
 import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.commands.DrivetrainHeadingCommand;
-import com.team2383.robot.commands.JoystickDriveCommand;
-import com.team2383.robot.commands.OrchestraCommand;
+import com.team2383.robot.commands.drivetrain.DrivetrainHeadingCommand;
+import com.team2383.robot.commands.drivetrain.JoystickDriveCommand;
+import com.team2383.robot.commands.orchestra.OrchestraCommand;
+import com.team2383.robot.commands.pivot.PivotPositionCommand;
+import com.team2383.robot.commands.pivot.PivotPresets;
+import com.team2383.robot.commands.pivot.PivotVelocityCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
@@ -18,6 +21,10 @@ import com.team2383.robot.subsystems.drivetrain.GyroIOPigeon;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
+import com.team2383.robot.subsystems.pivot.PivotIONeo;
+import com.team2383.robot.subsystems.pivot.PivotIOSim;
+import com.team2383.robot.subsystems.pivot.PivotSubsystem;
+import com.team2383.robot.subsystems.sim_components.SimComponents;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -38,10 +45,15 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
  */
 public class RobotContainer {
     private final GenericHID m_driverController = new GenericHID(0);
+    private final GenericHID m_operatorController = new GenericHID(1);
 
     private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
 
+    private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 0);
+    private final JoystickButton m_feedLeft = new JoystickButton(m_operatorController, 1);
+
     private DrivetrainSubsystem m_drivetrainSubsystem;
+    private PivotSubsystem m_pivotSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -66,6 +78,8 @@ public class RobotContainer {
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
+
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIONeo());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -80,11 +94,15 @@ public class RobotContainer {
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
                     new CameraSimSubsystem("northstar-4", SLAMConstantsConfig.camTransforms[3],
                             m_drivetrainSubsystem::getDeadReckoningPose3d);
+
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIOSim());
                     break;
                 default:
                     break;
             }
         }
+
+        new SimComponents(m_pivotSubsystem);
 
         configureDefaultCommands();
 
@@ -112,6 +130,9 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         m_setHeadingZero.onTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
+
+        m_pivotZero.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.ZERO));
+        m_feedLeft.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.FEED_LEFT));
     }
 
     private void configureDefaultCommands() {
@@ -125,6 +146,9 @@ public class RobotContainer {
                                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1)),
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
+
+        m_pivotSubsystem.setDefaultCommand(
+                new PivotVelocityCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(5)));
     }
 
     /**
@@ -146,6 +170,6 @@ public class RobotContainer {
     private void registerTestCommands() {
         testDashboardChooser.addDefaultOption("None", (Command) null);
 
-        testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("SeaShanry2.chrp"));
+        testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("SeaShanty2.chrp"));
     }
 }
