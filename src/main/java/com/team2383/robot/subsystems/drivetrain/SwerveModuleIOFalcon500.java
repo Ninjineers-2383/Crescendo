@@ -46,10 +46,13 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
                 m_angleMotor.getRotorPosition().getValue(),
                 DriveConstants.kAngleGearRatio));
         inputs.absoluteAngleRad = getAbsolute().getRadians();
-        inputs.velocityMPS = Conversions.RPSToMPS(
+        inputs.driveVelocityMPS = Conversions.RPSToMPS(
                 m_driveMotor.getVelocity().getValue(),
                 DriveConstants.kDriveWheelCircumferenceMeters,
                 DriveConstants.kDriveGearRatio);
+        inputs.azimuthVelocityRPM = Conversions.falconToRPM(
+                m_driveMotor.getVelocity().getValue(),
+                DriveConstants.kAngleGearRatio);
         inputs.drivePositionM = Conversions.rotationsToMeters(m_driveMotor.getPosition().getValue(),
                 DriveConstants.kDriveWheelCircumferenceMeters,
                 DriveConstants.kDriveGearRatio);
@@ -71,6 +74,12 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
     public void setDesiredState(SwerveModuleState desiredState) {
         setSpeed(desiredState);
         setAngle(desiredState);
+    }
+
+    @Override
+    public void setVoltage(double voltage) {
+        m_angleMotor.setVoltage(voltage);
+        m_driveMotor.setVoltage(voltage);
     }
 
     private void configAngleMotor(ModuleConstants constants) {

@@ -7,7 +7,8 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 public interface SwerveModuleIO {
     @AutoLog
     public static class SwerveModuleIOInputs {
-        public double velocityMPS = 0.0;
+        public double driveVelocityMPS = 0.0;
+        public double azimuthVelocityRPM = 0.0;
         public double angleRad = 0.0;
         public double absoluteAngleRad = 0.0;
         public double drivePositionM = 0.0;
@@ -28,5 +29,8 @@ public interface SwerveModuleIO {
     }
 
     public default void stop() {
+    }
+
+    public default void setVoltage(double voltage) {
     }
 }
