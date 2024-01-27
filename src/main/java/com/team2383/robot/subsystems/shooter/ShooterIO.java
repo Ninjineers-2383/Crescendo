@@ -20,12 +20,16 @@ public interface ShooterIO {
         public double topVelocity = 0.0;
         public double bottomVelocity = 0.0;
         public double sideVelocity = 0.0;
+
+        public double topBottomSetpointRPM = 0.0;
+        public double sideSetpointRPM = 0.0;
+
     }
 
     public default void updateInputs(ShooterIOInputs inputs) {
     }
 
-    public default void setTopBottomRPM(double RPM) {
+    public default void setTopBottomRPM(double RPM, double differential) {
     }
 
     public default void setSideRPM(double RPM) {

@@ -42,7 +42,7 @@ public class ShooterIOSim implements ShooterIO {
     }
 
     @Override
-    public void setTopBottomRPM(double RPM) {
+    public void setTopBottomRPM(double RPM, double differential) {
         m_topBottomPIDController.setSetpoint(RPM);
 
         m_setTopBottomRPM = RPM;

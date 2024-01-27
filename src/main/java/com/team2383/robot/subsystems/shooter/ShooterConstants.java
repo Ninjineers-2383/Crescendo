@@ -6,28 +6,28 @@ public class ShooterConstants {
     public static int kTopMotorID = 7;
     public static int kBottomMotorID = 8;
 
-    public static Slot0Configs kTopConfigs = new Slot0Configs()
-            .withKP(0.001)
-            .withKI(0)
-            .withKD(0)
-            .withKA(0.05)
-            .withKV(0.05)
-            .withKS(0.05);
-
     public static Slot0Configs kBottomConfigs = new Slot0Configs()
-            .withKP(0.001)
+            .withKP(0.08)
             .withKI(0)
             .withKD(0)
-            .withKA(0.05)
-            .withKV(0.05)
-            .withKS(0.05);
+            .withKA(0.0055439)
+            .withKV(0.11381)
+            .withKS(0.21147);
+
+    public static Slot0Configs kTopConfigs = new Slot0Configs()
+            .withKP(0.086154)
+            .withKI(0)
+            .withKD(0)
+            .withKA(0.021305)
+            .withKV(0.11179)
+            .withKS(0.03017);
 
     public static int kSideMotorID = 9;
 
-    public static double kSideP = 0.001;
+    public static double kSideP = 0.00011;
     public static double kSideI = 0.0;
     public static double kSideD = 0.0;
-    public static double kSideA = 0.05;
-    public static double kSideS = 0.0;
+    public static double kSideV = 0.0020796;
+    public static double kSideS = 0.14016;
 
 }

@@ -15,6 +15,7 @@ import com.team2383.robot.commands.orchestra.OrchestraCommand;
 import com.team2383.robot.commands.pivot.PivotPositionCommand;
 import com.team2383.robot.commands.pivot.PivotPresets;
 import com.team2383.robot.commands.pivot.PivotVelocityCommand;
+import com.team2383.robot.commands.shooter.ShooterRPMCommand;
 import com.team2383.robot.commands.indexer.IndexerCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
@@ -77,6 +78,10 @@ public class RobotContainer {
     private ShooterSubsystem m_shooterSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
+
+    LoggedDashboardNumber shooterTopBottomRPM = new LoggedDashboardNumber("Top Bottom RPM", 0);
+    LoggedDashboardNumber shooterSideRPM = new LoggedDashboardNumber("Side RPM", 0);
+    LoggedDashboardNumber shooterDifferentialRPM = new LoggedDashboardNumber("Differential RPM", 0);
 
     LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
@@ -156,11 +161,13 @@ public class RobotContainer {
         registerAutoCommands();
 
         registerTestCommands();
+
         // Configure the button bindings
         configureButtonBindings();
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
+
     }
 
     public void periodic() {
@@ -186,8 +193,10 @@ public class RobotContainer {
         m_drivetrainSubsystem.setDefaultCommand(
                 new JoystickDriveCommand(m_drivetrainSubsystem,
                         () -> new Translation2d(
-                                MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveX), .1),
-                                MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveY), .1)),
+                                MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveX),
+                                        .1),
+                                MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveY),
+                                        .1)),
                         () -> Rotation2d
                                 .fromDegrees(100 * MathUtil
                                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1)),
@@ -203,6 +212,14 @@ public class RobotContainer {
 
         m_indexerSubsystem
                 .setDefaultCommand(new IndexerCommand(m_indexerSubsystem, () -> m_operatorController.getRawAxis(1)));
+
+        m_shooterSubsystem.setDefaultCommand(
+                new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get,
+                        shooterDifferentialRPM::get));
+
+        m_indexerSubsystem
+                .setDefaultCommand(new IndexerCommand(m_indexerSubsystem,
+                        () -> 0.5 * (m_driverController.getRawAxis(3) - m_driverController.getRawAxis(2))));
     }
 
     /**

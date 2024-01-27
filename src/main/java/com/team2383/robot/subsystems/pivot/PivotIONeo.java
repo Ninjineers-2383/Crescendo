@@ -31,6 +31,7 @@ public class PivotIONeo implements PivotIO {
     public void setVoltage(double voltage) {
         leftMotor.setVoltage(voltage);
         rightMotor.setVoltage(voltage);
+
     }
 
     public void forceAngle(Rotation2d angle) {

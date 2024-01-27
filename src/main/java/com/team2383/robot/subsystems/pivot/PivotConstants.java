@@ -2,7 +2,6 @@ package com.team2383.robot.subsystems.pivot;
 
 public class PivotConstants {
     // TODO: put correct numbers
-
     public static int kLeftMotorID = 3;
     public static int kRightMotorID = 4;
     public static int kEncoderID = 5;

@@ -10,18 +10,21 @@ public class ShooterRPMCommand extends Command {
     private final ShooterSubsystem shooter;
     private final DoubleSupplier topBottomRPM;
     private final DoubleSupplier sideRPM;
+    private final DoubleSupplier differentialRPM;
 
-    public ShooterRPMCommand(ShooterSubsystem shooter, DoubleSupplier topBottomRPM, DoubleSupplier sideRPM) {
+    public ShooterRPMCommand(ShooterSubsystem shooter, DoubleSupplier topBottomRPM, DoubleSupplier sideRPM,
+            DoubleSupplier differentialRPM) {
         this.shooter = shooter;
         this.topBottomRPM = topBottomRPM;
         this.sideRPM = sideRPM;
+        this.differentialRPM = differentialRPM;
 
         addRequirements(shooter);
     }
 
     @Override
     public void execute() {
-        shooter.setTopBottomRPM(topBottomRPM.getAsDouble());
+        shooter.setTopBottomRPM(topBottomRPM.getAsDouble(), differentialRPM.getAsDouble());
         shooter.setSideRPM(sideRPM.getAsDouble());
     }
 }
