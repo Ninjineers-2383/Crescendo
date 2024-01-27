@@ -49,8 +49,8 @@ public class RobotContainer {
 
     private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
 
-    private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 0);
-    private final JoystickButton m_feedLeft = new JoystickButton(m_operatorController, 1);
+    private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
+    private final JoystickButton m_feedLeft = new JoystickButton(m_operatorController, 2);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
     private PivotSubsystem m_pivotSubsystem;
@@ -69,7 +69,7 @@ public class RobotContainer {
             switch (Constants.getRobot()) {
                 case ROBOT_PROTO:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            new GyroIOPigeon(5, "drive"),
+                            new GyroIOPigeon(0, "Drive"),
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,

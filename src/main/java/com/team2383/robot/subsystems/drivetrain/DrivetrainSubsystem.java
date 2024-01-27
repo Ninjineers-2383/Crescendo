@@ -6,6 +6,7 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -68,7 +69,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ChassisSpeeds m_robotRelativeChassisSpeeds = new ChassisSpeeds();
 
     // Heading Controller Initialization
-    private final PIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
+    private final ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
     private boolean m_headingControllerEnabled = false;
     private Rotation2d setHeading = new Rotation2d();
 
