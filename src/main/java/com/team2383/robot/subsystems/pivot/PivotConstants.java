@@ -6,15 +6,16 @@ public class PivotConstants {
     public static int kLeftMotorID = 3;
     public static int kRightMotorID = 4;
     public static int kEncoderID = 5;
+    public static double kEncoderOffset = -0.480135986608;
 
     // feedforward constants
-    public static final double kG = 0;
-    public static final double kS = 0.02;
-    public static final double kV = 4;
-    public static final double kA = 0;
+    public static final double kG = 0.3;
+    public static final double kS = 0.3;
+    public static final double kV = 0.01;
+    public static final double kA = 0.01;
 
     // PID constants
-    public static final double kP = 0;
+    public static final double kP = 3;
     public static final double kI = 0;
     public static final double kD = 0;
 

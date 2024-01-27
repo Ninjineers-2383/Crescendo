@@ -139,6 +139,7 @@ public final class DriveConstants {
 
             kAngleMotorConfigs.Slot0 = new Slot0Configs();
             kAngleMotorConfigs.Slot0.kP = 0.8;
+            kAngleMotorConfigs.Slot0.kD = 0.0;
 
             kAngleMotorConfigs.MotorOutput = new MotorOutputConfigs();
             kAngleMotorConfigs.MotorOutput.NeutralMode = NeutralModeValue.Brake;

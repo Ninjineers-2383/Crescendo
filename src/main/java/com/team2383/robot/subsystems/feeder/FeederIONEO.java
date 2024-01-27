@@ -4,7 +4,7 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class FeederIONEO implements FeederIO {
-    private final CANSparkMax leftMotor = new CANSparkMax(FeederConstants.kLeftMotorID, MotorType.kBrushless);
+    private final CANSparkMax leftMotor = new CANSparkMax(FeederConstants.kRightMotorID, MotorType.kBrushless);
     // private final CANSparkMax rightMotor = new
     // CANSparkMax(FeederConstants.kRightMotorID, MotorType.kBrushless);
 

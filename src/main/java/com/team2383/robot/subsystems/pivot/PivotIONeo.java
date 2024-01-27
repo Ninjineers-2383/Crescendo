@@ -17,14 +17,14 @@ public class PivotIONeo implements PivotIO {
         rightMotor = new CANSparkMax(PivotConstants.kRightMotorID, MotorType.kBrushless);
         encoder = new CANcoder(PivotConstants.kEncoderID, "Drive");
 
-        leftMotor.setInverted(true);
-        rightMotor.setInverted(true);
+        leftMotor.setInverted(false);
+        rightMotor.setInverted(false);
     }
 
     public void updateInputs(PivotIOInputs inputs) {
         inputs.current = leftMotor.getOutputCurrent();
         inputs.appliedVolts = leftMotor.getAppliedOutput() * 12;
-        inputs.pivotAngle = encoder.getPosition().getValue() * 2 * Math.PI;
+        inputs.pivotAngle = encoder.getPosition().getValue() * 2 * Math.PI - PivotConstants.kEncoderOffset;
         inputs.velocityRadPerS = encoder.getVelocity().getValue() * 2 * Math.PI;
     }
 

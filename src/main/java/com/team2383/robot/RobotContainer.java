@@ -5,14 +5,17 @@
 package com.team2383.robot;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.commands.drivetrain.DrivetrainHeadingCommand;
 import com.team2383.robot.commands.drivetrain.JoystickDriveCommand;
+import com.team2383.robot.commands.feeder.FeederPowerCommand;
 import com.team2383.robot.commands.orchestra.OrchestraCommand;
 import com.team2383.robot.commands.pivot.PivotPositionCommand;
 import com.team2383.robot.commands.pivot.PivotPresets;
 import com.team2383.robot.commands.pivot.PivotVelocityCommand;
+import com.team2383.robot.commands.indexer.IndexerCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
@@ -193,7 +196,13 @@ public class RobotContainer {
 
         m_pivotSubsystem.setDefaultCommand(
                 new PivotVelocityCommand(m_pivotSubsystem,
-                        () -> MathUtil.applyDeadband(m_operatorController.getRawAxis(5), 0.15)));
+                        () -> MathUtil.applyDeadband(10 * m_operatorController.getRawAxis(5), 0.15)));
+
+        m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
+                () -> m_operatorController.getRawAxis(2) - m_operatorController.getRawAxis(3)));
+
+        m_indexerSubsystem
+                .setDefaultCommand(new IndexerCommand(m_indexerSubsystem, () -> m_operatorController.getRawAxis(1)));
     }
 
     /**
