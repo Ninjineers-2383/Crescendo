@@ -12,7 +12,7 @@ import com.pathplanner.lib.path.PathConstraints;
 import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
-import com.team2383.lib.swerve.AbsoluteMagEncoder;
+import com.team2383.lib.swerve.AbsoluteCancoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -148,8 +148,8 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.27135, 0, 0,
-            20, 21,
-            new AbsoluteMagEncoder(6),
+            20, 22,
+            new AbsoluteCancoder(21, "drive", new CANcoderConfiguration()),
             "frontLeft",
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
@@ -162,8 +162,8 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.27135, 0, 0,
-            22, 23,
-            new AbsoluteMagEncoder(7),
+            23, 25,
+            new AbsoluteCancoder(24, "drive", new CANcoderConfiguration()),
             "frontRight",
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
@@ -176,8 +176,8 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.27135, 0, 0,
-            24, 25,
-            new AbsoluteMagEncoder(8),
+            26, 28,
+            new AbsoluteCancoder(27, "drive", new CANcoderConfiguration()),
             "rearLeft",
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
@@ -190,8 +190,8 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.27135, 0, 0,
-            26, 27,
-            new AbsoluteMagEncoder(9),
+            29, 31,
+            new AbsoluteCancoder(30, "drive", new CANcoderConfiguration()),
             "rearRight",
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,

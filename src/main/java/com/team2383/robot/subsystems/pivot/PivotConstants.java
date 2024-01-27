@@ -5,22 +5,23 @@ public class PivotConstants {
 
     public static int kLeftMotorID = 3;
     public static int kRightMotorID = 4;
+    public static int kEncoderID = 5;
 
     // feedforward constants
-    public static double kS = 0.1;
-    public static double kG = 0.1;
-    public static double kV = 0.1;
-    public static double kA = 0.1;
+    public static final double kG = 0.25;
+    public static final double kS = 0;
+    public static final double kV = 2.33;
+    public static final double kA = 0.0;
 
     // PID constants
-    public static double kP = 5.0;
-    public static double kI = 0.0;
-    public static double kD = 0.0;
+    public static final double kP = 4;
+    public static final double kI = 0;
+    public static final double kD = 0.25;
 
     // Trapezoid Profile Constants
-    public static double kMaxVelo = 1.0;
-    public static double kMaxAccel = 1.0;
+    public static double kMaxVelo = 30;
+    public static double kMaxAccel = 12;
 
-    public static double kPivotMotorGearRatio = 1.0 / 100.0;
+    public static double kPivotMotorGearRatio = 25.0;
 
 }
