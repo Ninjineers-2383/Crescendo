@@ -1,7 +1,5 @@
 package com.team2383.robot.subsystems.drivetrain.SLAM;
 
-import com.team2383.lib.util.TimedChassisSpeeds;
-
 import edu.wpi.first.math.MathSharedStore;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -10,17 +8,18 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.geometry.Twist2d;
+import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveWheelPositions;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.DoubleSubscriber;
-import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
 import edu.wpi.first.networktables.StructArrayPublisher;
-import edu.wpi.first.networktables.StructArraySubscriber;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.networktables.StructSubscriber;
 import edu.wpi.first.networktables.TimestampedDouble;
@@ -29,22 +28,22 @@ import edu.wpi.first.networktables.TimestampedObject;
 public class SLAMIOServer implements SLAMIO {
     private final NetworkTableInstance inst;
 
-    public final SwerveDrivePoseEstimator odometry;
+    private final SwerveDrivePoseEstimator odometry;
+    private final SwerveDriveKinematics kinematics;
 
     private final StructSubscriber<Pose3d> pose;
     private final DoubleSubscriber time;
-    private final StructArraySubscriber<Pose3d> landmarks;
-    private final StructArraySubscriber<Pose3d> seenLandmarks;
+    private final BooleanPublisher saveAndExit;
 
     private final StructArrayPublisher<Transform3d> camTransformsPub;
     private final DoublePublisher varianceScalePub;
     private final DoublePublisher varianceStaticPub;
 
-    private final IntegerPublisher numLandmarksPub;
-    private final StructArrayPublisher<Pose3d> landmarksPub;
-    private final StructPublisher<TimedChassisSpeeds> chassisSpeedsPub;
+    private final StructPublisher<Twist3d> twist3dPub;
 
     private long latestTimestamp = 0;
+
+    private SwerveDriveWheelPositions lastPositions;
 
     public SLAMIOServer(SwerveDriveKinematics kinematics, SwerveModulePosition[] positions) {
         inst = NetworkTableInstance.create();
@@ -52,26 +51,23 @@ public class SLAMIOServer implements SLAMIO {
         inst.startClient4("SLAM-client");
 
         odometry = new SwerveDrivePoseEstimator(kinematics, new Rotation2d(), positions, new Pose2d());
+        this.kinematics = kinematics;
         NetworkTable table = inst.getTable("slam_data");
-
         pose = table.getStructTopic("pose", Pose3d.struct)
                 .subscribe(new Pose3d(), PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
         time = table.getDoubleTopic("pose-time")
                 .subscribe(0, PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true));
-        landmarks = table.getStructArrayTopic("landmarks", Pose3d.struct).subscribe(new Pose3d[0]);
-        seenLandmarks = table.getStructArrayTopic("seenLandmarks", Pose3d.struct).subscribe(new Pose3d[0],
-                PubSubOption.keepDuplicates(true));
 
-        chassisSpeedsPub = table.getStructTopic("chassisSpeeds", TimedChassisSpeeds.struct)
+        twist3dPub = table.getStructTopic("twist3d", Twist3d.struct)
                 .publish(PubSubOption.keepDuplicates(true), PubSubOption.sendAll(true), PubSubOption.periodic(0));
+
+        saveAndExit = table.getBooleanTopic("saveAndExit").publish();
 
         camTransformsPub = table.getStructArrayTopic("camTransforms", Transform3d.struct).publish();
         varianceScalePub = table.getDoubleTopic("varianceScale").publish();
         varianceStaticPub = table.getDoubleTopic("varianceStatic").publish();
 
-        numLandmarksPub = table.getIntegerTopic("numLandmarks").publish();
-        landmarksPub = table.getStructArrayTopic("seed-landmarks", Pose3d.struct)
-                .publish(PubSubOption.keepDuplicates(true));
+        lastPositions = new SwerveDriveWheelPositions(positions);
     }
 
     @Override
@@ -87,8 +83,6 @@ public class SLAMIOServer implements SLAMIO {
 
             inputs.connected = true;
             inputs.newValue = true;
-            inputs.landmarks = landmarks.get();
-            inputs.seenLandmarks = seenLandmarks.get();
 
             latestTimestamp = latestPose.timestamp;
 
@@ -107,16 +101,14 @@ public class SLAMIOServer implements SLAMIO {
     }
 
     @Override
-    public void updateChassisSpeeds(ChassisSpeeds speeds, SwerveModulePosition[] modulePositions,
+    public void updateModulePositions(SwerveModulePosition[] modulePositions,
             Rotation2d gyroAngle) {
-        chassisSpeedsPub.set(new TimedChassisSpeeds(speeds, MathSharedStore.getTimestamp()));
+        SwerveDriveWheelPositions positions = new SwerveDriveWheelPositions(modulePositions);
+        Twist2d twist = kinematics.toTwist2d(lastPositions, positions);
+        twist3dPub.set(new Twist3d(twist.dx, twist.dy, 0, 0, 0, twist.dtheta));
         odometry.update(gyroAngle, modulePositions);
-    }
 
-    @Override
-    public void seedLandmarks(Pose3d[] landmarks) {
-        landmarksPub.set(landmarks);
-        numLandmarksPub.set(landmarks.length);
+        lastPositions = positions;
     }
 
     @Override
@@ -135,5 +127,10 @@ public class SLAMIOServer implements SLAMIO {
     public void forceHeading(Rotation2d heading, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
         odometry.resetPosition(gyroAngle, positions,
                 new Pose2d(odometry.getEstimatedPosition().getTranslation(), heading));
+    }
+
+    @Override
+    public void saveAndExit(boolean saveAndExit) {
+        this.saveAndExit.set(saveAndExit);
     }
 }

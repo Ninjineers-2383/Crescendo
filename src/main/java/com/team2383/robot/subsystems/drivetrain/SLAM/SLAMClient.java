@@ -8,6 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class SLAMClient {
     private final SLAMIO slamio;
@@ -25,10 +26,12 @@ public class SLAMClient {
         slamio.setVisionConstants(camPoses, varianceScale, varianceStatic);
     }
 
-    public SLAMUpdate update(ChassisSpeeds speeds, SwerveModulePosition[] positions, Rotation2d gyroAngle) {
-        slamio.updateChassisSpeeds(speeds, positions, gyroAngle);
+    public SLAMUpdate update(SwerveModulePosition[] positions, Rotation2d gyroAngle) {
+        slamio.updateModulePositions(positions, gyroAngle);
 
         slamio.updateInputs(inputs);
+
+        slamio.saveAndExit(DriverStation.getStickButton(0, 1));
 
         return new SLAMUpdate(inputs.pose, inputs.landmarks, inputs.seenLandmarks, inputs.newValue);
     }
