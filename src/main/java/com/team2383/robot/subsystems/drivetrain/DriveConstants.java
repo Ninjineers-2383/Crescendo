@@ -49,7 +49,7 @@ public final class DriveConstants {
             2, 2,
             Units.degreesToRadians(540), Units.degreesToRadians(720));
 
-    public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(0, 0, 0,
+    public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(1, 0, 0,
             new Constraints(2 * Math.PI, 4 * Math.PI));
 
     public static final class ModuleConstants {

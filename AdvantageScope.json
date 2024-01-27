@@ -12,13 +12,18 @@
           },
           "fields": [
             {
-              "key": "/RealOutputs/Wrist/Set Position",
+              "key": "/Pivot/PivotAngle",
               "color": "#2b66a2",
               "show": true
             },
             {
-              "key": "/Wrist/WristAngle",
+              "key": "/RealOutputs/Pivot/Goal Position",
               "color": "#e5b31b",
+              "show": true
+            },
+            {
+              "key": "/RealOutputs/Pivot/Set Position",
+              "color": "#80588e",
               "show": true
             }
           ]
@@ -40,19 +45,19 @@
           },
           "fields": [
             {
-              "key": "/RealOutputs/Wrist/Set Velocity",
-              "color": "#80588e",
+              "key": "/RealOutputs/Pivot/Set Velocity",
+              "color": "#e48b32",
               "show": true
             },
             {
-              "key": "/Wrist/VelocityRadPerSec",
-              "color": "#e48b32",
+              "key": "/Pivot/VelocityRadPerS",
+              "color": "#aacaee",
               "show": true
             }
           ]
         }
       },
-      "title": "Wrist"
+      "title": "Pivot"
     },
     {
       "type": 1,
@@ -65,25 +70,24 @@
           },
           "fields": [
             {
-              "key": "/RealOutputs/Elevator Set Position",
-              "color": "#2b66a2",
+              "key": "/Shooter/TopBottomSetpointRPM",
+              "color": "#e5b31b",
               "show": true
             },
             {
-              "key": "/Elevator/PositionM",
-              "color": "#e5b31b",
+              "key": "/Shooter/TopVelocity",
+              "color": "#af2437",
+              "show": true
+            },
+            {
+              "key": "/Shooter/BottomVelocity",
+              "color": "#80588e",
               "show": true
             }
           ]
         },
         "discrete": {
-          "fields": [
-            {
-              "key": "/DriverStation/Enabled",
-              "color": "#af2437",
-              "show": true
-            }
-          ]
+          "fields": []
         },
         "right": {
           "lockedRange": null,
@@ -93,19 +97,19 @@
           },
           "fields": [
             {
-              "key": "/RealOutputs/Elevator Set Velocity",
-              "color": "#80588e",
+              "key": "/Shooter/SideSetpointRPM",
+              "color": "#2b66a2",
               "show": true
             },
             {
-              "key": "/Elevator/VelocityMPS",
+              "key": "/Shooter/SideVelocity",
               "color": "#e48b32",
               "show": true
             }
           ]
         }
       },
-      "title": "Elevator"
+      "title": "Shooter"
     },
     {
       "type": 1,
@@ -205,12 +209,6 @@
             "key": "/RealOutputs/Robot Pose",
             "sourceTypeIndex": 1,
             "sourceType": "Pose2d"
-          },
-          {
-            "type": "Trajectory",
-            "key": "/RealOutputs/Odometry/Trajectory",
-            "sourceTypeIndex": 2,
-            "sourceType": "Pose2d[]"
           }
         ]
       ],

@@ -9,7 +9,6 @@ import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -87,7 +86,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // Heading Controller Initialization
     private final ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
-    private boolean m_headingControllerEnabled = false;
     private Rotation2d desiredHeading = new Rotation2d();
 
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
@@ -295,6 +293,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_lastStates[i] = m_modules[i].getState();
         }
 
+        setChassisSpeedsSetpoint(new ChassisSpeeds(m_robotRelativeChassisSpeeds.vxMetersPerSecond,
+                m_robotRelativeChassisSpeeds.vyMetersPerSecond,
+                m_headingController.calculate(getHeading().getRadians(), desiredHeading.getRadians())));
+
         m_robotRelativeChassisSpeeds = m_kinematics.toChassisSpeeds(m_lastStates);
 
         headingIntegral += m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02;
@@ -309,11 +311,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
             update = m_SLAMClient.update(getModulePositions(),
                     Rotation2d.fromRadians(headingIntegral));
             m_deadReckoning.update(Rotation2d.fromRadians(headingIntegral), getModulePositions());
-        }
-
-        if (m_headingControllerEnabled) {
-            double output = m_headingController.calculate(getHeading().getRadians(), desiredHeading.getRadians());
-            driveRobotRelative(new ChassisSpeeds(0, 0, output));
         }
 
         m_slamRobotPose = update.pose();
@@ -353,14 +350,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
     public void drive(Translation2d drive, Rotation2d angle, boolean fieldRelative,
             Translation2d centerOfRotation) {
-
-        if (angle.getRadians() != 0) {
-            m_headingControllerEnabled = false;
-            desiredHeading = getHeading();
-        } else {
-            m_headingControllerEnabled = true;
-        }
-
         if (fieldRelative) {
             m_robotRelativeChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(drive.getX(), drive.getY(),
                     angle.getRadians(),
@@ -369,15 +358,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_robotRelativeChassisSpeeds = new ChassisSpeeds(drive.getX(), drive.getY(), angle.getRadians());
         }
 
-        SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
-                m_robotRelativeChassisSpeeds,
-                centerOfRotation);
-
-        setModuleStates(swerveModuleStates);
-
-        Logger.recordOutput("Swerve/Desired Module States", swerveModuleStates);
-
-        m_COR.setPose(getPose().plus(new Transform2d(centerOfRotation, new Rotation2d())));
+        desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond));
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -389,10 +370,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void driveRobotRelative(ChassisSpeeds speeds) {
-        m_headingControllerEnabled = false;
-
         m_robotRelativeChassisSpeeds = speeds;
 
+        desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond));
+    }
+
+    public void setChassisSpeedsSetpoint(ChassisSpeeds speeds) {
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
                 speeds);
 
@@ -478,10 +461,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] { m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(),
                 m_rearLeftModule.getPosition(), m_rearRightModule.getPosition() };
-    }
-
-    public void setHeadingController(boolean enabled) {
-        m_headingControllerEnabled = enabled;
     }
 
     public void setHeading(Rotation2d heading) {
