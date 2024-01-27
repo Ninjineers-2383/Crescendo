@@ -87,7 +87,8 @@ public class JoystickDriveHeadingLock extends Command {
                         m_yRateLimiter.calculate(y)),
                 rotVelocity,
                 m_fieldRelative.getAsBoolean(),
-                getCenterOfRotation(hatPosition));
+                getCenterOfRotation(hatPosition),
+                true);
     }
 
     private Translation2d getCenterOfRotation(int hatPosition) {

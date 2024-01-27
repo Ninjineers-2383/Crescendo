@@ -49,8 +49,8 @@ public final class DriveConstants {
             2, 2,
             Units.degreesToRadians(540), Units.degreesToRadians(720));
 
-    public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(10, 0, 0,
-            new Constraints(2 * Math.PI, 4 * Math.PI));
+    public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(8.0, 0, 0,
+            new Constraints(8 * Math.PI, 8 * Math.PI));
 
     public static final class ModuleConstants {
         public final double kS;
@@ -152,7 +152,7 @@ public final class DriveConstants {
             0.065635,
             0.15,
             0.015968,
-            0.1, 0, 0,
+            0.01, 0, 0,
             20, 22,
             new AbsoluteCancoder(21, "Drive", cancoderConfig),
             "frontLeft",
@@ -167,7 +167,7 @@ public final class DriveConstants {
             0.065635,
             0.15,
             0.015968,
-            0.1, 0, 0,
+            0.01, 0, 0,
             23, 25,
             new AbsoluteCancoder(24, "Drive", cancoderConfig),
             "frontRight",
@@ -182,7 +182,7 @@ public final class DriveConstants {
             0.065635,
             0.15,
             0.015968,
-            0.1, 0, 0,
+            0.01, 0, 0,
             26, 28,
             new AbsoluteCancoder(27, "Drive", cancoderConfig),
             "rearLeft",
@@ -196,7 +196,7 @@ public final class DriveConstants {
             0.065635,
             0.15,
             0.015968,
-            0.1, 0, 0,
+            0.01, 0, 0,
             29, 31,
             new AbsoluteCancoder(30, "Drive", cancoderConfig),
             "rearRight",

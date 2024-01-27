@@ -132,7 +132,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         SmartDashboard.putData("Field", m_field);
         m_COR = m_field.getObject("COR");
 
-        m_headingController.enableContinuousInput(0, 2 * Math.PI);
+        m_gyro.setHeading(new Rotation2d());
+
+        m_headingController.enableContinuousInput(-Math.PI, Math.PI);
         m_headingController.reset(0);
 
         forceHeading(new Rotation2d());
@@ -323,7 +325,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Swerve/Real Module States", m_lastStates);
 
-        Logger.recordOutput("Swerve/Chassis Heading", headingIntegral);
+        Logger.recordOutput("Swerve/Chassis Heading", getHeading().getRadians());
         Logger.recordOutput("Swerve/Desired Heading", desiredHeading.getRadians());
         Logger.recordOutput("Swerve/Heading Effort", headingEffort);
         Logger.recordOutput("Swerve/Chassis Heading Velocity", m_robotRelativeChassisSpeeds.omegaRadiansPerSecond);
@@ -352,7 +354,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      *            Its the center of rotation duh
      */
     public void drive(Translation2d drive, Rotation2d angle, boolean fieldRelative,
-            Translation2d centerOfRotation) {
+            Translation2d centerOfRotation, boolean enableHeadingControl) {
         if (fieldRelative) {
             m_robotRelativeChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(drive.getX(), drive.getY(),
                     angle.getRadians(),
@@ -408,7 +410,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
     public Rotation2d getHeading() {
         if (m_gyroInputs.connected) {
-            return Rotation2d.fromRadians(m_slamRobotPose.getRotation().getZ());
+            return Rotation2d.fromDegrees(m_gyroInputs.headingDeg).plus(new Rotation2d());
+            // return Rotation2d.fromRadians(m_slamRobotPose.getRotation().getZ());
         } else {
             return Rotation2d.fromRadians(headingIntegral);
         }

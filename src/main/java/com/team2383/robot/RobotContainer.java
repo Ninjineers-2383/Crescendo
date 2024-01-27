@@ -9,6 +9,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.team2383.robot.Constants.Mode;
 import com.team2383.robot.commands.drivetrain.DrivetrainHeadingCommand;
+import com.team2383.robot.commands.drivetrain.FaceToTranslationCommand;
 import com.team2383.robot.commands.drivetrain.JoystickDriveCommand;
 import com.team2383.robot.commands.feeder.FeederPowerCommand;
 import com.team2383.robot.commands.orchestra.OrchestraCommand;
@@ -67,6 +68,7 @@ public class RobotContainer {
     private final GenericHID m_operatorController = new GenericHID(1);
 
     private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
+    private final JoystickButton m_seek = new JoystickButton(m_driverController, 2);
 
     private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
     private final JoystickButton m_feedLeft = new JoystickButton(m_operatorController, 2);
@@ -82,6 +84,7 @@ public class RobotContainer {
     LoggedDashboardNumber shooterTopBottomRPM = new LoggedDashboardNumber("Top Bottom RPM", 0);
     LoggedDashboardNumber shooterSideRPM = new LoggedDashboardNumber("Side RPM", 0);
     LoggedDashboardNumber shooterDifferentialRPM = new LoggedDashboardNumber("Differential RPM", 0);
+    LoggedDashboardNumber pivotAngle = new LoggedDashboardNumber("Pivot Angle", 0);
 
     LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
@@ -184,6 +187,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
+        m_seek.toggleOnTrue(new FaceToTranslationCommand(m_drivetrainSubsystem, new Translation2d(16.152, 5.5)));
 
         m_pivotZero.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.ZERO));
         m_feedLeft.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.FEED_LEFT));
@@ -205,7 +209,7 @@ public class RobotContainer {
 
         m_pivotSubsystem.setDefaultCommand(
                 new PivotVelocityCommand(m_pivotSubsystem,
-                        () -> MathUtil.applyDeadband(10 * m_operatorController.getRawAxis(5), 0.15)));
+                        () -> pivotAngle.get() * (180 / Math.PI)));
 
         m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
                 () -> m_operatorController.getRawAxis(2) - m_operatorController.getRawAxis(3)));

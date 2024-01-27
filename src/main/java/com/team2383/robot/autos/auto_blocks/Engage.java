@@ -24,7 +24,7 @@ public class Engage extends Command {
     @Override
     public void execute() {
         m_drivetrain.drive(new Translation2d(m_pid.calculate(m_drivetrain.getRoll()), 0), new Rotation2d(0), true,
-                new Translation2d());
+                new Translation2d(), true);
     }
 
     @Override
