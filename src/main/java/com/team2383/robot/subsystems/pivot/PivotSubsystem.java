@@ -36,7 +36,7 @@ public class PivotSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Pivot/Set Position", setpoint_next.position);
         Logger.recordOutput("Pivot/Set Velocity", setpoint_next.velocity);
-        Logger.recordOutput("Pivot/Set Acceleration", constraints.maxAcceleration);
+        Logger.recordOutput("Pivot/Goal Position", goal.position);
 
         double voltage = calculateVoltage(setpoint_next, setpoint, inputs.pivotAngle, inputs.velocityRadPerS);
 

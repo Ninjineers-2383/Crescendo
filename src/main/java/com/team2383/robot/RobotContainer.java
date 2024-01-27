@@ -148,7 +148,8 @@ public class RobotContainer {
                         () -> -1));
 
         m_pivotSubsystem.setDefaultCommand(
-                new PivotVelocityCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(5)));
+                new PivotVelocityCommand(m_pivotSubsystem,
+                        () -> MathUtil.applyDeadband(m_operatorController.getRawAxis(5), 0.15)));
     }
 
     /**

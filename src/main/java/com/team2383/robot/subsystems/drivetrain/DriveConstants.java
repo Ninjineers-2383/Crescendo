@@ -15,7 +15,6 @@ import com.pathplanner.lib.util.ReplanningConfig;
 import com.team2383.lib.swerve.AbsoluteCancoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
 
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
