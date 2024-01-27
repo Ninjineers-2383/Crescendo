@@ -154,11 +154,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         SLAMUpdate update;
         if (m_gyroInputs.connected) {
-            update = m_SLAMClient.update(m_robotRelativeChassisSpeeds, getModulePositions(),
+            update = m_SLAMClient.update(getModulePositions(),
                     Rotation2d.fromDegrees(m_gyroInputs.headingDeg));
             m_deadReckoning.update(Rotation2d.fromDegrees(m_gyroInputs.headingDeg), getModulePositions());
         } else {
-            update = m_SLAMClient.update(m_robotRelativeChassisSpeeds, getModulePositions(),
+            update = m_SLAMClient.update(getModulePositions(),
                     Rotation2d.fromRadians(headingIntegral));
             m_deadReckoning.update(Rotation2d.fromRadians(headingIntegral), getModulePositions());
         }

@@ -4,7 +4,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
-import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 public interface SLAMIO {
@@ -20,7 +19,7 @@ public interface SLAMIO {
     public default void updateInputs(SLAMIOInputs inputs) {
     }
 
-    public default void updateChassisSpeeds(ChassisSpeeds speeds, SwerveModulePosition[] modulePositions,
+    public default void updateModulePositions(SwerveModulePosition[] modulePositions,
             Rotation2d gyroAngle) {
     }
 
@@ -34,5 +33,8 @@ public interface SLAMIO {
     }
 
     public default void forcePose(Pose2d pose, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
+    }
+
+    public default void saveAndExit(boolean saveAndExit) {
     }
 }
