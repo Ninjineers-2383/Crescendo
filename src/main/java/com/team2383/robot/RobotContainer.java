@@ -216,10 +216,6 @@ public class RobotContainer {
         m_shooterSubsystem.setDefaultCommand(
                 new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get,
                         shooterDifferentialRPM::get));
-
-        m_indexerSubsystem
-                .setDefaultCommand(new IndexerCommand(m_indexerSubsystem,
-                        () -> 0.5 * (m_driverController.getRawAxis(3) - m_driverController.getRawAxis(2))));
     }
 
     /**

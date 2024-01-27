@@ -88,7 +88,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Heading Controller Initialization
     private final ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
     private boolean m_headingControllerEnabled = false;
-    private Rotation2d setHeading = new Rotation2d();
+    private Rotation2d desiredHeading = new Rotation2d();
 
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
     private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
@@ -312,7 +312,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         if (m_headingControllerEnabled) {
-            double output = m_headingController.calculate(getHeading().getRadians(), setHeading.getRadians());
+            double output = m_headingController.calculate(getHeading().getRadians(), desiredHeading.getRadians());
             driveRobotRelative(new ChassisSpeeds(0, 0, output));
         }
 
@@ -356,7 +356,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         if (angle.getRadians() != 0) {
             m_headingControllerEnabled = false;
-            setHeading = getHeading();
+            desiredHeading = getHeading();
         } else {
             m_headingControllerEnabled = true;
         }
@@ -435,6 +435,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
     public void forceHeading(Rotation2d currentHeading) {
         m_SLAMClient.forceHeading(currentHeading, new Rotation2d(m_gyroInputs.headingDeg), getModulePositions());
+        desiredHeading = currentHeading;
     }
 
     /**
@@ -484,7 +485,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void setHeading(Rotation2d heading) {
-        setHeading = heading;
+        desiredHeading = heading;
     }
 
     public void initializeSLAM() {
