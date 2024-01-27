@@ -133,6 +133,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_COR = m_field.getObject("COR");
 
         m_headingController.enableContinuousInput(0, 2 * Math.PI);
+        m_headingController.reset(0);
 
         forceHeading(new Rotation2d());
 
@@ -293,14 +294,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_lastStates[i] = m_modules[i].getState();
         }
 
+        double headingEffort = m_headingController.calculate(getHeading().getRadians(), desiredHeading.getRadians());
         setChassisSpeedsSetpoint(new ChassisSpeeds(m_robotRelativeChassisSpeeds.vxMetersPerSecond,
                 m_robotRelativeChassisSpeeds.vyMetersPerSecond,
-                m_headingController.calculate(getHeading().getRadians(), desiredHeading.getRadians())));
+                headingEffort));
 
-        m_robotRelativeChassisSpeeds = m_kinematics.toChassisSpeeds(m_lastStates);
+        // m_robotRelativeChassisSpeeds = m_kinematics.toChassisSpeeds(m_lastStates);
 
-        headingIntegral += m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02;
-        headingIntegral %= (Math.PI);
+        headingIntegral += headingEffort * 0.02;
+        // headingIntegral %= (Math.PI);
 
         SLAMUpdate update;
         if (m_gyroInputs.connected) {
@@ -322,7 +324,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("Swerve/Real Module States", m_lastStates);
 
         Logger.recordOutput("Swerve/Chassis Heading", headingIntegral);
-
+        Logger.recordOutput("Swerve/Desired Heading", desiredHeading.getRadians());
+        Logger.recordOutput("Swerve/Heading Effort", headingEffort);
         Logger.recordOutput("Swerve/Chassis Heading Velocity", m_robotRelativeChassisSpeeds.omegaRadiansPerSecond);
 
         Logger.recordOutput("Robot Pose", update.pose().toPose2d());
@@ -358,7 +361,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_robotRelativeChassisSpeeds = new ChassisSpeeds(drive.getX(), drive.getY(), angle.getRadians());
         }
 
-        desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond));
+        desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02));
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -372,7 +375,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public void driveRobotRelative(ChassisSpeeds speeds) {
         m_robotRelativeChassisSpeeds = speeds;
 
-        desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond));
+        desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02));
     }
 
     public void setChassisSpeedsSetpoint(ChassisSpeeds speeds) {
@@ -404,8 +407,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @return The heading of the robot in a Rotation2D
      */
     public Rotation2d getHeading() {
-        // return Rotation2d.fromRadians(headingIntegral);
-        return Rotation2d.fromRadians(m_slamRobotPose.getRotation().getZ());
+        if (m_gyroInputs.connected) {
+            return Rotation2d.fromRadians(m_slamRobotPose.getRotation().getZ());
+        } else {
+            return Rotation2d.fromRadians(headingIntegral);
+        }
     }
 
     /**

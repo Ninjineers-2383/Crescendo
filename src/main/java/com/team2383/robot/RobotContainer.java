@@ -183,7 +183,7 @@ public class RobotContainer {
     }
 
     private void configureButtonBindings() {
-        m_setHeadingZero.onTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
+        m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
 
         m_pivotZero.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.ZERO));
         m_feedLeft.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.FEED_LEFT));
