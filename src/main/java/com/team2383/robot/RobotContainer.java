@@ -15,7 +15,6 @@ import com.team2383.robot.commands.feeder.FeederPowerCommand;
 import com.team2383.robot.commands.orchestra.OrchestraCommand;
 import com.team2383.robot.commands.pivot.PivotPositionCommand;
 import com.team2383.robot.commands.pivot.PivotPresets;
-import com.team2383.robot.commands.pivot.PivotVelocityCommand;
 import com.team2383.robot.commands.shooter.ShooterRPMCommand;
 import com.team2383.robot.commands.indexer.IndexerCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
@@ -208,8 +207,8 @@ public class RobotContainer {
                         () -> -1));
 
         m_pivotSubsystem.setDefaultCommand(
-                new PivotVelocityCommand(m_pivotSubsystem,
-                        () -> pivotAngle.get() * (180 / Math.PI)));
+                new PivotPositionCommand(m_pivotSubsystem,
+                        () -> pivotAngle.get() * (Math.PI / 180)));
 
         m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
                 () -> m_operatorController.getRawAxis(2) - m_operatorController.getRawAxis(3)));

@@ -1,7 +1,6 @@
 package com.team2383.robot.subsystems.sim_components;
 
 import org.littletonrobotics.junction.Logger;
-import org.opencv.core.Mat;
 
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 
@@ -18,16 +17,17 @@ public class SimComponents extends SubsystemBase {
         this.pivot = pivot;
     }
 
+    // 0.055
     @Override
     public void periodic() {
         Pose3d[] pose = new Pose3d[1];
 
-        Rotation3d pivotRotation = new Rotation3d(pivot.getAngle(), 0, 0);
-        Rotation3d robotRotation = new Rotation3d(Math.toRadians(90), 0, Math.toRadians(90));
-        Pose3d pivotPose = new Pose3d(0, 0, 0.055,
-                pivotRotation.plus(robotRotation));
+        Pose3d robotPose = new Pose3d(new Translation3d(0.0, 0.0, 0.055), new Rotation3d(0.0, 0.0, 0.0));
+        Rotation3d pivotRotation = new Rotation3d(0, -pivot.getAngle(), 0);
 
-        pose[0] = pivotPose;
+        Transform3d pivotPose = new Transform3d(new Translation3d(8.890e-5, 0.0, 0.463550), pivotRotation);
+
+        pose[0] = robotPose.transformBy(pivotPose);
 
         Logger.recordOutput("Components", pose);
     }
