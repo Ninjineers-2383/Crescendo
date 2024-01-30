@@ -72,7 +72,7 @@ public class CameraSimSubsystem extends SubsystemBase {
 
         AprilTag tag = tags.get(new Random().nextInt(tags.size()));
         Transform3d robotToTag = new Transform3d(cameraPose, atfl.getTagPose(tag.ID).get());
-        Transform3d noisyTransform = Noise.noisyTransform(0, 0.1);
+        Transform3d noisyTransform = Noise.noisyTransform(0, 0);
         robotToTag = robotToTag.plus(noisyTransform);
         double[] observation = new double[] {
 

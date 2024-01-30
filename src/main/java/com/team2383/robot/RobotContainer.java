@@ -268,6 +268,7 @@ public class RobotContainer {
         testDashboardChooser.addOption("Shooter Quasistatic Reverse",
                 m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
 
-        testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("SeaShanty2.chrp"));
+        testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
+                m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem, m_shooterSubsystem));
     }
 }

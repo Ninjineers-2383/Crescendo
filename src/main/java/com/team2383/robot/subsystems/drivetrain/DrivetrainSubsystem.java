@@ -3,7 +3,6 @@ package com.team2383.robot.subsystems.drivetrain;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -31,6 +30,7 @@ import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -38,6 +38,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+
+import java.nio.file.Path;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
@@ -121,13 +123,22 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         m_gyro = gyro;
 
-        m_SLAMClient = new SLAMClient(new SLAMIOServer(m_kinematics, getModulePositions()));
+        Translation2d[] moduleLocations = new Translation2d[] { DriveConstants.frontLeftConstants.translation,
+                DriveConstants.frontRightConstants.translation, DriveConstants.rearLeftConstants.translation,
+                DriveConstants.rearRightConstants.translation };
 
         try {
-            aprilTags = AprilTagFieldLayout.loadFromResource(AprilTagFields.k2024Crescendo.m_resourceFile);
+            aprilTags = new AprilTagFieldLayout(Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "out.json"));
         } catch (Exception e) {
             aprilTags = new AprilTagFieldLayout(null, 0, 0);
         }
+
+        Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
+        for (int i = 1; i <= aprilTags.getTags().size(); i++) {
+            landmarks[i - 1] = aprilTags.getTagPose(i).get();
+        }
+
+        m_SLAMClient = new SLAMClient(new SLAMIOServer(moduleLocations, landmarks));
 
         initializeSLAM();
 
