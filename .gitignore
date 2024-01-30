@@ -169,3 +169,5 @@ bin/
 src/main/java/com/team2383/robot/BuildConstants.java
 
 *.pyc
+
+ctre_sim
