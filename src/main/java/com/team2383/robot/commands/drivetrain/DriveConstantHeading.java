@@ -13,40 +13,35 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class DriveFaceToTranslationCommand extends Command {
+public class DriveConstantHeading extends Command {
     private final DrivetrainSubsystem m_drivetrain;
-    private final Translation2d m_translation;
     private final Supplier<ChassisSpeeds> m_moveSupplier;
     private final BooleanSupplier m_fieldRelative;
+    private final Rotation2d m_heading;
 
     private final SlewRateLimiter m_xRateLimiter = new SlewRateLimiter(1000);
     private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(1000);
 
-    public DriveFaceToTranslationCommand(DrivetrainSubsystem drivetrain, Translation2d translation,
-            Supplier<ChassisSpeeds> moveSupplier, BooleanSupplier fieldRelative) {
+    public DriveConstantHeading(DrivetrainSubsystem drivetrain,
+            Supplier<ChassisSpeeds> moveSupplier, BooleanSupplier fieldRelative, Rotation2d heading) {
         m_drivetrain = drivetrain;
-        m_translation = translation;
         m_moveSupplier = moveSupplier;
         m_fieldRelative = fieldRelative;
+        m_heading = heading;
     }
 
     @Override
     public void execute() {
-        Translation2d drivetrainTransform = m_drivetrain.getDeadReckoningPose3d().getTranslation().toTranslation2d();
-
-        Rotation2d angle = new Rotation2d(Math.atan2(m_translation.getY() - drivetrainTransform.getY(),
-                m_translation.getX() - drivetrainTransform.getX()));
-
-        m_drivetrain.setHeading(angle);
+        m_drivetrain.setHeading(m_heading);
 
         ChassisSpeeds move = m_moveSupplier.get();
+        move.vxMetersPerSecond = m_xRateLimiter.calculate(-ThrottleSoftener.soften(move.vxMetersPerSecond)
+                * DriveConstants.kMaxSpeed);
 
-        move.vxMetersPerSecond = m_xRateLimiter.calculate(
-                -ThrottleSoftener.soften(move.vxMetersPerSecond) * DriveConstants.kMaxSpeed);
-        move.vyMetersPerSecond = m_yRateLimiter.calculate(
-                -ThrottleSoftener.soften(move.vyMetersPerSecond) * DriveConstants.kMaxSpeed);
+        move.vyMetersPerSecond = m_yRateLimiter.calculate(-ThrottleSoftener.soften(move.vyMetersPerSecond)
+                * DriveConstants.kMaxSpeed);
 
-        move.omegaRadiansPerSecond = 0;
+        move.omegaRadiansPerSecond = 0.0;
 
         m_drivetrain.drive(
                 move,

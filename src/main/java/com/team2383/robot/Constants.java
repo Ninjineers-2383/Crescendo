@@ -56,9 +56,9 @@ public final class Constants {
 
     public static final class OI {
         // Axis
-        public static int DriveX = Robot.isReal() ? 5 : 0;
-        public static int DriveY = Robot.isReal() ? 4 : 1;
-        public static int DriveOmega = Robot.isReal() ? 0 : 2;
+        public static int DriveX = Robot.isReal() ? 1 : 0;
+        public static int DriveY = Robot.isReal() ? 0 : 1;
+        public static int DriveOmega = Robot.isReal() ? 4 : 2;
         public static int IntakeIn = Robot.isReal() ? 3 : 3;
         public static int IntakeOut = Robot.isReal() ? 2 : 4;
 

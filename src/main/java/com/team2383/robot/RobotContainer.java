@@ -47,9 +47,11 @@ import com.team2383.robot.subsystems.sim_components.SimComponents;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
@@ -190,19 +192,21 @@ public class RobotContainer {
 
         m_pivotZero.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.ZERO));
         m_feedLeft.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.FEED_LEFT));
+
+        new JoystickButton(m_driverController, Constants.OI.ResetHeading)
+                .onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetHeading()));
     }
 
     private void configureDefaultCommands() {
         m_drivetrainSubsystem.setDefaultCommand(
                 new JoystickDriveCommand(m_drivetrainSubsystem,
-                        () -> new Translation2d(
+                        () -> new ChassisSpeeds(
                                 MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveX),
                                         .1),
                                 MathUtil.applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveY),
-                                        .1)),
-                        () -> Rotation2d
-                                .fromDegrees(100 * MathUtil
-                                        .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1)),
+                                        .1),
+                                Math.toRadians(100 * MathUtil
+                                        .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1))),
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
                         () -> -1));
 

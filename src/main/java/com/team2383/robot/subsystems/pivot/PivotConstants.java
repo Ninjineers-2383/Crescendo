@@ -22,6 +22,6 @@ public class PivotConstants {
     public static double kMaxVelo = 30;
     public static double kMaxAccel = 12;
 
-    public static double kPivotMotorGearRatio = 25.0;
+    public static double kPivotMotorGearRatio = 75.0;
 
 }

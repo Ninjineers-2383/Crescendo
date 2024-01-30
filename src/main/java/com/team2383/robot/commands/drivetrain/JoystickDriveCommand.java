@@ -7,6 +7,7 @@ import java.util.function.Supplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import com.team2383.lib.math.ThrottleSoftener;
@@ -16,8 +17,7 @@ import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 public class JoystickDriveCommand extends Command {
     private final DrivetrainSubsystem m_drivetrain;
 
-    private final Supplier<Rotation2d> m_rotSupply;
-    private final Supplier<Translation2d> m_moveSupply;
+    private final Supplier<ChassisSpeeds> m_moveSupply;
     private final BooleanSupplier m_fieldRelative;
     private final IntSupplier m_hatSupplier;
 
@@ -25,12 +25,11 @@ public class JoystickDriveCommand extends Command {
     private final SlewRateLimiter m_yRateLimiter = new SlewRateLimiter(1000);
     private final SlewRateLimiter m_oRateLimiter = new SlewRateLimiter(1500);
 
-    public JoystickDriveCommand(DrivetrainSubsystem drivetrain, Supplier<Translation2d> moveSupplier,
-            Supplier<Rotation2d> rotation, BooleanSupplier fieldRelative, IntSupplier hatSupplier) {
+    public JoystickDriveCommand(DrivetrainSubsystem drivetrain, Supplier<ChassisSpeeds> moveSupplier,
+            BooleanSupplier fieldRelative, IntSupplier hatSupplier) {
         m_drivetrain = drivetrain;
 
         m_moveSupply = moveSupplier;
-        m_rotSupply = rotation;
         m_fieldRelative = fieldRelative;
         m_hatSupplier = hatSupplier;
 
@@ -40,21 +39,17 @@ public class JoystickDriveCommand extends Command {
 
     @Override
     public void execute() {
-        Translation2d move = m_moveSupply.get();
-        double x = -ThrottleSoftener.soften(move.getX())
-                * DriveConstants.kMaxSpeed;
-        double y = -ThrottleSoftener.soften(move.getY())
-                * DriveConstants.kMaxSpeed;
-        double omega = -ThrottleSoftener.soften(m_rotSupply.get().getRadians()) * 0.75;
+        ChassisSpeeds move = m_moveSupply.get();
+        move.vxMetersPerSecond = m_xRateLimiter.calculate(-ThrottleSoftener.soften(move.vxMetersPerSecond)
+                * DriveConstants.kMaxSpeed);
+        move.vyMetersPerSecond = m_yRateLimiter.calculate(-ThrottleSoftener.soften(move.vyMetersPerSecond)
+                * DriveConstants.kMaxSpeed);
+        move.omegaRadiansPerSecond = m_oRateLimiter
+                .calculate(-ThrottleSoftener.soften(move.omegaRadiansPerSecond) * 0.75);
         int hatPosition = m_hatSupplier.getAsInt();
 
-        Rotation2d rotVelocity = new Rotation2d(m_oRateLimiter.calculate(omega));
-
         m_drivetrain.drive(
-                new Translation2d(
-                        m_xRateLimiter.calculate(x),
-                        m_yRateLimiter.calculate(y)),
-                rotVelocity,
+                move,
                 m_fieldRelative.getAsBoolean(),
                 getCenterOfRotation(hatPosition),
                 true);
