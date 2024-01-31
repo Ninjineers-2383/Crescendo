@@ -20,7 +20,7 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
 
     public ShooterIOFalcon500Neo() {
         OrchestraContainer.getInstance().addMotor(topMotor);
-        OrchestraContainer.getInstance().addMotor(topMotor);
+        OrchestraContainer.getInstance().addMotor(bottomMotor);
 
         topMotor.getConfigurator().apply(ShooterConstants.kTopConfigs);
 

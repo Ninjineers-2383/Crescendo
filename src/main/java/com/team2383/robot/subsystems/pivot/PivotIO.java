@@ -2,6 +2,9 @@ package com.team2383.robot.subsystems.pivot;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+
 public interface PivotIO {
 
     @AutoLog
@@ -10,6 +13,7 @@ public interface PivotIO {
         public double pivotAngle = 0.0;
         public double appliedVolts = 0.0;
         public double current = 0.0;
+        public double desiredAngle = 0.0;
     }
 
     public default void updateInputs(PivotIOInputs inputs) {
@@ -18,7 +22,15 @@ public interface PivotIO {
     public default void setVoltage(double voltage) {
     }
 
+    public default void setAngle(double angle) {
+    }
+
     public default void forceAngle(double angle) {
     }
 
+    public default void setPIDController(PIDController controller) {
+    }
+
+    public default void setFeedforward(ArmFeedforward feedforward) {
+    }
 }

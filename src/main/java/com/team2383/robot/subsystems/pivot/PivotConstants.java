@@ -1,5 +1,8 @@
 package com.team2383.robot.subsystems.pivot;
 
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+
 public class PivotConstants {
     // TODO: put correct numbers
     public static int kLeftMotorID = 3;
@@ -13,10 +16,14 @@ public class PivotConstants {
     public static final double kV = 0.01;
     public static final double kA = 0.01;
 
+    public static final ArmFeedforward kFeedforwardController = new ArmFeedforward(kS, kV, kA, kG);
+
     // PID constants
     public static final double kP = 3;
     public static final double kI = 0;
     public static final double kD = 0;
+
+    public static final PIDController kPIDController = new PIDController(kP, kI, kD);
 
     // Trapezoid Profile Constants
     public static double kMaxVelo = 30;

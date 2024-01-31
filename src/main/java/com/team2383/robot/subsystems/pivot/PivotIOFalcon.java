@@ -1,12 +1,17 @@
 package com.team2383.robot.subsystems.pivot;
 
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
-import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.team2383.robot.Constants;
+import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
+
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
 
 public class PivotIOFalcon implements PivotIO {
     private final CANcoder encoder = new CANcoder(PivotConstants.kEncoderID, Constants.kCANivoreBus);
@@ -17,24 +22,78 @@ public class PivotIOFalcon implements PivotIO {
     private final MotionMagicExpoTorqueCurrentFOC motionMagicOut = new MotionMagicExpoTorqueCurrentFOC(0);
     private final MotionMagicConfigs motionMagicConfigs;
 
-    private final VoltageOut voltageOut = new VoltageOut(0, true, true, false, false);
-
     private final Follower follower = new Follower(PivotConstants.kLeftMotorID, false);
 
+    private Slot0Configs leftConfigs = new Slot0Configs();
+    private Slot0Configs rightConfigs = new Slot0Configs();
+
     public PivotIOFalcon() {
+        OrchestraContainer.getInstance().addMotor(leftMotor);
+        OrchestraContainer.getInstance().addMotor(rightMotor);
+
+        setPIDController(PivotConstants.kPIDController);
+        setFeedforward(PivotConstants.kFeedforwardController);
+
         motionMagicConfigs = new MotionMagicConfigs();
         motionMagicConfigs.MotionMagicCruiseVelocity = 0; // Use max possible velocity
+
         motionMagicConfigs.MotionMagicExpo_kV = 0; // TODO
         motionMagicConfigs.MotionMagicExpo_kA = 0; // TODO
+
+        leftMotor.getConfigurator().apply(motionMagicConfigs);
+        rightMotor.getConfigurator().apply(motionMagicConfigs);
 
         rightMotor.setControl(follower);
     }
 
-    @Override
-    public void setVoltage(double voltage) {
-        voltageOut.withOutput(voltage);
+    public void updateInputs(PivotIOInputs inputs) {
+        inputs.current = leftMotor.getTorqueCurrent().getValueAsDouble();
+        inputs.appliedVolts = leftMotor.getDutyCycle().getValue() * rightMotor.getSupplyVoltage().getValue();
+        inputs.pivotAngle = encoder.getPosition().getValue() * 2 * Math.PI - PivotConstants.kEncoderOffset;
+        inputs.velocityRadPerS = encoder.getVelocity().getValue() * 2 * Math.PI;
+        inputs.desiredAngle = motionMagicOut.Position;
+    }
 
-        leftMotor.setControl(voltageOut);
+    @Override
+    public void setAngle(double angle) {
+        motionMagicOut.withPosition(angle);
+        rightMotor.setControl(motionMagicOut);
+    }
+
+    @Override
+    public void setPIDController(PIDController controller) {
+        leftConfigs.kP = controller.getP();
+        leftConfigs.kI = controller.getI();
+        leftConfigs.kD = controller.getD();
+
+        leftMotor.getConfigurator().apply(leftConfigs);
+
+        rightConfigs.kP = controller.getP();
+        rightConfigs.kI = controller.getI();
+        rightConfigs.kD = controller.getD();
+
+        rightMotor.getConfigurator().apply(rightConfigs);
+    }
+
+    @Override
+    public void setFeedforward(ArmFeedforward feedforward) {
+        leftConfigs.kA = feedforward.ka;
+        leftConfigs.kG = feedforward.kg;
+        leftConfigs.kS = feedforward.ks;
+        leftConfigs.kV = feedforward.kv;
+
+        leftConfigs.GravityType = GravityTypeValue.Arm_Cosine;
+
+        leftMotor.getConfigurator().apply(leftConfigs);
+
+        rightConfigs.kA = feedforward.ka;
+        rightConfigs.kG = feedforward.kg;
+        rightConfigs.kS = feedforward.ks;
+        rightConfigs.kV = feedforward.kv;
+
+        rightConfigs.GravityType = GravityTypeValue.Arm_Cosine;
+
+        rightMotor.getConfigurator().apply(rightConfigs);
     }
 
 }
