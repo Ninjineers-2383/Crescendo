@@ -214,8 +214,7 @@ public class RobotContainer {
                                         .1),
                                 Math.toRadians(100 * MathUtil
                                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1))),
-                        () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric)),
-                        () -> -1));
+                        () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric))));
 
         m_pivotSubsystem.setDefaultCommand(
                 new PivotPositionCommand(m_pivotSubsystem,

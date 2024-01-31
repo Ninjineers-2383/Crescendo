@@ -50,8 +50,6 @@ public class DriveFaceToTranslationCommand extends Command {
 
         m_drivetrain.drive(
                 move,
-                m_fieldRelative.getAsBoolean(),
-                new Translation2d(),
-                false);
+                m_fieldRelative.getAsBoolean());
     }
 }

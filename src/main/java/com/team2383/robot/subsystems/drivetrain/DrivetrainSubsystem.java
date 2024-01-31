@@ -3,7 +3,6 @@ package com.team2383.robot.subsystems.drivetrain;
 import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
-import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -22,7 +21,6 @@ import static edu.wpi.first.units.Units.Volts;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
-import edu.wpi.first.wpilibj.smartdashboard.FieldObject2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -67,10 +65,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     // Field Sim Initialization
     private final Field2d m_field = new Field2d();
-    private final FieldObject2d m_COR;
-
-    // Loop cycle counter for absolute encoder initialization
-    private int loop_cycle = 0;
 
     // Robot Control Input Robot Relative
     private ChassisSpeeds m_robotRelativeChassisSpeeds = new ChassisSpeeds();
@@ -112,10 +106,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         m_SLAMClient = new SLAMClient(new SLAMIOServer(moduleLocations, landmarks));
 
-        initializeSLAM();
+        m_SLAMClient.setVisionConstants(
+                SLAMConstantsConfig.camTransforms,
+                SLAMConstantsConfig.POSE_VARIANCE_SCALE,
+                SLAMConstantsConfig.POSE_VARIANCE_STATIC);
 
         SmartDashboard.putData("Field", m_field);
-        m_COR = m_field.getObject("COR");
 
         m_gyro.setHeading(new Rotation2d());
 
@@ -128,15 +124,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 this::getPose,
                 this::forceOdometry,
                 this::getRobotRelativeSpeeds,
-                this::driveRobotRelative,
+                (ChassisSpeeds speeds) -> {
+                    drive(speeds, false);
+                },
                 DriveConstants.CONFIG,
                 () -> true,
                 this);
-
-        addChild(DriveConstants.frontLeftConstants.name, m_frontLeftModule);
-        addChild(DriveConstants.frontRightConstants.name, m_frontRightModule);
-        addChild(DriveConstants.rearLeftConstants.name, m_rearLeftModule);
-        addChild(DriveConstants.rearRightConstants.name, m_rearRightModule);
     }
 
     @Override
@@ -146,14 +139,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 module.stop();
             }
         }
-
-        if (loop_cycle == 200) {
-            for (CoaxialSwerveModule module : m_modules) {
-                module.resetToAbsolute();
-            }
-        }
-
-        loop_cycle++;
 
         m_gyro.updateInputs(m_gyroInputs);
         Logger.processInputs("Gyro", m_gyroInputs);
@@ -166,6 +151,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_lastStates[i] = m_modules[i].getState();
         }
 
+        // Heading PID Controller
         double headingEffort = m_headingController.calculate(getHeading().getRadians(), desiredHeading.getRadians());
         setChassisSpeedsSetpoint(new ChassisSpeeds(m_robotRelativeChassisSpeeds.vxMetersPerSecond,
                 m_robotRelativeChassisSpeeds.vyMetersPerSecond,
@@ -220,11 +206,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
      * @param fieldRelative
      *            Whether the speeds are relative to the field or the
      *            robot
-     * @param centerOfRotation
-     *            Its the center of rotation duh
      */
-    public void drive(ChassisSpeeds drive, boolean fieldRelative,
-            Translation2d centerOfRotation, boolean enableHeadingControl) {
+    public void drive(ChassisSpeeds drive, boolean fieldRelative) {
         if (fieldRelative) {
             m_robotRelativeChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(drive, getHeading());
         } else {
@@ -242,12 +225,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return ChassisSpeeds.fromRobotRelativeSpeeds(m_robotRelativeChassisSpeeds, getHeading());
     }
 
-    public void driveRobotRelative(ChassisSpeeds speeds) {
-        m_robotRelativeChassisSpeeds = speeds;
-
-        desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02));
-    }
-
     public void setChassisSpeedsSetpoint(ChassisSpeeds speeds) {
         SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
                 speeds);
@@ -255,8 +232,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
         setModuleStates(swerveModuleStates);
 
         Logger.recordOutput("Swerve/Desired Module States", swerveModuleStates);
-
-        m_COR.setPose(getPose());
     }
 
     public void setModuleStates(SwerveModuleState[] states) {
@@ -285,7 +260,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     public Rotation2d getHeading() {
         if (m_gyroInputs.connected) {
             return Rotation2d.fromDegrees(m_gyroInputs.headingDeg).plus(headingOffset);
-            // return Rotation2d.fromRadians(m_slamRobotPose.getRotation().getZ());
         } else {
             return Rotation2d.fromRadians(headingIntegral);
         }
@@ -304,7 +278,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      *            facing directly towards the opposing alliance wall
      */
     public void forceHeading(Rotation2d currentHeading) {
-        m_SLAMClient.forceHeading(currentHeading, new Rotation2d(m_gyroInputs.headingDeg), getModulePositions());
+        headingOffset = Rotation2d.fromDegrees(m_gyroInputs.headingDeg).unaryMinus().plus(currentHeading);
         desiredHeading = currentHeading;
     }
 
@@ -352,22 +326,5 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void setHeading(Rotation2d heading) {
         desiredHeading = heading;
-    }
-
-    public void initializeSLAM() {
-        aprilTags.setOrigin(OriginPosition.kBlueAllianceWallRightSide);
-
-        Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
-
-        for (int i = 1; i <= aprilTags.getTags().size(); i++) {
-            landmarks[i - 1] = aprilTags.getTagPose(i).get();
-        }
-
-        m_SLAMClient.seedSLAMLandmarks(landmarks);
-
-        m_SLAMClient.setVisionConstants(
-                SLAMConstantsConfig.camTransforms,
-                SLAMConstantsConfig.POSE_VARIANCE_SCALE,
-                SLAMConstantsConfig.POSE_VARIANCE_STATIC);
     }
 }

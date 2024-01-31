@@ -9,7 +9,6 @@ import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.Command;
 
@@ -45,8 +44,6 @@ public class DriveConstantHeading extends Command {
 
         m_drivetrain.drive(
                 move,
-                m_fieldRelative.getAsBoolean(),
-                new Translation2d(),
-                false);
+                m_fieldRelative.getAsBoolean());
     }
 }

@@ -3,7 +3,6 @@ package com.team2383.robot.subsystems.drivetrain.SLAM;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMIO.SLAMIOInputs;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -15,10 +14,6 @@ public class SLAMClient {
 
     public SLAMClient(SLAMIO io) {
         slamio = io;
-    }
-
-    public void seedSLAMLandmarks(Pose3d[] landmarks) {
-        slamio.seedLandmarks(landmarks);
     }
 
     public void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic) {

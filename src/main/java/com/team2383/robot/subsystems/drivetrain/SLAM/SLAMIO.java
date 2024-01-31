@@ -23,9 +23,6 @@ public interface SLAMIO {
             Rotation2d gyroAngle) {
     }
 
-    public default void seedLandmarks(Pose3d[] landmarks) {
-    }
-
     public default void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic) {
     }
 

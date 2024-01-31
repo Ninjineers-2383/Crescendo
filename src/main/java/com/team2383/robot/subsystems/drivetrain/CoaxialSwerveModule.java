@@ -7,16 +7,17 @@ import com.team2383.lib.util.OnboardModuleState;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.util.sendable.Sendable;
-import edu.wpi.first.util.sendable.SendableBuilder;
 
-public class CoaxialSwerveModule implements Sendable {
+public class CoaxialSwerveModule {
     public final SwerveModuleIO m_io;
     public final SwerveModuleIOInputsAutoLogged m_inputs = new SwerveModuleIOInputsAutoLogged();
 
     private final String m_logName;
 
     private SwerveModuleState m_desiredState = new SwerveModuleState();
+
+    // Loop cycle counter for absolute encoder initialization
+    private int loop_cycle = 0;
 
     public CoaxialSwerveModule(SwerveModuleIO io, String name) {
         this.m_io = io;
@@ -27,6 +28,12 @@ public class CoaxialSwerveModule implements Sendable {
         m_io.updateInputs(m_inputs);
 
         Logger.processInputs(m_logName, m_inputs);
+
+        if (loop_cycle == 200) {
+            resetToAbsolute();
+        }
+
+        loop_cycle++;
     }
 
     public void setDesiredState(SwerveModuleState desiredState) {
@@ -67,11 +74,4 @@ public class CoaxialSwerveModule implements Sendable {
         m_io.setVoltage(voltage);
     }
 
-    @Override
-    public void initSendable(SendableBuilder builder) {
-        builder.addDoubleProperty("Desired MPS", () -> m_desiredState.speedMetersPerSecond, null);
-        builder.addDoubleProperty("Desired Angle", () -> m_desiredState.angle.getDegrees(), null);
-        builder.addDoubleProperty("Actual MPS", () -> m_inputs.driveVelocityMPS, null);
-        builder.addDoubleProperty("Actual Angle", () -> Math.toDegrees(m_inputs.angleRad), null);
-    }
 }
