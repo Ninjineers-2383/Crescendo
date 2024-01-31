@@ -12,6 +12,7 @@ import com.team2383.robot.Constants.RobotType;
 import com.team2383.robot.commands.drivetrain.DrivetrainHeadingCommand;
 import com.team2383.robot.commands.drivetrain.FaceToTranslationCommand;
 import com.team2383.robot.commands.drivetrain.JoystickDriveCommand;
+import com.team2383.robot.commands.drivetrain.sysid.DrivetrainSysIDCommand;
 import com.team2383.robot.commands.feeder.FeederPowerCommand;
 import com.team2383.robot.commands.orchestra.OrchestraCommand;
 import com.team2383.robot.commands.pivot.PivotPositionCommand;
@@ -248,19 +249,21 @@ public class RobotContainer {
     }
 
     private void registerTestCommands() {
+        DrivetrainSysIDCommand drivetrainSysIDCommand = new DrivetrainSysIDCommand(m_drivetrainSubsystem);
+
         testDashboardChooser.addDefaultOption("None", (Command) null);
 
         testDashboardChooser.addOption("Drivetrain Dynamic Forward",
-                m_drivetrainSubsystem.getDynamic(Direction.kForward));
+                drivetrainSysIDCommand.getDynamic(Direction.kForward));
 
         testDashboardChooser.addOption("Drivetrain Dynamic Reverse",
-                m_drivetrainSubsystem.getDynamic(Direction.kReverse));
+                drivetrainSysIDCommand.getDynamic(Direction.kReverse));
 
         testDashboardChooser.addOption("Drivetrain Quasistatic Forward",
-                m_drivetrainSubsystem.getQuasiStatic(Direction.kForward));
+                drivetrainSysIDCommand.getQuasiStatic(Direction.kForward));
 
         testDashboardChooser.addOption("Drivetrain Quasistatic Reverse",
-                m_drivetrainSubsystem.getQuasiStatic(Direction.kReverse));
+                drivetrainSysIDCommand.getQuasiStatic(Direction.kReverse));
 
         testDashboardChooser.addOption("Shooter Dynamic Forward",
                 m_shooterSubsystem.getDynamic(Direction.kForward));
