@@ -3,6 +3,7 @@ package com.team2383.robot.subsystems.drivetrain.SLAM;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 
 public final class SLAMConstantsConfig {
     // Description of the camera's relative position
@@ -15,23 +16,27 @@ public final class SLAMConstantsConfig {
     public static final double POSE_VARIANCE_STATIC = 1E-3;
 
     private static final Translation3d CAM_FRONT_LEFT = new Translation3d(
-            0.257,
-            0.244,
+            0.257 + Units.inchesToMeters(1),
+            0.244 + Units.inchesToMeters(1),
             0.163);
 
     private static final Translation3d CAM_FRONT_RIGHT = new Translation3d(
-            0.243,
-            -0.255,
+            0.243 + Units.inchesToMeters(1),
+            -0.255 - Units.inchesToMeters(1),
             0.163);
 
     private static final Translation3d CAM_BACK_LEFT = new Translation3d(
-            -0.244,
-            0.263,
+            -0.244 - Units.inchesToMeters(
+                    1),
+            0.263 + Units.inchesToMeters(
+                    1),
             0.163);
 
     private static final Translation3d CAM_BACK_RIGHT = new Translation3d(
-            -0.263,
-            -0.244,
+            -0.263 - Units.inchesToMeters(
+                    1),
+            -0.244 - Units.inchesToMeters(
+                    1),
             0.163);
 
     public static final Transform3d[] camTransforms = new Transform3d[] {
