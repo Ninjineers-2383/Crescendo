@@ -38,7 +38,7 @@ import com.team2383.robot.subsystems.indexer.IndexerIONEO;
 import com.team2383.robot.subsystems.indexer.IndexerIOSim;
 import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
 import com.team2383.robot.subsystems.pivot.PivotIO;
-import com.team2383.robot.subsystems.pivot.PivotIONeo;
+import com.team2383.robot.subsystems.pivot.PivotIOFalcon;
 import com.team2383.robot.subsystems.pivot.PivotIOSim;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 import com.team2383.robot.subsystems.shooter.ShooterIO;
@@ -101,7 +101,7 @@ public class RobotContainer {
         if (Constants.getMode() != Mode.REPLAY) {
             switch (Constants.getRobot()) {
                 case ROBOT_COMP:
-                    m_pivotSubsystem = new PivotSubsystem(new PivotIONeo());
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIOFalcon());
 
                     m_feederSubsystem = new FeederSubsystem(new FeederIONEO());
 
