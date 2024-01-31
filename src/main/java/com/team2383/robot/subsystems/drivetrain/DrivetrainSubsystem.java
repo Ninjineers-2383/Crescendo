@@ -152,7 +152,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         // Heading PID Controller
-        double headingEffort = m_headingController.calculate(getHeading().getRadians(), desiredHeading.getRadians());
+        double headingEffort = m_headingController.calculate(getHeading().getRadians(),
+                desiredHeading.getRadians());
+        // double headingEffort = m_robotRelativeChassisSpeeds.omegaRadiansPerSecond;
         setChassisSpeedsSetpoint(new ChassisSpeeds(m_robotRelativeChassisSpeeds.vxMetersPerSecond,
                 m_robotRelativeChassisSpeeds.vyMetersPerSecond,
                 headingEffort));
@@ -195,7 +197,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void resetHeading() {
         headingOffset = Rotation2d.fromDegrees(m_gyroInputs.headingDeg).unaryMinus();
-        desiredHeading = headingOffset;
+        m_headingController.reset(0);
+        desiredHeading = new Rotation2d();
     }
 
     /**

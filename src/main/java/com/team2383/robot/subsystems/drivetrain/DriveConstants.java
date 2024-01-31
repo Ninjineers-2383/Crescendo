@@ -168,7 +168,7 @@ public final class DriveConstants {
                     DriveConstants.kTrackWidthMeters / 2),
             Constants.getRobot() == RobotType.ROBOT_COMP
                     ? Rotation2d.fromRotations(
-                            -0.467773)
+                            -0.467773 + 0.5)
                     : Rotation2d.fromRadians(
                             -1.500),
             true, false);
@@ -188,7 +188,7 @@ public final class DriveConstants {
                     -DriveConstants.kTrackWidthMeters / 2),
             Constants.getRobot() == RobotType.ROBOT_COMP
                     ? Rotation2d.fromRotations(
-                            -0.364990 + 0.5)
+                            0.13501 + 0.5)
                     : Rotation2d.fromRadians(
                             2.792),
             false, true);
@@ -207,7 +207,7 @@ public final class DriveConstants {
                     -DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
             Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? Rotation2d.fromRotations(-0.130371)
+                    ? Rotation2d.fromRotations(-0.130371 + 0.5)
                     : Rotation2d.fromRadians(
                             0.070),
             false, true);
@@ -227,7 +227,7 @@ public final class DriveConstants {
                     -DriveConstants.kTrackWidthMeters / 2),
             Constants.getRobot() == RobotType.ROBOT_COMP
                     ? Rotation2d.fromRotations(
-                            -0.402344)
+                            -0.402344 + 0.5)
                     : Rotation2d.fromRadians(
                             0.433),
             true, false);
