@@ -8,9 +8,9 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
-    private final ArmFeedforward feedforward = new ArmFeedforward(PivotConstants.kS,
+    private ArmFeedforward feedforward = new ArmFeedforward(PivotConstants.kS,
             PivotConstants.kG, PivotConstants.kV, PivotConstants.kA);
-    private final PIDController controller = new PIDController(PivotConstants.kP, PivotConstants.kI,
+    private PIDController controller = new PIDController(PivotConstants.kP, PivotConstants.kI,
             PivotConstants.kD);
 
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
@@ -71,5 +71,13 @@ public class PivotSubsystem extends SubsystemBase {
 
     public double getAngle() {
         return inputs.pivotAngle;
+    }
+
+    public void setPIDController(PIDController controller) {
+        this.controller = controller;
+    }
+
+    public void setFeedforward(ArmFeedforward feedforward) {
+        this.feedforward = feedforward;
     }
 }

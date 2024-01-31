@@ -41,6 +41,7 @@ import com.team2383.robot.subsystems.pivot.PivotIO;
 import com.team2383.robot.subsystems.pivot.PivotIOFalcon;
 import com.team2383.robot.subsystems.pivot.PivotIOSim;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
+import com.team2383.robot.subsystems.pivot.tuning.PivotTuningCommand;
 import com.team2383.robot.subsystems.shooter.ShooterIO;
 import com.team2383.robot.subsystems.shooter.ShooterIOFalcon500Neo;
 import com.team2383.robot.subsystems.shooter.ShooterIOSim;
@@ -275,6 +276,9 @@ public class RobotContainer {
 
         testDashboardChooser.addOption("Shooter Quasistatic Reverse",
                 m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
+
+        testDashboardChooser.addOption("Pivot Tuning",
+                new PivotTuningCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(1)));
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
                 m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem, m_shooterSubsystem));
