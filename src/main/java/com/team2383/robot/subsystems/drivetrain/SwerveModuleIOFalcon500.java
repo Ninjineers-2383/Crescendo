@@ -5,6 +5,8 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.team2383.lib.math.Conversions;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
+import com.team2383.robot.Constants;
+import com.team2383.robot.Constants.RobotType;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants.ModuleConstants;
 import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 
@@ -84,13 +86,17 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
 
     private void configAngleMotor(ModuleConstants constants) {
         m_angleMotor.getConfigurator().apply(constants.kHardwareConfigs.kAngleMotorConfigs);
-        m_angleMotor.setInverted(!constants.invertAzimuth);
+        m_angleMotor.setInverted(Constants.getRobot() == RobotType.ROBOT_COMP
+                ? !constants.invertAzimuth
+                : constants.invertAzimuth);
         resetToAbsolute();
     }
 
     private void configDriveMotor(ModuleConstants constants) {
         m_driveMotor.getConfigurator().apply(constants.kHardwareConfigs.kDriveMotorConfigs);
-        m_driveMotor.setInverted(!constants.invertDrive);
+        m_driveMotor.setInverted(Constants.getRobot() == RobotType.ROBOT_COMP
+                ? !constants.invertDrive
+                : constants.invertDrive);
         m_driveMotor.setPosition(0);
     }
 

@@ -13,7 +13,10 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.team2383.lib.swerve.AbsoluteCancoder;
+import com.team2383.lib.swerve.AbsoluteMagEncoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
+import com.team2383.robot.Constants;
+import com.team2383.robot.Constants.RobotType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,8 +27,10 @@ import edu.wpi.first.math.util.Units;
 public final class DriveConstants {
     public static final double kMaxSpeed = 3.8; // meters per second
 
-    public final static double kTrackWidthMeters = Units.inchesToMeters(21.75);
-    public final static double kWheelBaseMeters = Units.inchesToMeters(21.75);
+    public final static double kTrackWidthMeters = Constants.getRobot() == RobotType.ROBOT_COMP
+            ? Units.inchesToMeters(21.75)
+            : Units.inchesToMeters(19.75);
+    public final static double kWheelBaseMeters = kTrackWidthMeters;
     public final static double kDriveMaxVoltage = 9.0;
     public final static double kMaxCurrent = 30.0;
 
@@ -153,14 +158,19 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.01, 0, 0,
-            20, 22,
-            new AbsoluteCancoder(21, "Drive", cancoderConfig),
+            20, 21,
+            Constants.getRobot() == RobotType.ROBOT_COMP
+                    ? new AbsoluteCancoder(1, "Drive", cancoderConfig)
+                    : new AbsoluteMagEncoder(6),
             "frontLeft",
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromRotations(
-                    -0.467773),
+            Constants.getRobot() == RobotType.ROBOT_COMP
+                    ? Rotation2d.fromRotations(
+                            -0.467773)
+                    : Rotation2d.fromRadians(
+                            -1.500),
             true, false);
 
     public final static ModuleConstants frontRightConstants = new ModuleConstants(
@@ -168,14 +178,19 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.01, 0, 0,
-            23, 25,
-            new AbsoluteCancoder(24, "Drive", cancoderConfig),
+            22, 23,
+            Constants.getRobot() == RobotType.ROBOT_COMP
+                    ? new AbsoluteCancoder(2, "Drive", cancoderConfig)
+                    : new AbsoluteMagEncoder(7),
             "frontRight",
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromRotations(
-                    -0.364990 + 0.5),
+            Constants.getRobot() == RobotType.ROBOT_COMP
+                    ? Rotation2d.fromRotations(
+                            -0.364990 + 0.5)
+                    : Rotation2d.fromRadians(
+                            2.792),
             false, true);
 
     public final static ModuleConstants rearLeftConstants = new ModuleConstants(
@@ -183,13 +198,18 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.01, 0, 0,
-            26, 28,
-            new AbsoluteCancoder(27, "Drive", cancoderConfig),
+            24, 25,
+            Constants.getRobot() == RobotType.ROBOT_COMP
+                    ? new AbsoluteCancoder(3, "Drive", cancoderConfig)
+                    : new AbsoluteMagEncoder(8),
             "rearLeft",
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromRotations(-0.130371),
+            Constants.getRobot() == RobotType.ROBOT_COMP
+                    ? Rotation2d.fromRotations(-0.130371)
+                    : Rotation2d.fromRadians(
+                            0.070),
             false, true);
 
     public final static ModuleConstants rearRightConstants = new ModuleConstants(
@@ -197,14 +217,19 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.01, 0, 0,
-            29, 31,
-            new AbsoluteCancoder(30, "Drive", cancoderConfig),
+            26, 27,
+            Constants.getRobot() == RobotType.ROBOT_COMP
+                    ? new AbsoluteCancoder(4, "Drive", cancoderConfig)
+                    : new AbsoluteMagEncoder(9),
             "rearRight",
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
-            Rotation2d.fromRotations(
-                    -0.402344),
+            Constants.getRobot() == RobotType.ROBOT_COMP
+                    ? Rotation2d.fromRotations(
+                            -0.402344)
+                    : Rotation2d.fromRadians(
+                            0.433),
             true, false);
 
 }

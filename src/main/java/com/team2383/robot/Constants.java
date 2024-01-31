@@ -19,12 +19,12 @@ public final class Constants {
     public static final String kRIOBus = "rio";
     public static final String kCANivoreBus = "Drive";
 
-    public static final RobotType robot = RobotType.ROBOT_SIM;
+    private static final RobotType robot = RobotType.ROBOT_SIM;
 
     public static RobotType getRobot() {
         if (RobotBase.isReal()) {
             if (robot == RobotType.ROBOT_SIM) { // Invalid robot selected
-                return RobotType.ROBOT_PROTO;
+                return RobotType.ROBOT_COMP;
             } else {
                 return robot;
             }

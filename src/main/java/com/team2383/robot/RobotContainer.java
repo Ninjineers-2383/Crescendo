@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.team2383.robot.Constants.Mode;
+import com.team2383.robot.Constants.RobotType;
 import com.team2383.robot.commands.drivetrain.DrivetrainHeadingCommand;
 import com.team2383.robot.commands.drivetrain.FaceToTranslationCommand;
 import com.team2383.robot.commands.drivetrain.JoystickDriveCommand;
@@ -21,6 +22,7 @@ import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.drivetrain.GyroIO;
+import com.team2383.robot.subsystems.drivetrain.GyroIONavX;
 import com.team2383.robot.subsystems.drivetrain.GyroIOPigeon;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
 import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
@@ -97,9 +99,20 @@ public class RobotContainer {
     public RobotContainer() {
         if (Constants.getMode() != Mode.REPLAY) {
             switch (Constants.getRobot()) {
+                case ROBOT_COMP:
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIONeo());
+
+                    m_feederSubsystem = new FeederSubsystem(new FeederIONEO());
+
+                    m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
+
+                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
+
                 case ROBOT_PROTO:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            new GyroIOPigeon(0, "Drive"),
+                            Constants.getRobot() == RobotType.ROBOT_COMP
+                                    ? new GyroIOPigeon(0, Constants.kCANivoreBus)
+                                    : new GyroIONavX(),
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
@@ -109,13 +122,6 @@ public class RobotContainer {
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
 
-                    m_pivotSubsystem = new PivotSubsystem(new PivotIONeo());
-
-                    m_feederSubsystem = new FeederSubsystem(new FeederIONEO());
-
-                    m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
-
-                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
