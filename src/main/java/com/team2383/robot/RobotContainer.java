@@ -17,6 +17,7 @@ import com.team2383.robot.commands.feeder.FeederPowerCommand;
 import com.team2383.robot.commands.orchestra.OrchestraCommand;
 import com.team2383.robot.commands.pivot.PivotPositionCommand;
 import com.team2383.robot.commands.pivot.PivotPresets;
+import com.team2383.robot.commands.pivot.tuning.PivotTuningCommand;
 import com.team2383.robot.commands.shooter.ShooterRPMCommand;
 import com.team2383.robot.commands.indexer.IndexerCommand;
 import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
@@ -41,7 +42,6 @@ import com.team2383.robot.subsystems.pivot.PivotIO;
 import com.team2383.robot.subsystems.pivot.PivotIOFalcon;
 import com.team2383.robot.subsystems.pivot.PivotIOSim;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
-import com.team2383.robot.subsystems.pivot.tuning.PivotTuningCommand;
 import com.team2383.robot.subsystems.shooter.ShooterIO;
 import com.team2383.robot.subsystems.shooter.ShooterIOFalcon500Neo;
 import com.team2383.robot.subsystems.shooter.ShooterIOSim;
@@ -278,7 +278,8 @@ public class RobotContainer {
                 m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
 
         testDashboardChooser.addOption("Pivot Tuning",
-                new PivotTuningCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(0)));
+                new PivotTuningCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(0),
+                        () -> m_operatorController.getRawButton(1)));
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
                 m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem, m_shooterSubsystem));
