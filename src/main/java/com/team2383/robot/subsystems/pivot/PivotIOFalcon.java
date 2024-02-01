@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicExpoTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.MotionMagicTorqueCurrentFOC;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
@@ -21,7 +22,7 @@ public class PivotIOFalcon implements PivotIO {
     private final TalonFX leftMotor = new TalonFX(PivotConstants.kLeftMotorID, Constants.kCANivoreBus);
     private final TalonFX rightMotor = new TalonFX(PivotConstants.kRightMotorID, Constants.kCANivoreBus);
 
-    private final MotionMagicExpoTorqueCurrentFOC motionMagicOut = new MotionMagicExpoTorqueCurrentFOC(0);
+    private final MotionMagicTorqueCurrentFOC motionMagicOut = new MotionMagicTorqueCurrentFOC(0);
     private final MotionMagicConfigs motionMagicConfigs;
 
     private final Follower follower = new Follower(PivotConstants.kLeftMotorID, false);
@@ -36,8 +37,10 @@ public class PivotIOFalcon implements PivotIO {
         motionMagicConfigs = new MotionMagicConfigs();
         motionMagicConfigs.MotionMagicCruiseVelocity = 0; // Use max possible velocity
 
-        motionMagicConfigs.MotionMagicExpo_kV = 0; // TODO
-        motionMagicConfigs.MotionMagicExpo_kA = 0; // TODO
+        motionMagicConfigs.MotionMagicExpo_kV = 10; // TODO
+        motionMagicConfigs.MotionMagicExpo_kA = 5; // TODO
+        motionMagicConfigs.MotionMagicAcceleration = 2;
+        motionMagicConfigs.MotionMagicCruiseVelocity = 10;
 
         setPIDController(PivotConstants.kPIDController);
         setFeedforward(PivotConstants.kFeedforwardController);
@@ -57,18 +60,18 @@ public class PivotIOFalcon implements PivotIO {
     }
 
     public void updateInputs(PivotIOInputs inputs) {
-        inputs.current = leftMotor.getTorqueCurrent().getValueAsDouble();
+        inputs.current = leftMotor.getTorqueCurrent().getValue();
         inputs.appliedVolts = leftMotor.getDutyCycle().getValue() * rightMotor.getSupplyVoltage().getValue();
         inputs.pivotAngle = leftMotor.getPosition().getValue();
         inputs.velocityRadPerS = encoder.getVelocity().getValue() * 2 * Math.PI;
         inputs.desiredAngle = motionMagicOut.Position;
 
-        inputs.desiredAcceleration = (leftMotor.getClosedLoopReferenceSlope().getValueAsDouble()
-                - inputs.desiredAcceleration) / 2.0;
-        inputs.currentAcceleration = leftMotor.getAcceleration().getValueAsDouble();
+        inputs.desiredAcceleration = (leftMotor.getClosedLoopReferenceSlope().getValue()
+                - inputs.desiredVelocity) / 2.0;
+        inputs.currentAcceleration = leftMotor.getAcceleration().getValue();
 
-        inputs.desiredVelocity = leftMotor.getClosedLoopReferenceSlope().getValueAsDouble();
-        inputs.currentVelocity = leftMotor.getVelocity().getValueAsDouble();
+        inputs.desiredVelocity = leftMotor.getClosedLoopReferenceSlope().getValue();
+        inputs.currentVelocity = leftMotor.getVelocity().getValue();
 
     }
 
@@ -112,11 +115,6 @@ public class PivotIOFalcon implements PivotIO {
         rightConfigs.GravityType = GravityTypeValue.Arm_Cosine;
 
         rightMotor.getConfigurator().apply(rightConfigs);
-
-        motionMagicConfigs.MotionMagicExpo_kV = feedforward.kv;
-        motionMagicConfigs.MotionMagicExpo_kA = feedforward.ka;
-
-        leftMotor.getConfigurator().apply(motionMagicConfigs);
     }
 
 }
