@@ -17,7 +17,6 @@ public class SimComponents extends SubsystemBase {
         this.pivot = pivot;
     }
 
-    // 0.055
     @Override
     public void periodic() {
         Pose3d[] pose = new Pose3d[1];

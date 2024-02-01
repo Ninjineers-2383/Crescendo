@@ -1,4 +1,4 @@
-package com.team2383.robot.subsystems.pivot.tuning;
+package com.team2383.robot.commands.pivot.tuning;
 
 import com.team2383.lib.controller.TunableArmFeedforward;
 import com.team2383.robot.subsystems.pivot.PivotConstants;
@@ -9,19 +9,22 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.DoubleSupplier;
+import java.util.function.BooleanSupplier;
 
 public class PivotTuningCommand extends Command {
     private final PivotSubsystem pivot;
     private final DoubleSupplier speed;
+    private final BooleanSupplier resetSetpoint;
 
     private final PIDController pidController = new PIDController(PivotConstants.kP, PivotConstants.kI,
             PivotConstants.kD);
     private final TunableArmFeedforward feedforward = new TunableArmFeedforward(PivotConstants.kS, PivotConstants.kG,
             PivotConstants.kV, PivotConstants.kA);
 
-    public PivotTuningCommand(PivotSubsystem pivot, DoubleSupplier speed) {
+    public PivotTuningCommand(PivotSubsystem pivot, DoubleSupplier speed, BooleanSupplier resetSetpoint) {
         this.pivot = pivot;
         this.speed = speed;
+        this.resetSetpoint = resetSetpoint;
 
         addRequirements(pivot);
     }
@@ -38,6 +41,10 @@ public class PivotTuningCommand extends Command {
         pivot.setFeedforward(feedforward.toArmFeedforward());
 
         pivot.setVelocity(speed.getAsDouble());
+
+        if (resetSetpoint.getAsBoolean()) {
+            pivot.setPosition(pivot.getAngle());
+        }
     }
 
 }
