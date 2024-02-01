@@ -21,7 +21,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void setVelocity(double velocity) {
-        io.setAngle(getAngle() + velocity * 0.02);
+        io.setAngle(inputs.desiredAngle + velocity * 0.02);
     }
 
     public void setPosition(double angleRads) {

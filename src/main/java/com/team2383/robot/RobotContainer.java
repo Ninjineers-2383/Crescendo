@@ -278,7 +278,7 @@ public class RobotContainer {
                 m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
 
         testDashboardChooser.addOption("Pivot Tuning",
-                new PivotTuningCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(1)));
+                new PivotTuningCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(0)));
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
                 m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem, m_shooterSubsystem));

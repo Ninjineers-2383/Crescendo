@@ -5,6 +5,7 @@ import com.team2383.robot.subsystems.pivot.PivotConstants;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.DoubleSupplier;
@@ -21,6 +22,14 @@ public class PivotTuningCommand extends Command {
     public PivotTuningCommand(PivotSubsystem pivot, DoubleSupplier speed) {
         this.pivot = pivot;
         this.speed = speed;
+
+        addRequirements(pivot);
+    }
+
+    @Override
+    public void initialize() {
+        SmartDashboard.putData("Pivot PID", pidController);
+        SmartDashboard.putData("Pivot Feedforward", feedforward);
     }
 
     @Override
