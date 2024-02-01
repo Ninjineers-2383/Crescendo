@@ -59,9 +59,17 @@ public class PivotIOFalcon implements PivotIO {
     public void updateInputs(PivotIOInputs inputs) {
         inputs.current = leftMotor.getTorqueCurrent().getValueAsDouble();
         inputs.appliedVolts = leftMotor.getDutyCycle().getValue() * rightMotor.getSupplyVoltage().getValue();
-        inputs.pivotAngle = leftMotor.getPosition().getValue() ;
+        inputs.pivotAngle = leftMotor.getPosition().getValue();
         inputs.velocityRadPerS = encoder.getVelocity().getValue() * 2 * Math.PI;
         inputs.desiredAngle = motionMagicOut.Position;
+
+        inputs.desiredAcceleration = (leftMotor.getClosedLoopReferenceSlope().getValueAsDouble()
+                - inputs.desiredAcceleration) / 2.0;
+        inputs.currentAcceleration = leftMotor.getAcceleration().getValueAsDouble();
+
+        inputs.desiredVelocity = leftMotor.getClosedLoopReferenceSlope().getValueAsDouble();
+        inputs.currentVelocity = leftMotor.getVelocity().getValueAsDouble();
+
     }
 
     @Override

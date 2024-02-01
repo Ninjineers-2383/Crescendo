@@ -14,6 +14,10 @@ public interface PivotIO {
         public double appliedVolts = 0.0;
         public double current = 0.0;
         public double desiredAngle = 0.0;
+        public double desiredVelocity = 0.0;
+        public double currentVelocity = 0.0;
+        public double desiredAcceleration = 0.0;
+        public double currentAcceleration = 0.0;
     }
 
     public default void updateInputs(PivotIOInputs inputs) {
