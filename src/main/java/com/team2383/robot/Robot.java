@@ -153,6 +153,10 @@ public class Robot extends LoggedRobot {
         if (autonomousCommand != null) {
             autonomousCommand.cancel();
         }
+
+        if (testCommand != null) {
+            testCommand.cancel();
+        }
     }
 
     /** This function is called periodically during operator control. */

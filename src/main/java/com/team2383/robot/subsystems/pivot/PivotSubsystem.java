@@ -29,7 +29,8 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public boolean isFinished() {
-        return Math.abs(inputs.pivotAngle - inputs.desiredAngle) < 0.01;
+        // return Math.abs(inputs.pivotAngle - inputs.desiredAngle) < 0.01;
+        return false;
     }
 
     public double getAngle() {
@@ -38,7 +39,6 @@ public class PivotSubsystem extends SubsystemBase {
 
     public void setPIDController(PIDController controller) {
         io.setPIDController(controller);
-        ;
     }
 
     public void setFeedforward(ArmFeedforward feedforward) {

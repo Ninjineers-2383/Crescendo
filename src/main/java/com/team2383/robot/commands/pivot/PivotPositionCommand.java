@@ -2,6 +2,7 @@ package com.team2383.robot.commands.pivot;
 
 import java.util.function.DoubleSupplier;
 
+import com.team2383.robot.subsystems.pivot.PivotConstants;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,8 +19,15 @@ public class PivotPositionCommand extends Command {
     }
 
     @Override
-    public void execute() {
+    public void initialize() {
+        pivot.setFeedforward(PivotConstants.kFeedforwardController);
+        pivot.setPIDController(PivotConstants.kPIDController);
         pivot.setPosition(angle.getAsDouble());
+    }
+
+    @Override
+    public boolean isFinished() {
+        return pivot.isFinished();
     }
 
 }
