@@ -7,47 +7,23 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
-import com.team2383.robot.Constants.Mode;
-import com.team2383.robot.Constants.RobotType;
-import com.team2383.robot.commands.drivetrain.DrivetrainHeadingCommand;
-import com.team2383.robot.commands.drivetrain.FaceToTranslationCommand;
-import com.team2383.robot.commands.drivetrain.JoystickDriveCommand;
-import com.team2383.robot.commands.drivetrain.sysid.DrivetrainSysIDCommand;
-import com.team2383.robot.commands.feeder.FeederPowerCommand;
-import com.team2383.robot.commands.orchestra.OrchestraCommand;
-import com.team2383.robot.commands.pivot.PivotPositionCommand;
-import com.team2383.robot.commands.pivot.PivotPresets;
+import com.team2383.robot.Constants.*;
+import com.team2383.robot.commands.drivetrain.*;
+import com.team2383.robot.commands.drivetrain.sysid.*;
+import com.team2383.robot.commands.feeder.*;
+import com.team2383.robot.commands.orchestra.*;
+import com.team2383.robot.commands.pivot.*;
 import com.team2383.robot.commands.pivot.tuning.PivotTuningCommand;
-import com.team2383.robot.commands.shooter.ShooterRPMCommand;
-import com.team2383.robot.commands.indexer.IndexerCommand;
-import com.team2383.robot.subsystems.cameraSim.CameraSimSubsystem;
-import com.team2383.robot.subsystems.drivetrain.DriveConstants;
-import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
-import com.team2383.robot.subsystems.drivetrain.GyroIO;
-import com.team2383.robot.subsystems.drivetrain.GyroIONavX;
-import com.team2383.robot.subsystems.drivetrain.GyroIOPigeon;
-import com.team2383.robot.subsystems.drivetrain.SwerveModuleIO;
-import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOFalcon500;
-import com.team2383.robot.subsystems.drivetrain.SwerveModuleIOSim;
-import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
-import com.team2383.robot.subsystems.feeder.FeederIO;
-import com.team2383.robot.subsystems.feeder.FeederIONEO;
-import com.team2383.robot.subsystems.feeder.FeederIOSim;
-import com.team2383.robot.subsystems.feeder.FeederSubsystem;
-import com.team2383.robot.subsystems.indexer.IndexerIO;
-import com.team2383.robot.subsystems.indexer.IndexerIONEO;
-import com.team2383.robot.subsystems.indexer.IndexerIOSim;
-import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
-import com.team2383.robot.subsystems.pivot.PivotIO;
-import com.team2383.robot.subsystems.pivot.PivotIOFalcon;
-import com.team2383.robot.subsystems.pivot.PivotIOSim;
-import com.team2383.robot.subsystems.pivot.PivotSubsystem;
-import com.team2383.robot.subsystems.shooter.ShooterIO;
-import com.team2383.robot.subsystems.shooter.ShooterIOFalcon500Neo;
-import com.team2383.robot.subsystems.shooter.ShooterIOSim;
-import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
-import com.team2383.robot.subsystems.sim_components.SimComponents;
-
+import com.team2383.robot.commands.shooter.*;
+import com.team2383.robot.commands.indexer.*;
+import com.team2383.robot.subsystems.cameraSim.*;
+import com.team2383.robot.subsystems.drivetrain.*;
+import com.team2383.robot.subsystems.drivetrain.SLAM.*;
+import com.team2383.robot.subsystems.feeder.*;
+import com.team2383.robot.subsystems.indexer.*;
+import com.team2383.robot.subsystems.pivot.*;
+import com.team2383.robot.subsystems.shooter.*;
+import com.team2383.robot.subsystems.sim_components.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -102,7 +78,7 @@ public class RobotContainer {
         if (Constants.getMode() != Mode.REPLAY) {
             switch (Constants.getRobot()) {
                 case ROBOT_COMP:
-                    m_pivotSubsystem = new PivotSubsystem(new PivotIOFalcon());
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIOFalconTrapezoidal());
 
                     m_feederSubsystem = new FeederSubsystem(new FeederIONEO());
 

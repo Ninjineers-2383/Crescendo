@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -21,7 +22,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void setVelocity(double velocity) {
-        io.setAngle(inputs.desiredAngle + velocity * 0.02);
+        io.setAngle(Units.rotationsToRadians(inputs.desiredAngle) + velocity * 0.02);
     }
 
     public void setPosition(double angleRads) {
@@ -29,12 +30,12 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public boolean isFinished() {
-        // return Math.abs(inputs.pivotAngle - inputs.desiredAngle) < 0.01;
-        return false;
+        return Math.abs(inputs.pivotAngle - inputs.desiredAngle) < 0.01;
+        // return false;
     }
 
     public double getAngle() {
-        return inputs.pivotAngle;
+        return Units.rotationsToRadians(inputs.pivotAngle);
     }
 
     public void setPIDController(PIDController controller) {
