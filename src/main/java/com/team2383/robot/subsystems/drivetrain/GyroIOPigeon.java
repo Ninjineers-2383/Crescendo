@@ -13,7 +13,7 @@ public class GyroIOPigeon implements GyroIO {
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
-        inputs.connected = true; // TODO: Figure out how to get connected status
+        inputs.connected = m_gyro.getFault_BootupGyroscope().getValue() == false;
         inputs.headingDeg = m_gyro.getYaw().getValue();
         inputs.rollDeg = m_gyro.getRoll().getValue();
         inputs.headingRateDPS = m_gyro.getRate();

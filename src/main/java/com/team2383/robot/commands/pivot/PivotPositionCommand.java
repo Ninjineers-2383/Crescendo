@@ -20,14 +20,20 @@ public class PivotPositionCommand extends Command {
 
     @Override
     public void initialize() {
-        pivot.setFeedforward(PivotConstants.kFeedforwardController);
-        pivot.setPIDController(PivotConstants.kPIDController);
+        // pivot.setFeedforward(PivotConstants.kFeedforwardController);
+        // pivot.setPIDController(PivotConstants.kPIDController);
+        pivot.setPosition(angle.getAsDouble());
+    }
+
+    @Override
+    public void execute() {
         pivot.setPosition(angle.getAsDouble());
     }
 
     @Override
     public boolean isFinished() {
-        return pivot.isFinished();
+        // return pivot.isFinished();
+        return false;
     }
 
 }

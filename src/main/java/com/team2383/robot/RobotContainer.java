@@ -208,6 +208,10 @@ public class RobotContainer {
                         shooterDifferentialRPM::get));
     }
 
+    public void disable() {
+        m_pivotSubsystem.disable();
+    }
+
     /**
      * Use this to pass the autonomous command to the main {@link Robot} class.
      *

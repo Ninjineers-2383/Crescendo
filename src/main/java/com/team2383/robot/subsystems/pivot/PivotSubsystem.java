@@ -21,8 +21,8 @@ public class PivotSubsystem extends SubsystemBase {
         Logger.processInputs("Pivot", inputs);
     }
 
-    public void setVelocity(double velocity) {
-        io.setAngle(Units.rotationsToRadians(inputs.desiredAngle) + velocity * 0.02);
+    public void addPosition(double velocity) {
+        io.setAngle(Units.rotationsToRadians(inputs.desiredAngle) + velocity);
     }
 
     public void setPosition(double angleRads) {
@@ -44,5 +44,9 @@ public class PivotSubsystem extends SubsystemBase {
 
     public void setFeedforward(ArmFeedforward feedforward) {
         io.setFeedforward(feedforward);
+    }
+
+    public void disable() {
+        io.disable();
     }
 }

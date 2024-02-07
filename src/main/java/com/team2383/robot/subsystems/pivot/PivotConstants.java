@@ -8,19 +8,19 @@ public class PivotConstants {
     public static int kLeftMotorID = 3;
     public static int kRightMotorID = 4;
     public static int kEncoderID = 5;
-    public static double kEncoderOffset = -0.480135986608;
+    public static double kEncoderOffset = 0.589844 - (1 / 6.0);
 
     // feedforward constants
-    public static final double kG = 0.5;
-    public static final double kS = 0.2;
-    public static final double kV = 7.6;
-    public static final double kA = 0;
+    public static final double kG = 0.4;
+    public static final double kS = 0.7;
+    public static final double kV = 6.9;
+    public static final double kA = 0.75;
 
-    public static final ArmFeedforward kFeedforwardController = new ArmFeedforward(kS, kV, kA, kG);
+    public static final ArmFeedforward kFeedforwardController = new ArmFeedforward(kS, kG, kV, kA);
 
     // PID constants
-    public static final double kP = 15;
-    public static final double kI = 20;
+    public static final double kP = 10;
+    public static final double kI = 5;
     public static final double kD = 0;
 
     public static final PIDController kPIDController = new PIDController(kP, kI, kD);

@@ -38,4 +38,7 @@ public interface PivotIO {
 
     public default void setFeedforward(ArmFeedforward feedforward) {
     }
+
+    public default void disable() {
+    }
 }

@@ -7,8 +7,10 @@
         "left": {
           "lockedRange": null,
           "unitConversion": {
-            "type": null,
-            "factor": 1
+            "type": "angle",
+            "factor": 1,
+            "from": "rotations",
+            "to": "degrees"
           },
           "fields": [
             {
@@ -17,13 +19,8 @@
               "show": true
             },
             {
-              "key": "/RealOutputs/Pivot/Goal Position",
+              "key": "/Pivot/CurrentDesiredAngle",
               "color": "#e5b31b",
-              "show": true
-            },
-            {
-              "key": "/RealOutputs/Pivot/Set Position",
-              "color": "#80588e",
               "show": true
             }
           ]
@@ -32,7 +29,7 @@
           "fields": [
             {
               "key": "/DriverStation/Enabled",
-              "color": "#af2437",
+              "color": "#80588e",
               "show": true
             }
           ]
@@ -43,18 +40,7 @@
             "type": null,
             "factor": 1
           },
-          "fields": [
-            {
-              "key": "/RealOutputs/Pivot/Set Velocity",
-              "color": "#e48b32",
-              "show": true
-            },
-            {
-              "key": "/Pivot/VelocityRadPerS",
-              "color": "#aacaee",
-              "show": true
-            }
-          ]
+          "fields": []
         }
       },
       "title": "Pivot"
@@ -71,17 +57,17 @@
           "fields": [
             {
               "key": "/Shooter/TopBottomSetpointRPM",
-              "color": "#e5b31b",
+              "color": "#2b66a2",
               "show": true
             },
             {
               "key": "/Shooter/TopVelocity",
-              "color": "#af2437",
+              "color": "#e5b31b",
               "show": true
             },
             {
               "key": "/Shooter/BottomVelocity",
-              "color": "#80588e",
+              "color": "#af2437",
               "show": true
             }
           ]
@@ -98,7 +84,7 @@
           "fields": [
             {
               "key": "/Shooter/SideSetpointRPM",
-              "color": "#2b66a2",
+              "color": "#80588e",
               "show": true
             },
             {

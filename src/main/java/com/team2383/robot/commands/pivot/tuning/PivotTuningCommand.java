@@ -37,14 +37,19 @@ public class PivotTuningCommand extends Command {
 
     @Override
     public void execute() {
-        pivot.setPIDController(PivotConstants.kPIDController);
-        pivot.setFeedforward(PivotConstants.kFeedforwardController);
+        // pivot.setPIDController(PivotConstants.kPIDController);
+        // pivot.setFeedforward(PivotConstants.kFeedforwardController);
 
-        pivot.setVelocity(speed.getAsDouble() * 2 * Math.PI);
+        pivot.addPosition(speed.getAsDouble() * 2 * Math.PI * 0.02);
 
         if (resetSetpoint.getAsBoolean()) {
             pivot.setPosition(pivot.getAngle());
         }
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
 }

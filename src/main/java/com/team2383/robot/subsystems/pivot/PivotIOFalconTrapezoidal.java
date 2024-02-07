@@ -1,11 +1,13 @@
 package com.team2383.robot.subsystems.pivot;
 
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.team2383.robot.Constants;
@@ -30,7 +32,7 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     private Slot0Configs rightConfigs = new Slot0Configs();
 
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-            1, 2);
+            0.25, 0.5);
 
     private TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
@@ -48,14 +50,19 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
         rightMotor.setControl(follower);
 
         FeedbackConfigs feedback = new FeedbackConfigs();
-        feedback.FeedbackRemoteSensorID = PivotConstants.kEncoderID;
+        feedback.FeedbackRemoteSensorID = encoder.getDeviceID();
         feedback.FeedbackSensorSource = FeedbackSensorSourceValue.FusedCANcoder;
         feedback.SensorToMechanismRatio = 1;
         feedback.RotorToSensorRatio = PivotConstants.kPivotMotorGearRatio;
 
+        CANcoderConfiguration encoderConfig = new CANcoderConfiguration();
+        encoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
+        encoderConfig.MagnetSensor.MagnetOffset = PivotConstants.kEncoderOffset;
+        encoder.getConfigurator().apply(encoderConfig);
+
         leftMotor.getConfigurator().apply(feedback);
 
-        leftMotor.setPosition(encoder.getAbsolutePosition().getValueAsDouble() - PivotConstants.kEncoderOffset);
+        // leftMotor.setPosition(0);
 
         goal = new TrapezoidProfile.State(leftMotor.getPosition().getValueAsDouble(), 0);
         setpoint = goal;
@@ -85,7 +92,15 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
 
     @Override
     public void setAngle(double angle) {
+        // setpoint = new
+        // TrapezoidProfile.State(leftMotor.getPosition().getValueAsDouble(),
+        // leftMotor.getVelocity().getValueAsDouble());
         goal = new TrapezoidProfile.State(Units.radiansToRotations(angle), 0);
+    }
+
+    @Override
+    public void disable() {
+        leftMotor.disable();
     }
 
     @Override
