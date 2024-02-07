@@ -30,7 +30,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public boolean isFinished() {
-        return Math.abs(inputs.pivotAngle - inputs.desiredAngle) < 0.01;
+        return Math.abs(inputs.pivotAngle - inputs.desiredAngle) < 0.005;
         // return false;
     }
 

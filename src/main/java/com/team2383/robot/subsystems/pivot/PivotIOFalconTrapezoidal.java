@@ -32,7 +32,7 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     private Slot0Configs rightConfigs = new Slot0Configs();
 
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-            0.25, 0.5);
+            5, 7);
 
     private TrapezoidProfile profile = new TrapezoidProfile(constraints);
 

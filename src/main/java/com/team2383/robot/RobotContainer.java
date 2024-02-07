@@ -50,9 +50,12 @@ public class RobotContainer {
 
     private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
     private final JoystickButton m_seek = new JoystickButton(m_driverController, 2);
+    private final JoystickButton m_fullFeed = new JoystickButton(m_driverController, 5);
 
     private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
     private final JoystickButton m_feedLeft = new JoystickButton(m_operatorController, 2);
+
+    private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
     private PivotSubsystem m_pivotSubsystem;
@@ -174,8 +177,17 @@ public class RobotContainer {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
         m_seek.toggleOnTrue(new FaceToTranslationCommand(m_drivetrainSubsystem, new Translation2d(16.152, 5.5)));
 
-        m_pivotZero.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.ZERO));
-        m_feedLeft.whileTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.FEED_LEFT));
+        m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
+        m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
+
+        m_fullFeed.whileTrue(new FeederPowerCommand(m_feederSubsystem, () -> -1.0)
+                .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5)
+                        .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -200, () -> 0))
+                        .alongWith(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT))));
+
+        m_fullFeed.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
+
+        m_shoot.whileTrue(new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 400, () -> 0));
 
         new JoystickButton(m_driverController, Constants.OI.ResetHeading)
                 .onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetHeading()));
@@ -194,7 +206,7 @@ public class RobotContainer {
                         () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric))));
 
         m_pivotSubsystem.setDefaultCommand(
-                new PivotPositionCommand(m_pivotSubsystem,
+                new PivotDefaultCommand(m_pivotSubsystem,
                         () -> pivotAngle.get() * (Math.PI / 180)));
 
         m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,

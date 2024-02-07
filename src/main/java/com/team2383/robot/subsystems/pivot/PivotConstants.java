@@ -14,12 +14,12 @@ public class PivotConstants {
     public static final double kG = 0.4;
     public static final double kS = 0.7;
     public static final double kV = 6.9;
-    public static final double kA = 0.75;
+    public static final double kA = 1.5;
 
     public static final ArmFeedforward kFeedforwardController = new ArmFeedforward(kS, kG, kV, kA);
 
     // PID constants
-    public static final double kP = 10;
+    public static final double kP = 15;
     public static final double kI = 5;
     public static final double kD = 0;
 
