@@ -187,7 +187,7 @@ public class RobotContainer {
 
         m_fullFeed.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
-        m_shoot.whileTrue(new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 400, () -> 0));
+        m_shoot.whileTrue(new ShooterRPMCommand(m_shooterSubsystem, () -> -5000, () -> 400, () -> 0));
 
         new JoystickButton(m_driverController, Constants.OI.ResetHeading)
                 .onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetHeading()));

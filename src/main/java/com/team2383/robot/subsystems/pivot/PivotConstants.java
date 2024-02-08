@@ -19,8 +19,8 @@ public class PivotConstants {
     public static final ArmFeedforward kFeedforwardController = new ArmFeedforward(kS, kG, kV, kA);
 
     // PID constants
-    public static final double kP = 15;
-    public static final double kI = 5;
+    public static final double kP = 18;
+    public static final double kI = 7;
     public static final double kD = 0;
 
     public static final PIDController kPIDController = new PIDController(kP, kI, kD);
