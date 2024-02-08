@@ -24,9 +24,6 @@ public interface PivotIO {
     public default void updateInputs(PivotIOInputs inputs) {
     }
 
-    public default void setVoltage(double voltage) {
-    }
-
     public default void setAngle(double angle) {
     }
 

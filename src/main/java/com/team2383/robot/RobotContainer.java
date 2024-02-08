@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.team2383.robot.Constants.*;
+import com.team2383.robot.commands.SeekCommand;
 import com.team2383.robot.commands.drivetrain.*;
 import com.team2383.robot.commands.drivetrain.sysid.*;
 import com.team2383.robot.commands.feeder.*;
@@ -26,7 +27,6 @@ import com.team2383.robot.subsystems.shooter.*;
 import com.team2383.robot.subsystems.sim_components.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
@@ -175,7 +175,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
-        m_seek.toggleOnTrue(new FaceToTranslationCommand(m_drivetrainSubsystem, new Translation2d(16.152, 5.5)));
+        m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem));
 
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
         m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));

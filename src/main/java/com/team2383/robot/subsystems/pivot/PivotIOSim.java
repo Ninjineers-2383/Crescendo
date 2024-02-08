@@ -1,27 +1,40 @@
 package com.team2383.robot.subsystems.pivot;
 
-import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.simulation.SingleJointedArmSim;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
+import edu.wpi.first.math.util.Units;
 
 public class PivotIOSim implements PivotIO {
-    private final DCMotor m_motorModel = DCMotor.getNEO(2);
-    private final SingleJointedArmSim m_sim = new SingleJointedArmSim(m_motorModel,
-            PivotConstants.kPivotMotorGearRatio, 1, 1, Math.toRadians(0),
-            Math.toRadians(60), true, 0);
+    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
+            5, 7);
 
-    private double volts;
+    private TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
-    /** Updates the set of loggable inputs. */
+    private TrapezoidProfile.State goal = new TrapezoidProfile.State();
+
+    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+
+    public PivotIOSim() {
+        goal = new TrapezoidProfile.State(0, 0);
+        setpoint = goal;
+    }
+
     public void updateInputs(PivotIOInputs inputs) {
-        m_sim.update(0.02);
-        inputs.pivotAngle = m_sim.getAngleRads();
-        inputs.velocityRadPerS = m_sim.getVelocityRadPerSec();
-        inputs.appliedVolts = volts;
+        setpoint = profile.calculate(0.02, setpoint, goal);
+
+        inputs.current = 0;
+        inputs.appliedVolts = 0;
+        inputs.velocityRadPerS = setpoint.velocity;
+
+        inputs.desiredVelocity = setpoint.velocity;
+
+        inputs.pivotAngle = setpoint.position;
+        inputs.currentDesiredAngle = setpoint.position;
+
+        inputs.desiredAngle = goal.position;
     }
 
-    public void setVoltage(double voltage) {
-        m_sim.setInputVoltage(voltage);
-        volts = voltage;
+    @Override
+    public void setAngle(double angle) {
+        goal = new TrapezoidProfile.State(Units.radiansToRotations(angle), 0);
     }
-
 }
