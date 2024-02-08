@@ -177,13 +177,13 @@ public class RobotContainer {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
         m_seek.toggleOnTrue(new FaceToTranslationCommand(m_drivetrainSubsystem, new Translation2d(16.152, 5.5)));
 
-        m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.ZERO));
-        m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.FEED_FRONT));
+        m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
+        m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
 
         m_fullFeed.whileTrue(new FeederPowerCommand(m_feederSubsystem, () -> -1.0)
                 .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5)
                         .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -200, () -> 0))
-                        .alongWith(new PivotPositionCommand(m_pivotSubsystem, () -> PivotPresets.FEED_FRONT))));
+                        .alongWith(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT))));
 
         m_fullFeed.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
