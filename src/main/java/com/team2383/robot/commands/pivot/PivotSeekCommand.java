@@ -24,7 +24,8 @@ public class PivotSeekCommand extends Command {
         double distanceToSpeaker = poseSupplier.get().getTranslation().toTranslation2d()
                 .getDistance(FieldConstants.getSpeakerLocation());
 
-        double angle = distanceToSpeaker; // TODO: create formula
+        double angle = Math.atan2(FieldConstants.Speaker.bottomLeftSpeaker.getZ(), distanceToSpeaker); // TODO: create
+                                                                                                       // formula
 
         pivot.setPosition(angle);
     }

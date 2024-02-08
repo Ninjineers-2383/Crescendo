@@ -18,7 +18,9 @@ public class AllianceUtil {
         }
 
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            return new Translation2d(FieldConstants.fieldLength - translation.getX(), translation.getY());
+            Translation2d flippedTranslation = new Translation2d(FieldConstants.fieldLength - translation.getX(),
+                    translation.getY());
+            return flippedTranslation;
         } else {
             return translation;
         }

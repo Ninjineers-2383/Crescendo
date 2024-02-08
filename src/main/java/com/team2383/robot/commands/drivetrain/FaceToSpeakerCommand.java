@@ -10,7 +10,7 @@ public class FaceToSpeakerCommand extends SequentialCommandGroup {
     public FaceToSpeakerCommand(DrivetrainSubsystem drivetrain) {
 
         addCommands(
-                new FaceToTranslationCommand(drivetrain, FieldConstants.getSpeakerLocation()));
+                new FaceToTranslationCommand(drivetrain, () -> FieldConstants.getSpeakerLocation()));
     }
 
 }
