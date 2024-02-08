@@ -8,6 +8,7 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.team2383.robot.Constants.*;
+import com.team2383.robot.commands.FullFeedCommand;
 import com.team2383.robot.commands.SeekCommand;
 import com.team2383.robot.commands.drivetrain.*;
 import com.team2383.robot.commands.drivetrain.sysid.*;
@@ -180,10 +181,8 @@ public class RobotContainer {
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
         m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
 
-        m_fullFeed.whileTrue(new FeederPowerCommand(m_feederSubsystem, () -> -1.0)
-                .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5)
-                        .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -200, () -> 0))
-                        .alongWith(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT))));
+        m_fullFeed.whileTrue(
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
 
         m_fullFeed.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
@@ -213,7 +212,9 @@ public class RobotContainer {
                 () -> m_operatorController.getRawAxis(2) - m_operatorController.getRawAxis(3)));
 
         m_indexerSubsystem
-                .setDefaultCommand(new IndexerCommand(m_indexerSubsystem, () -> m_operatorController.getRawAxis(1)));
+                .setDefaultCommand(
+                        new IndexerCommand(m_indexerSubsystem, () -> m_operatorController.getRawButton(10) ? 1.0
+                                : m_operatorController.getRawButton(6) ? -1.0 : 0.0));
 
         m_shooterSubsystem.setDefaultCommand(
                 new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get,

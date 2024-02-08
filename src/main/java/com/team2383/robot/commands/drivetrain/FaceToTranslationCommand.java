@@ -24,8 +24,11 @@ public class FaceToTranslationCommand extends Command {
         Rotation2d angle = new Rotation2d(Math.atan2(m_translation.get().getY() - drivetrainTransform.getY(),
                 m_translation.get().getX() - drivetrainTransform.getX()));
 
-        System.out.println(drivetrainTransform.toString());
-
         m_drivetrain.setHeading(angle);
+    }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_drivetrain.setHeading(m_drivetrain.getHeading());
     }
 }
