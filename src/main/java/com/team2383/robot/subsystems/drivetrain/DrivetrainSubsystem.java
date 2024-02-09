@@ -108,6 +108,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         forceHeading(new Rotation2d());
 
+        reinitializeSLAM();
+
         AutoBuilder.configureHolonomic(
                 this::getPose,
                 this::forceOdometry,
@@ -133,25 +135,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                         && allianceColor.get() != DriverStation.getAlliance().get())) {
             allianceColor = DriverStation.getAlliance();
 
-            Translation2d[] moduleLocations = new Translation2d[] { DriveConstants.frontLeftConstants.translation,
-                    DriveConstants.frontRightConstants.translation, DriveConstants.rearLeftConstants.translation,
-                    DriveConstants.rearRightConstants.translation };
+            reinitializeSLAM();
 
-            aprilTags.setOrigin(
-                    allianceColor.get() == Alliance.Blue ? AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide
-                            : AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide);
-
-            Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
-            for (int i = 1; i <= aprilTags.getTags().size(); i++) {
-                landmarks[i - 1] = aprilTags.getTagPose(i).get();
-            }
-
-            m_SLAMClient = new SLAMClient(new SLAMIOServer(moduleLocations, landmarks));
-
-            m_SLAMClient.setVisionConstants(
-                    SLAMConstantsConfig.camTransforms,
-                    SLAMConstantsConfig.POSE_VARIANCE_SCALE,
-                    SLAMConstantsConfig.POSE_VARIANCE_STATIC);
         }
 
         m_gyro.updateInputs(m_gyroInputs);
@@ -207,6 +192,32 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("SLAM/newValue", update.newValue());
 
         Logger.recordOutput("Swerve/Dead Reckoning", m_deadReckoning.getPoseMeters());
+    }
+
+    private void reinitializeSLAM() {
+        Translation2d[] moduleLocations = new Translation2d[] { DriveConstants.frontLeftConstants.translation,
+                DriveConstants.frontRightConstants.translation, DriveConstants.rearLeftConstants.translation,
+                DriveConstants.rearRightConstants.translation };
+
+        try {
+            aprilTags.setOrigin(
+                    allianceColor.get() == Alliance.Blue ? AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide
+                            : AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide);
+        } catch (Exception e) {
+            aprilTags.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
+        }
+
+        Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
+        for (int i = 1; i <= aprilTags.getTags().size(); i++) {
+            landmarks[i - 1] = aprilTags.getTagPose(i).get();
+        }
+
+        m_SLAMClient = new SLAMClient(new SLAMIOServer(moduleLocations, landmarks));
+
+        m_SLAMClient.setVisionConstants(
+                SLAMConstantsConfig.camTransforms,
+                SLAMConstantsConfig.POSE_VARIANCE_SCALE,
+                SLAMConstantsConfig.POSE_VARIANCE_STATIC);
     }
 
     public void resetHeading() {

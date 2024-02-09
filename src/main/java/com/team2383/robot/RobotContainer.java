@@ -7,6 +7,7 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
+import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.FullFeedCommand;
 import com.team2383.robot.commands.SeekCommand;
@@ -152,6 +153,8 @@ public class RobotContainer {
 
         registerAutoCommands();
 
+        registerAutoNamedCommands();
+
         registerTestCommands();
 
         // Configure the button bindings
@@ -292,5 +295,15 @@ public class RobotContainer {
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
                 m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem, m_shooterSubsystem));
+    }
+
+    public void registerAutoNamedCommands() {
+        NamedCommands.registerCommand("Feed Front",
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
+
+        NamedCommands.registerCommand("Seek",
+                new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem));
+
+        NamedCommands.registerCommand("Shoot", new IndexerCommand(m_indexerSubsystem, () -> 1));
     }
 }

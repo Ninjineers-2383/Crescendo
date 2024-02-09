@@ -8,7 +8,6 @@ import com.team2383.robot.FieldConstants;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class PivotSeekCommand extends Command {
