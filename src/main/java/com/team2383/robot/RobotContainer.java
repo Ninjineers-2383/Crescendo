@@ -7,7 +7,9 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.FullFeedCommand;
 import com.team2383.robot.commands.SeekCommand;
@@ -198,18 +200,31 @@ public class RobotContainer {
                 new InstantCommand(
                         () -> m_drivetrainSubsystem.forceHeading(m_drivetrainSubsystem.getPose().getRotation())));
 
+        new JoystickButton(m_driverController, 5).whileTrue(AutoBuilder
+                .pathfindThenFollowPath(PathPlannerPath.fromPathFile("DriveToAmp"), DriveConstants.AUTO_CONSTRAINTS));
+
         // new JoystickButton(m_operatorController, 3).onTrue(new
         // IndexerCommand(m_indexerSubsystem, () -> -0.2)
         // .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 150, () -> -300,
         // () -> 0)))
-        // .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.4).withTimeout(0.5)
-        // .andThen(new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> -500, ()
-        // -> 0)
+        // .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.5).withTimeout(1)
+        // .andThen(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 100, () ->
+        // 0)
+        // .withTimeout(0.75))
+        // .andThen(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -200, () ->
+        // 0)
         // .withTimeout(0.5))
         // .andThen(new IndexerCommand(m_indexerSubsystem, () -> 0).withTimeout(0.02)
         // .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () ->
         // 0)
         // .withTimeout(0.02))));
+
+        // new JoystickButton(m_operatorController, 3).whileTrue(new
+        // IndexerCommand(m_indexerSubsystem, () -> 1.0));
+
+        new JoystickButton(m_operatorController, 3).onTrue(new IndexerCommand(m_indexerSubsystem, () -> 0.7))
+                .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0));
+
     }
 
     private void configureDefaultCommands() {

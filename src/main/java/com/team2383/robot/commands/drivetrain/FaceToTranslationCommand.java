@@ -4,6 +4,8 @@ import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.Supplier;
@@ -23,7 +25,10 @@ public class FaceToTranslationCommand extends Command {
     public void execute() {
         Translation2d drivetrainTransform = m_drivetrain.getPose().getTranslation();
 
-        Logger.recordOutput("Swerve/SeekingTranslation", m_translation.get());
+        Logger.recordOutput("Swerve/SeekingTranslation2d", m_translation.get());
+
+        Logger.recordOutput("Swerve/SeekingTranslation3d", new Translation3d(m_translation.get().getX(),
+                m_translation.get().getY(), Units.inchesToMeters(78.324)));
 
         Rotation2d angle = new Rotation2d(Math.atan2(m_translation.get().getY() - drivetrainTransform.getY(),
                 m_translation.get().getX() - drivetrainTransform.getX()));

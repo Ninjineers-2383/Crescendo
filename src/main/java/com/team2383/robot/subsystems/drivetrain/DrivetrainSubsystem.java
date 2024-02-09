@@ -20,13 +20,11 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.nio.file.Path;
-import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
@@ -64,7 +62,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private SLAMClient m_SLAMClient;
     private AprilTagFieldLayout aprilTags;
     private Pose3d m_slamRobotPose = new Pose3d();
-    private Optional<Alliance> allianceColor = Optional.empty();
 
     // Field Sim Initialization
     private final Field2d m_field = new Field2d();
@@ -118,7 +115,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     drive(speeds, false);
                 },
                 DriveConstants.CONFIG,
-                () -> true,
+                this::shouldFlipPath,
                 this);
     }
 
@@ -128,15 +125,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
             for (CoaxialSwerveModule module : m_modules) {
                 module.stop();
             }
-        }
-
-        if ((!allianceColor.isPresent() && DriverStation.getAlliance().isPresent())
-                || (DriverStation.getAlliance().isPresent()
-                        && allianceColor.get() != DriverStation.getAlliance().get())) {
-            allianceColor = DriverStation.getAlliance();
-
-            reinitializeSLAM();
-
         }
 
         m_gyro.updateInputs(m_gyroInputs);
@@ -199,13 +187,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 DriveConstants.frontRightConstants.translation, DriveConstants.rearLeftConstants.translation,
                 DriveConstants.rearRightConstants.translation };
 
-        try {
-            aprilTags.setOrigin(
-                    allianceColor.get() == Alliance.Blue ? AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide
-                            : AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide);
-        } catch (Exception e) {
-            aprilTags.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
-        }
+        aprilTags.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
 
         Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
         for (int i = 1; i <= aprilTags.getTags().size(); i++) {
@@ -355,5 +337,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void setHeading(Rotation2d heading) {
         desiredHeading = heading;
+    }
+
+    public boolean shouldFlipPath() {
+        if (!DriverStation.getAlliance().isPresent()) {
+            return false;
+        }
+
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Blue) {
+            return false;
+        } else {
+            return true;
+        }
     }
 }

@@ -70,21 +70,6 @@
         "window": {
           "visible": true
         }
-      },
-      "/SmartDashboard/Intake": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Piece Index": {
-        "window": {
-          "visible": true
-        }
-      },
-      "/SmartDashboard/Shooting": {
-        "window": {
-          "visible": true
-        }
       }
     }
   },
