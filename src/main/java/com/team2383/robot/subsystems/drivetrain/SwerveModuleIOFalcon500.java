@@ -49,13 +49,13 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
                 DriveConstants.kAngleGearRatio));
         inputs.absoluteAngleRad = getAbsolute().getRadians();
         inputs.driveVelocityMPS = Conversions.RPSToMPS(
-                -m_driveMotor.getVelocity().getValue(),
+                m_driveMotor.getVelocity().getValue(),
                 DriveConstants.kDriveWheelCircumferenceMeters,
                 DriveConstants.kDriveGearRatio);
         inputs.azimuthVelocityRPM = Conversions.falconToRPM(
                 m_driveMotor.getVelocity().getValue(),
                 DriveConstants.kAngleGearRatio);
-        inputs.drivePositionM = Conversions.rotationsToMeters(-m_driveMotor.getPosition().getValue(),
+        inputs.drivePositionM = Conversions.rotationsToMeters(m_driveMotor.getPosition().getValue(),
                 DriveConstants.kDriveWheelCircumferenceMeters,
                 DriveConstants.kDriveGearRatio);
         inputs.appliedVoltsDrive = m_driveMotor.getDutyCycle().getValue() * m_driveMotor.getSupplyVoltage().getValue();

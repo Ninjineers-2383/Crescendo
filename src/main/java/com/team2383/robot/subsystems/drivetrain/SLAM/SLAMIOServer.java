@@ -16,6 +16,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.IntegerPublisher;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.PubSubOption;
@@ -40,6 +41,8 @@ public class SLAMIOServer implements SLAMIO {
     private final StructArrayPublisher<Transform3d> camTransformsPub;
     private final DoublePublisher varianceScalePub;
     private final DoublePublisher varianceStaticPub;
+    private final IntegerPublisher poseFilterSizePub;
+    private final DoublePublisher poseOutlierRejectionDistanceSub;
 
     private long latestTimestamp = 0;
 
@@ -73,6 +76,9 @@ public class SLAMIOServer implements SLAMIO {
         camTransformsPub = table.getStructArrayTopic("camTransforms", Transform3d.struct).publish();
         varianceScalePub = table.getDoubleTopic("varianceScale").publish();
         varianceStaticPub = table.getDoubleTopic("varianceStatic").publish();
+
+        poseFilterSizePub = table.getIntegerTopic("poseFilterSize").publish();
+        poseOutlierRejectionDistanceSub = table.getDoubleTopic("PoseOutlierDistance").publish();
 
         moduleLocationsPub.set(moduleLocations);
         landmarksPub.set(landmarks);
@@ -121,6 +127,9 @@ public class SLAMIOServer implements SLAMIO {
         camTransformsPub.set(camPoses);
         varianceScalePub.set(varianceScale);
         varianceStaticPub.set(varianceStatic);
+
+        poseFilterSizePub.set(5);
+        poseOutlierRejectionDistanceSub.set(0.15);
     }
 
     @Override

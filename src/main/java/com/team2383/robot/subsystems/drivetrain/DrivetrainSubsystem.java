@@ -20,11 +20,13 @@ import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
@@ -59,9 +61,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private final GyroIOInputsAutoLogged m_gyroInputs = new GyroIOInputsAutoLogged();
 
     // SLAM Initialization
-    private final SLAMClient m_SLAMClient;
+    private SLAMClient m_SLAMClient;
     private AprilTagFieldLayout aprilTags;
     private Pose3d m_slamRobotPose = new Pose3d();
+    private Optional<Alliance> allianceColor = Optional.empty();
 
     // Field Sim Initialization
     private final Field2d m_field = new Field2d();
@@ -89,27 +92,12 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         m_gyro = gyro;
 
-        Translation2d[] moduleLocations = new Translation2d[] { DriveConstants.frontLeftConstants.translation,
-                DriveConstants.frontRightConstants.translation, DriveConstants.rearLeftConstants.translation,
-                DriveConstants.rearRightConstants.translation };
-
         try {
-            aprilTags = new AprilTagFieldLayout(Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "out.json"));
+            aprilTags = new AprilTagFieldLayout(
+                    Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "2024-crescendo.json"));
         } catch (Exception e) {
             aprilTags = new AprilTagFieldLayout(null, 0, 0);
         }
-
-        Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
-        for (int i = 1; i <= aprilTags.getTags().size(); i++) {
-            landmarks[i - 1] = aprilTags.getTagPose(i).get();
-        }
-
-        m_SLAMClient = new SLAMClient(new SLAMIOServer(moduleLocations, landmarks));
-
-        m_SLAMClient.setVisionConstants(
-                SLAMConstantsConfig.camTransforms,
-                SLAMConstantsConfig.POSE_VARIANCE_SCALE,
-                SLAMConstantsConfig.POSE_VARIANCE_STATIC);
 
         SmartDashboard.putData("Field", m_field);
 
@@ -138,6 +126,32 @@ public class DrivetrainSubsystem extends SubsystemBase {
             for (CoaxialSwerveModule module : m_modules) {
                 module.stop();
             }
+        }
+
+        if ((!allianceColor.isPresent() && DriverStation.getAlliance().isPresent())
+                || (DriverStation.getAlliance().isPresent()
+                        && allianceColor.get() != DriverStation.getAlliance().get())) {
+            allianceColor = DriverStation.getAlliance();
+
+            Translation2d[] moduleLocations = new Translation2d[] { DriveConstants.frontLeftConstants.translation,
+                    DriveConstants.frontRightConstants.translation, DriveConstants.rearLeftConstants.translation,
+                    DriveConstants.rearRightConstants.translation };
+
+            aprilTags.setOrigin(
+                    allianceColor.get() == Alliance.Blue ? AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide
+                            : AprilTagFieldLayout.OriginPosition.kRedAllianceWallRightSide);
+
+            Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
+            for (int i = 1; i <= aprilTags.getTags().size(); i++) {
+                landmarks[i - 1] = aprilTags.getTagPose(i).get();
+            }
+
+            m_SLAMClient = new SLAMClient(new SLAMIOServer(moduleLocations, landmarks));
+
+            m_SLAMClient.setVisionConstants(
+                    SLAMConstantsConfig.camTransforms,
+                    SLAMConstantsConfig.POSE_VARIANCE_SCALE,
+                    SLAMConstantsConfig.POSE_VARIANCE_STATIC);
         }
 
         m_gyro.updateInputs(m_gyroInputs);
@@ -185,9 +199,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("Swerve/Heading Effort", headingEffort);
         Logger.recordOutput("Swerve/Chassis Heading Velocity", m_robotRelativeChassisSpeeds.omegaRadiansPerSecond);
 
-        Logger.recordOutput("Robot Pose", update.pose().toPose2d());
+        Logger.recordOutput("Robot Pose", m_slamRobotPose.toPose2d());
 
-        Logger.recordOutput("SLAM/Robot Pose", update.pose());
+        Logger.recordOutput("SLAM/Robot Pose", m_slamRobotPose);
         Logger.recordOutput("SLAM/landmarks", update.landmarks());
         Logger.recordOutput("SLAM/seenLandmarks", update.seenLandmarks());
         Logger.recordOutput("SLAM/newValue", update.newValue());
@@ -282,6 +296,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
      */
     public void forceHeading(Rotation2d currentHeading) {
         headingOffset = Rotation2d.fromDegrees(m_gyroInputs.headingDeg).unaryMinus().plus(currentHeading);
+        m_headingController.reset(currentHeading.getRadians());
         desiredHeading = currentHeading;
     }
 
