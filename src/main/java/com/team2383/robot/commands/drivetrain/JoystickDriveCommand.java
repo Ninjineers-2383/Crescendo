@@ -44,7 +44,8 @@ public class JoystickDriveCommand extends Command {
 
         m_drivetrain.drive(
                 move,
-                m_fieldRelative.getAsBoolean());
+                m_fieldRelative.getAsBoolean(),
+                true);
     }
 
     @Override

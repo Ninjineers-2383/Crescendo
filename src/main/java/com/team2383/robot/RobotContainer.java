@@ -12,6 +12,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.path.PathPlannerPath;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.FullFeedCommand;
+import com.team2383.robot.commands.ScoreAmpCommand;
 import com.team2383.robot.commands.SeekCommand;
 import com.team2383.robot.commands.drivetrain.*;
 import com.team2383.robot.commands.drivetrain.sysid.*;
@@ -32,6 +33,7 @@ import com.team2383.robot.subsystems.sim_components.*;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -198,10 +200,18 @@ public class RobotContainer {
 
         new JoystickButton(m_driverController, Constants.OI.HeadingToAprilTag).onTrue(
                 new InstantCommand(
-                        () -> m_drivetrainSubsystem.forceHeading(m_drivetrainSubsystem.getPose().getRotation())));
+                        () -> m_drivetrainSubsystem
+                                .forceHeading(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue
+                                        ? m_drivetrainSubsystem.getPose().getRotation()
+                                        : m_drivetrainSubsystem.getPose().getRotation()
+                                                .plus(new Rotation2d(Math.PI)))));
 
-        new JoystickButton(m_driverController, 5).whileTrue(AutoBuilder
-                .pathfindThenFollowPath(PathPlannerPath.fromPathFile("DriveToAmp"), DriveConstants.AUTO_CONSTRAINTS));
+        // new JoystickButton(m_driverController, 10).whileTrue(AutoBuilder
+        // .pathfindThenFollowPath(PathPlannerPath.fromPathFile("DriveToAmp"),
+        // DriveConstants.AUTO_CONSTRAINTS));
+
+        new JoystickButton(m_driverController, 10).whileTrue(
+                new ScoreAmpCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem));
 
         // new JoystickButton(m_operatorController, 3).onTrue(new
         // IndexerCommand(m_indexerSubsystem, () -> -0.2)

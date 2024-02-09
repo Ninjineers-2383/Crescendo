@@ -51,10 +51,10 @@ public final class DriveConstants {
             new ReplanningConfig());
 
     public final static PathConstraints AUTO_CONSTRAINTS = new PathConstraints(
-            2, 2,
+            2, 1.5,
             Units.degreesToRadians(540), Units.degreesToRadians(720));
 
-    public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(6.0, 0, 0,
+    public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(7.0, 0, 0,
             new Constraints(2 * Math.PI, 2 * Math.PI));
 
     public static final class ModuleConstants {

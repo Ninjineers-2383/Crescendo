@@ -72,6 +72,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     // Heading Controller Initialization
     private final ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
     private Rotation2d desiredHeading = new Rotation2d();
+    private boolean headingControllerEnabled = true;
 
     public DrivetrainSubsystem(GyroIO gyro, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
             SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
@@ -112,7 +113,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 this::forceOdometry,
                 this::getRobotRelativeSpeeds,
                 (ChassisSpeeds speeds) -> {
-                    drive(speeds, false);
+                    drive(speeds, false, false);
                 },
                 DriveConstants.CONFIG,
                 this::shouldFlipPath,
@@ -139,9 +140,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         // Heading PID Controller
-        double headingEffort = m_headingController.calculate(getHeading().getRadians(),
-                desiredHeading.getRadians());
-        // double headingEffort = m_robotRelativeChassisSpeeds.omegaRadiansPerSecond;
+        double headingEffort;
+        if (headingControllerEnabled) {
+            headingEffort = m_headingController.calculate(getHeading().getRadians(),
+                    desiredHeading.getRadians());
+        } else {
+            headingEffort = m_robotRelativeChassisSpeeds.omegaRadiansPerSecond;
+        }
+
         setChassisSpeedsSetpoint(new ChassisSpeeds(m_robotRelativeChassisSpeeds.vxMetersPerSecond,
                 m_robotRelativeChassisSpeeds.vyMetersPerSecond,
                 headingEffort));
@@ -217,12 +223,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
      *            Whether the speeds are relative to the field or the
      *            robot
      */
-    public void drive(ChassisSpeeds drive, boolean fieldRelative) {
+    public void drive(ChassisSpeeds drive, boolean fieldRelative, boolean useHeadingController) {
         if (fieldRelative) {
             m_robotRelativeChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(drive, getHeading());
         } else {
             m_robotRelativeChassisSpeeds = drive;
         }
+        if (!headingControllerEnabled && useHeadingController) {
+            desiredHeading = getHeading()
+                    .plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02));
+            m_headingController.reset(getHeading().getRadians());
+        }
+        headingControllerEnabled = useHeadingController;
 
         desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02));
     }
