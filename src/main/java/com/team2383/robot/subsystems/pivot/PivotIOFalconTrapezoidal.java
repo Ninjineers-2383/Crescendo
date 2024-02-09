@@ -40,6 +40,8 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
 
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
+    private double offset = 0;
+
     public PivotIOFalconTrapezoidal() {
         OrchestraContainer.getInstance().addMotor(leftMotor);
         OrchestraContainer.getInstance().addMotor(rightMotor);
@@ -84,10 +86,14 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
         inputs.desiredVelocity = leftMotor.getClosedLoopReferenceSlope().getValue();
         inputs.currentVelocity = leftMotor.getVelocity().getValue();
 
-        inputs.pivotAngle = leftMotor.getPosition().getValue();
-        inputs.currentDesiredAngle = leftMotor.getClosedLoopReference().getValue();
+        inputs.pivotAngle = leftMotor.getPosition().getValue() - offset;
+        inputs.currentDesiredAngle = leftMotor.getClosedLoopReference().getValue() - offset;
 
-        inputs.desiredAngle = goal.position;
+        inputs.desiredAngle = goal.position - offset;
+
+        if (leftMotor.getPosition().getValueAsDouble() > 0.9) {
+            offset = 1;
+        }
     }
 
     @Override
@@ -95,7 +101,7 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
         // setpoint = new
         // TrapezoidProfile.State(leftMotor.getPosition().getValueAsDouble(),
         // leftMotor.getVelocity().getValueAsDouble());
-        goal = new TrapezoidProfile.State(Units.radiansToRotations(angle), 0);
+        goal = new TrapezoidProfile.State(Units.radiansToRotations(angle) + offset, 0);
     }
 
     @Override
