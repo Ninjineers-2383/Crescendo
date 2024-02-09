@@ -2,16 +2,14 @@ package com.team2383.robot.commands;
 
 import com.team2383.robot.commands.drivetrain.FaceToSpeakerCommand;
 import com.team2383.robot.commands.pivot.PivotSeekCommand;
-import com.team2383.robot.commands.shooter.ShooterRPMCommand;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
-import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
 public class SeekCommand extends ParallelCommandGroup {
 
-    public SeekCommand(DrivetrainSubsystem drivetrain, PivotSubsystem pivot, ShooterSubsystem shooter) {
+    public SeekCommand(DrivetrainSubsystem drivetrain, PivotSubsystem pivot) {
 
         addCommands(
                 new FaceToSpeakerCommand(drivetrain),

@@ -6,7 +6,9 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
-import java.util.function.Supplier;;
+import java.util.function.Supplier;
+
+import org.littletonrobotics.junction.Logger;;
 
 public class FaceToTranslationCommand extends Command {
     private final DrivetrainSubsystem m_drivetrain;
@@ -19,10 +21,14 @@ public class FaceToTranslationCommand extends Command {
 
     @Override
     public void execute() {
-        Translation2d drivetrainTransform = m_drivetrain.getDeadReckoningPose3d().getTranslation().toTranslation2d();
+        Translation2d drivetrainTransform = m_drivetrain.getPose().getTranslation();
+
+        Logger.recordOutput("Swerve/SeekingTranslation", m_translation.get());
 
         Rotation2d angle = new Rotation2d(Math.atan2(m_translation.get().getY() - drivetrainTransform.getY(),
                 m_translation.get().getX() - drivetrainTransform.getX()));
+
+        Rotation2d angleDiff = m_drivetrain.getPose().getRotation().minus(m_drivetrain.getHeading());
 
         m_drivetrain.setHeading(angle);
     }

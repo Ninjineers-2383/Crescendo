@@ -65,5 +65,6 @@ public final class Constants {
         // Buttons
         public static int FieldCentric = Robot.isReal() ? 6 : 1;
         public static int ResetHeading = Robot.isReal() ? 8 : 2;
+        public static int HeadingToAprilTag = Robot.isReal() ? 7 : 3;
     }
 }

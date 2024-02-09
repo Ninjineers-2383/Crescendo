@@ -176,7 +176,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
-        m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem));
+        m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem));
 
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
         m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
@@ -190,6 +190,23 @@ public class RobotContainer {
 
         new JoystickButton(m_driverController, Constants.OI.ResetHeading)
                 .onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetHeading()));
+
+        new JoystickButton(m_driverController, Constants.OI.HeadingToAprilTag).onTrue(
+                new InstantCommand(
+                        () -> m_drivetrainSubsystem.forceHeading(m_drivetrainSubsystem.getPose().getRotation())));
+
+        // new JoystickButton(m_operatorController, 3).onTrue(new
+        // IndexerCommand(m_indexerSubsystem, () -> -0.2)
+        // .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 150, () -> -300,
+        // () -> 0)))
+        // .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.4).withTimeout(0.5)
+        // .andThen(new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> -500, ()
+        // -> 0)
+        // .withTimeout(0.5))
+        // .andThen(new IndexerCommand(m_indexerSubsystem, () -> 0).withTimeout(0.02)
+        // .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () ->
+        // 0)
+        // .withTimeout(0.02))));
     }
 
     private void configureDefaultCommands() {
@@ -213,8 +230,7 @@ public class RobotContainer {
 
         m_indexerSubsystem
                 .setDefaultCommand(
-                        new IndexerCommand(m_indexerSubsystem, () -> m_operatorController.getRawButton(10) ? 1.0
-                                : m_operatorController.getRawButton(6) ? -1.0 : 0.0));
+                        new IndexerCommand(m_indexerSubsystem, () -> m_operatorController.getRawAxis(1)));
 
         m_shooterSubsystem.setDefaultCommand(
                 new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get,
