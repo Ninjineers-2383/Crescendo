@@ -7,9 +7,7 @@ package com.team2383.robot;
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.path.PathPlannerPath;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.FullFeedCommand;
 import com.team2383.robot.commands.ScoreAmpCommand;
@@ -210,7 +208,7 @@ public class RobotContainer {
         // .pathfindThenFollowPath(PathPlannerPath.fromPathFile("DriveToAmp"),
         // DriveConstants.AUTO_CONSTRAINTS));
 
-        new JoystickButton(m_driverController, 10).whileTrue(
+        new JoystickButton(m_driverController, 3).whileTrue(
                 new ScoreAmpCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem));
 
         // new JoystickButton(m_operatorController, 3).onTrue(new

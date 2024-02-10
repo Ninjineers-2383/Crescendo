@@ -19,6 +19,7 @@ import com.team2383.robot.Constants;
 import com.team2383.robot.Constants.RobotType;
 
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -45,17 +46,19 @@ public final class DriveConstants {
 
     public final static HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(
             new PIDConstants(5, 0, 0),
-            new PIDConstants(5, 0, 0),
+            new PIDConstants(2, 0, 0),
             4.5,
             0.5,
             new ReplanningConfig());
 
     public final static PathConstraints AUTO_CONSTRAINTS = new PathConstraints(
-            2, 1.5,
-            Units.degreesToRadians(540), Units.degreesToRadians(720));
+            2, 1,
+            Units.degreesToRadians(400), Units.degreesToRadians(400));
 
     public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(7.0, 0, 0,
             new Constraints(2 * Math.PI, 2 * Math.PI));
+
+    public final static Pose2d SPEAKER_POSE = new Pose2d(new Translation2d(1.9, 8.17), Rotation2d.fromDegrees(270));
 
     public static final class ModuleConstants {
         public final double kS;
