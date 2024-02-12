@@ -6,6 +6,8 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.Supplier;
@@ -32,6 +34,10 @@ public class FaceToTranslationCommand extends Command {
 
         Rotation2d angle = new Rotation2d(Math.atan2(m_translation.get().getY() - drivetrainTransform.getY(),
                 m_translation.get().getX() - drivetrainTransform.getX()));
+
+        if (DriverStation.getAlliance().get() == Alliance.Red) {
+            angle = angle.plus(new Rotation2d(Math.PI));
+        }
 
         // Rotation2d angleDiff =
         // m_drivetrain.getPose().getRotation().minus(m_drivetrain.getHeading());
