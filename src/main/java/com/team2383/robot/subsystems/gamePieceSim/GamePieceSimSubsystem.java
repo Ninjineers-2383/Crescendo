@@ -19,7 +19,8 @@ public class GamePieceSimSubsystem extends SubsystemBase {
     private final Supplier<Pose3d> poseSupplier;
     private final Supplier<ChassisSpeeds> speedsSupplier;
     private BooleanSupplier shootingSupplier;
-    private BooleanSupplier intakeSupplier;
+    private BooleanSupplier intakeFrontSupplier;
+    private BooleanSupplier intakeRearSupplier;
     private DoubleSupplier shooterAngle;
     private DoubleSupplier shooterRPM;
 
@@ -31,12 +32,14 @@ public class GamePieceSimSubsystem extends SubsystemBase {
     private boolean[] notesHit = new boolean[notes.length];
 
     public GamePieceSimSubsystem(Supplier<Pose3d> poseSupplier, Supplier<ChassisSpeeds> speedsSupplier,
-            BooleanSupplier shootingSupplier, BooleanSupplier intakeSupplier, DoubleSupplier shooterAngle,
+            BooleanSupplier shootingSupplier, BooleanSupplier intakeFrontSupplier, BooleanSupplier intakeRearSupplier,
+            DoubleSupplier shooterAngle,
             DoubleSupplier shooterRPM) {
         this.poseSupplier = poseSupplier;
         this.speedsSupplier = speedsSupplier;
         this.shootingSupplier = shootingSupplier;
-        this.intakeSupplier = intakeSupplier;
+        this.intakeFrontSupplier = intakeFrontSupplier;
+        this.intakeRearSupplier = intakeRearSupplier;
         this.shooterAngle = shooterAngle;
         this.shooterRPM = shooterRPM;
     }
@@ -44,7 +47,10 @@ public class GamePieceSimSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Pose3d pose = poseSupplier.get();
-        boolean intake = intakeSupplier.getAsBoolean();
+
+        boolean intakeFront = intakeFrontSupplier.getAsBoolean();
+        boolean intakeRear = intakeRearSupplier.getAsBoolean();
+
         boolean shooting = shootingSupplier.getAsBoolean();
         ChassisSpeeds speeds = speedsSupplier.get();
         Rotation2d angle = Rotation2d.fromDegrees(shooterAngle.getAsDouble());
@@ -55,10 +61,10 @@ public class GamePieceSimSubsystem extends SubsystemBase {
                     && notesHit[i] == false) {
                 int collisionSide = getCollisionSide(pose, notes[i]);
 
-                if (intake && !pieceInRobot()) {
+                if ((intakeFront || intakeRear) && !pieceInRobot()) {
                     if (collisionSide == 1 || collisionSide == 4) {
                         notes[i] = new Pose3d(new Translation3d(pose.getX(), pose.getY(), 1),
-                                new Rotation3d(Math.toRadians(-90), 0, 0));
+                                new Rotation3d());
 
                         notesHit[i] = true;
                     } else {
@@ -152,7 +158,7 @@ public class GamePieceSimSubsystem extends SubsystemBase {
         }
         if (move) {
             notes[noteIndex] = notes[noteIndex]
-                    .exp(new Twist3d(0, speeds.vyMetersPerSecond * 0.02, -speeds.vxMetersPerSecond * 0.02, 0, 0, 0));
+                    .exp(new Twist3d(speeds.vxMetersPerSecond * 0.02, speeds.vyMetersPerSecond * 0.02, 0, 0, 0, 0));
         }
 
         Logger.recordOutput("Speeds Angle", speedsAngleDegrees);

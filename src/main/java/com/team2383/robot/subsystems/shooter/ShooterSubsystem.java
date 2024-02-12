@@ -97,6 +97,10 @@ public class ShooterSubsystem extends SubsystemBase {
         shooter.setSideRPM(RPM);
     }
 
+    public double getTopBottomRPM() {
+        return inputs.topBottomSetpointRPM;
+    }
+
     public Command getQuasiStatic(Direction direction) {
         return m_sysIdRoutine.quasistatic(direction);
     }
