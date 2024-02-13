@@ -25,22 +25,26 @@ public class FaceToTranslationCommand extends Command {
 
     @Override
     public void execute() {
-        Translation2d drivetrainTransform = m_drivetrain.getPose().getTranslation();
+        Translation2d drivetrainPose = m_drivetrain.getPose().getTranslation();
+        Rotation2d heading = m_drivetrain.getHeading();
 
         Logger.recordOutput("Swerve/SeekingTranslation2d", m_translation.get());
 
         Logger.recordOutput("Swerve/SeekingTranslation3d", new Translation3d(m_translation.get().getX(),
                 m_translation.get().getY(), Units.inchesToMeters(78.324)));
 
-        Rotation2d angle = new Rotation2d(Math.atan2(m_translation.get().getY() - drivetrainTransform.getY(),
-                m_translation.get().getX() - drivetrainTransform.getX()));
+        Rotation2d angle = new Rotation2d(Math.atan2(m_translation.get().getY() - drivetrainPose.getY(),
+                m_translation.get().getX() - drivetrainPose.getX()));
 
         if (DriverStation.getAlliance().get() == Alliance.Red) {
             angle = angle.plus(new Rotation2d(Math.PI));
         }
 
-        // Rotation2d angleDiff =
-        // m_drivetrain.getPose().getRotation().minus(m_drivetrain.getHeading());
+        if (heading.minus(angle).getDegrees() > 90) {
+            angle = angle.plus(new Rotation2d(Math.PI));
+        } else if (heading.minus(angle).getDegrees() < -90) {
+            angle = angle.minus(new Rotation2d(Math.PI));
+        }
 
         m_drivetrain.setHeading(angle);
     }

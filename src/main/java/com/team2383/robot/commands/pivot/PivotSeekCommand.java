@@ -7,7 +7,9 @@ import org.littletonrobotics.junction.Logger;
 import com.team2383.robot.FieldConstants;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class PivotSeekCommand extends Command {
@@ -26,15 +28,21 @@ public class PivotSeekCommand extends Command {
         double distanceToSpeaker = poseSupplier.get().getTranslation().toTranslation2d()
                 .getDistance(FieldConstants.getSpeakerLocation());
 
-        // double angle = Math.atan2(FieldConstants.Speaker.bottomLeftSpeaker.getZ() -
-        // Units.inchesToMeters(20.5),
-        // distanceToSpeaker);
+        Pose2d drivePose2d = poseSupplier.get().toPose2d();
+
+        Rotation2d angleToSpeaker = new Rotation2d(
+                Math.atan2(FieldConstants.getSpeakerLocation().getY() - drivePose2d.getY(),
+                        FieldConstants.getSpeakerLocation().getX() - drivePose2d.getX()));
 
         double angle = 1.2 * Math.atan2(1.6, distanceToSpeaker);
 
-        Logger.recordOutput("Pivot/DistanceToSpeaker", distanceToSpeaker);
+        if (drivePose2d.getRotation().minus(angleToSpeaker).getDegrees() > 90) {
+            angle = Math.PI - angle;
+        } else if (drivePose2d.getRotation().minus(angleToSpeaker).getDegrees() < -90) {
+            angle = Math.PI - angle;
+        }
 
-        // angle += distanceToSpeaker * distanceToSpeaker * 0.0002;
+        Logger.recordOutput("Pivot/DistanceToSpeaker", distanceToSpeaker);
 
         pivot.setPosition(angle);
     }

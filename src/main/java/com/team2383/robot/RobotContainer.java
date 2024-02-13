@@ -12,6 +12,7 @@ import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.FullFeedCommand;
 import com.team2383.robot.commands.ScoreAmpCommand;
 import com.team2383.robot.commands.SeekCommand;
+import com.team2383.robot.commands.ShootCommand;
 import com.team2383.robot.commands.drivetrain.*;
 import com.team2383.robot.commands.drivetrain.sysid.*;
 import com.team2383.robot.commands.feeder.*;
@@ -38,6 +39,7 @@ import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
@@ -54,12 +56,13 @@ public class RobotContainer {
     private final GenericHID m_operatorController = new GenericHID(1);
 
     private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
-    private final JoystickButton m_seek = new JoystickButton(m_driverController, 2);
+
+    private final JoystickButton m_seek = new JoystickButton(m_operatorController, 2);
 
     private final JoystickButton m_fullFeedFront = new JoystickButton(m_driverController, 5);
 
     private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
-    private final JoystickButton m_feedLeft = new JoystickButton(m_operatorController, 2);
+    private final POVButton m_feedLeft = new POVButton(m_operatorController, 0);
 
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
@@ -188,6 +191,7 @@ public class RobotContainer {
 
     private void configureButtonBindings() {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
+
         m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem));
 
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
@@ -198,7 +202,7 @@ public class RobotContainer {
 
         m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
-        m_shoot.whileTrue(new ShooterRPMCommand(m_shooterSubsystem, () -> -5000, () -> 400, () -> 0));
+        m_shoot.onTrue(new ShootCommand(m_shooterSubsystem, m_indexerSubsystem));
 
         new JoystickButton(m_driverController, Constants.OI.ResetHeading)
                 .onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetHeading()));
