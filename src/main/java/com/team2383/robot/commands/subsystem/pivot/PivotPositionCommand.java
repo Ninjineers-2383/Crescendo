@@ -1,4 +1,4 @@
-package com.team2383.robot.commands.pivot;
+package com.team2383.robot.commands.subsystem.pivot;
 
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 

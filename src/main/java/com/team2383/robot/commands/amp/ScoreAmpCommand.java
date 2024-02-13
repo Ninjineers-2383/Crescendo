@@ -1,11 +1,11 @@
-package com.team2383.robot.commands;
+package com.team2383.robot.commands.amp;
 
 import com.team2383.lib.util.AllianceUtil;
-import com.team2383.robot.commands.drivetrain.PathfindCommand;
-import com.team2383.robot.commands.indexer.IndexerCommand;
-import com.team2383.robot.commands.pivot.PivotPositionCommand;
-import com.team2383.robot.commands.pivot.PivotPresets;
-import com.team2383.robot.commands.shooter.ShooterRPMCommand;
+import com.team2383.robot.commands.subsystem.drivetrain.PathfindCommand;
+import com.team2383.robot.commands.subsystem.indexer.IndexerCommand;
+import com.team2383.robot.commands.subsystem.pivot.PivotPositionCommand;
+import com.team2383.robot.commands.subsystem.pivot.PivotPresets;
+import com.team2383.robot.commands.subsystem.shooter.ShooterRPMCommand;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.indexer.IndexerSubsystem;

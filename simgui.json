@@ -37,6 +37,7 @@
       "/LiveWindow/Ungrouped/PIDController[9]": "PIDController",
       "/LiveWindow/Ungrouped/Scheduler": "Scheduler",
       "/SmartDashboard/Auto": "String Chooser",
+      "/SmartDashboard/Auto Command": "String Chooser",
       "/SmartDashboard/Auto Start Location": "String Chooser",
       "/SmartDashboard/Enable LW": "String Chooser",
       "/SmartDashboard/Field": "Field2d",

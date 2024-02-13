@@ -1,4 +1,4 @@
-package com.team2383.robot.commands.pivot;
+package com.team2383.robot.commands.subsystem.pivot;
 
 public class PivotPresets {
     public static double ZERO = Math.toRadians(0);

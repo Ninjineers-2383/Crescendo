@@ -1,4 +1,4 @@
-package com.team2383.robot.commands.pivot.tuning;
+package com.team2383.robot.commands.subsystem.pivot.tuning;
 
 import com.team2383.lib.controller.TunableArmFeedforward;
 import com.team2383.robot.subsystems.pivot.PivotConstants;

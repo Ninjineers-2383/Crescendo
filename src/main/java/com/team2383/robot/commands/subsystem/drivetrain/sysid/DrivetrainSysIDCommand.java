@@ -1,4 +1,4 @@
-package com.team2383.robot.commands.drivetrain.sysid;
+package com.team2383.robot.commands.subsystem.drivetrain.sysid;
 
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;

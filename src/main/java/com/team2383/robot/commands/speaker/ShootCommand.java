@@ -1,7 +1,7 @@
-package com.team2383.robot.commands;
+package com.team2383.robot.commands.speaker;
 
-import com.team2383.robot.commands.indexer.IndexerCommand;
-import com.team2383.robot.commands.shooter.ShooterRPMCommand;
+import com.team2383.robot.commands.subsystem.indexer.IndexerCommand;
+import com.team2383.robot.commands.subsystem.shooter.ShooterRPMCommand;
 import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
 import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 

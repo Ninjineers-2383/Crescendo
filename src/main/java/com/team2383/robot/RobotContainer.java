@@ -10,17 +10,18 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.FullFeedCommand;
-import com.team2383.robot.commands.ScoreAmpCommand;
-import com.team2383.robot.commands.SeekCommand;
-import com.team2383.robot.commands.ShootCommand;
-import com.team2383.robot.commands.drivetrain.*;
-import com.team2383.robot.commands.drivetrain.sysid.*;
-import com.team2383.robot.commands.feeder.*;
-import com.team2383.robot.commands.orchestra.*;
-import com.team2383.robot.commands.pivot.*;
-import com.team2383.robot.commands.pivot.tuning.PivotTuningCommand;
-import com.team2383.robot.commands.shooter.*;
-import com.team2383.robot.commands.indexer.*;
+import com.team2383.robot.commands.amp.ScoreAmpCommand;
+import com.team2383.robot.commands.auto.OneRingAuto;
+import com.team2383.robot.commands.speaker.SeekCommand;
+import com.team2383.robot.commands.speaker.ShootCommand;
+import com.team2383.robot.commands.subsystem.drivetrain.*;
+import com.team2383.robot.commands.subsystem.drivetrain.sysid.*;
+import com.team2383.robot.commands.subsystem.feeder.*;
+import com.team2383.robot.commands.subsystem.indexer.*;
+import com.team2383.robot.commands.subsystem.orchestra.*;
+import com.team2383.robot.commands.subsystem.pivot.*;
+import com.team2383.robot.commands.subsystem.pivot.tuning.PivotTuningCommand;
+import com.team2383.robot.commands.subsystem.shooter.*;
 import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
 import com.team2383.robot.subsystems.drivetrain.SLAM.*;
@@ -79,6 +80,7 @@ public class RobotContainer {
     LoggedDashboardNumber shooterDifferentialRPM = new LoggedDashboardNumber("Differential RPM", 0);
     LoggedDashboardNumber pivotAngle = new LoggedDashboardNumber("Pivot Angle", 0);
 
+    LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto Command");
     LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
     private boolean lwEnabled = false;
@@ -222,25 +224,6 @@ public class RobotContainer {
         new JoystickButton(m_driverController, 3).whileTrue(
                 new ScoreAmpCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem));
 
-        // new JoystickButton(m_operatorController, 3).onTrue(new
-        // IndexerCommand(m_indexerSubsystem, () -> -0.2)
-        // .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 150, () -> -300,
-        // () -> 0)))
-        // .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.5).withTimeout(1)
-        // .andThen(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 100, () ->
-        // 0)
-        // .withTimeout(0.75))
-        // .andThen(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -200, () ->
-        // 0)
-        // .withTimeout(0.5))
-        // .andThen(new IndexerCommand(m_indexerSubsystem, () -> 0).withTimeout(0.02)
-        // .alongWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () ->
-        // 0)
-        // .withTimeout(0.02))));
-
-        // new JoystickButton(m_operatorController, 3).whileTrue(new
-        // IndexerCommand(m_indexerSubsystem, () -> 1.0));
-
         new JoystickButton(m_operatorController, 3).onTrue(new IndexerCommand(m_indexerSubsystem, () -> 0.7))
                 .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0));
 
@@ -284,7 +267,7 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
-        return (Command) null;
+        return autoChooser.get();
     }
 
     public Command getTestCommand() {
@@ -292,6 +275,10 @@ public class RobotContainer {
     }
 
     private void registerAutoCommands() {
+        autoChooser.addDefaultOption("None", (Command) null);
+
+        autoChooser.addOption("One Ring", new OneRingAuto(m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem,
+                m_shooterSubsystem, m_indexerSubsystem));
     }
 
     private void registerTestCommands() {

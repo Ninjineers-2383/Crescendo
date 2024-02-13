@@ -1,7 +1,7 @@
-package com.team2383.robot.commands;
+package com.team2383.robot.commands.speaker;
 
-import com.team2383.robot.commands.drivetrain.FaceToSpeakerCommand;
-import com.team2383.robot.commands.pivot.PivotSeekCommand;
+import com.team2383.robot.commands.subsystem.drivetrain.FaceToSpeakerCommand;
+import com.team2383.robot.commands.subsystem.pivot.PivotSeekCommand;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 

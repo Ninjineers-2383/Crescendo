@@ -1,4 +1,4 @@
-package com.team2383.robot.commands.feeder;
+package com.team2383.robot.commands.subsystem.feeder;
 
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 
