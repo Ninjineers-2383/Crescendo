@@ -316,6 +316,11 @@ public class RobotContainer {
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
                 m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem, m_shooterSubsystem));
+
+        testDashboardChooser.addOption("Super Mario Bros Overworld Theme",
+                new OrchestraCommand("music/MarioOverworld.chrp",
+                        m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem,
+                        m_shooterSubsystem));
     }
 
     public void registerAutoNamedCommands() {

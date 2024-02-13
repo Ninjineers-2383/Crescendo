@@ -116,7 +116,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     drive(speeds, false, false);
                 },
                 DriveConstants.CONFIG,
-                this::shouldFlipPath,
+                () -> false,
                 this);
     }
 
@@ -348,6 +348,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void setHeading(Rotation2d heading) {
+        headingControllerEnabled = true;
         desiredHeading = heading;
     }
 

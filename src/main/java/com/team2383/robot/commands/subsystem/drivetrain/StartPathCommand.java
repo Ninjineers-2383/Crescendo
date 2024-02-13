@@ -7,13 +7,14 @@ import com.team2383.robot.subsystems.drivetrain.DriveConstants;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
-public class FollowPathCommand extends Command {
+public class StartPathCommand extends Command {
     private String pathString;
 
     private Command command;
 
-    public FollowPathCommand(DrivetrainSubsystem drivetrain, String pathString) {
+    public StartPathCommand(DrivetrainSubsystem drivetrain, String pathString) {
         this.pathString = pathString;
 
         addRequirements(drivetrain);
@@ -21,8 +22,12 @@ public class FollowPathCommand extends Command {
 
     @Override
     public void initialize() {
-        command = AutoBuilder.pathfindThenFollowPath(AllianceUtil.flipPath(PathPlannerPath.fromPathFile(pathString)),
-                DriveConstants.AUTO_CONSTRAINTS);
+        command = new SequentialCommandGroup(
+                AutoBuilder.pathfindToPose(
+                        AllianceUtil.flipPath(PathPlannerPath.fromPathFile(pathString))
+                                .getPreviewStartingHolonomicPose(),
+                        DriveConstants.AUTO_CONSTRAINTS),
+                AutoBuilder.followPath(AllianceUtil.flipPath(PathPlannerPath.fromPathFile(pathString))));
 
         command.initialize();
 
