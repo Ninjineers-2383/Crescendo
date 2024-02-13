@@ -1,5 +1,6 @@
 package com.team2383.lib.util;
 
+import com.pathplanner.lib.path.PathPlannerPath;
 import com.team2383.robot.FieldConstants;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -32,7 +33,7 @@ public class AllianceUtil {
         }
 
         if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-            return rotation.rotateBy(Rotation2d.fromDegrees(180));
+            return Rotation2d.fromDegrees(180).minus(rotation);
         } else {
             return rotation;
         }
@@ -69,6 +70,18 @@ public class AllianceUtil {
 
     public static Pose3d flipPose3d(Pose3d pose) {
         return new Pose3d(flipTranslation3d(pose.getTranslation()), flipRotation3d(pose.getRotation()));
+    }
+
+    public static PathPlannerPath flipPath(PathPlannerPath path) {
+        if (!DriverStation.getAlliance().isPresent()) {
+            return path;
+        }
+
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+            return path.flipPath();
+        } else {
+            return path;
+        }
     }
 
 }

@@ -21,6 +21,8 @@ public class FaceToTranslationCommand extends Command {
     public FaceToTranslationCommand(DrivetrainSubsystem drivetrain, Supplier<Translation2d> translation) {
         m_drivetrain = drivetrain;
         m_translation = translation;
+
+        // addRequirements(drivetrain);
     }
 
     @Override
@@ -47,6 +49,11 @@ public class FaceToTranslationCommand extends Command {
         }
 
         m_drivetrain.setHeading(angle);
+    }
+
+    @Override
+    public boolean isFinished() {
+        return false;
     }
 
     @Override

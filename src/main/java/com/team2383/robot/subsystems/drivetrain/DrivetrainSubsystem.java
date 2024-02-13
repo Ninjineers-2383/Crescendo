@@ -362,4 +362,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
             return true;
         }
     }
+
+    public boolean headingIsFinished() {
+        return Math.abs(desiredHeading.minus(getHeading()).getDegrees()) < 1;
+    }
 }
