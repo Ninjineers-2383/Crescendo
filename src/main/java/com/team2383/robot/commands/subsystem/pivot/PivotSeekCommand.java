@@ -34,7 +34,7 @@ public class PivotSeekCommand extends Command {
                 Math.atan2(FieldConstants.getSpeakerLocation().getY() - drivePose2d.getY(),
                         FieldConstants.getSpeakerLocation().getX() - drivePose2d.getX()));
 
-        double angle = 1.2 * Math.atan2(1.6, distanceToSpeaker);
+        double angle = 3 * Math.atan2(0.24, distanceToSpeaker) + 0.32;
 
         if (drivePose2d.getRotation().minus(angleToSpeaker).getDegrees() > 90) {
             angle = Math.PI - angle;

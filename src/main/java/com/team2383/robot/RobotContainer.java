@@ -324,7 +324,7 @@ public class RobotContainer {
     }
 
     public void registerAutoNamedCommands() {
-        NamedCommands.registerCommand("Feed Front",
+        NamedCommands.registerCommand("FeedFront",
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
 
         NamedCommands.registerCommand("Seek",

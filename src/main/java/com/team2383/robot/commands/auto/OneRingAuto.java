@@ -17,7 +17,7 @@ public class OneRingAuto extends SequentialCommandGroup {
             ShooterSubsystem shooter, IndexerSubsystem indexer) {
         addCommands(
                 new StartPathCommand(drivetrain, "DriveTo1"),
-                new SeekCommand(drivetrain, pivot),
+                new SeekCommand(drivetrain, pivot).withTimeout(1),
                 new ShootCommand(shooter, indexer));
     }
 
