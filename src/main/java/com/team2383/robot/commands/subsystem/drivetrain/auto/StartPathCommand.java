@@ -1,4 +1,4 @@
-package com.team2383.robot.commands.subsystem.drivetrain;
+package com.team2383.robot.commands.subsystem.drivetrain.auto;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.path.PathPlannerPath;
