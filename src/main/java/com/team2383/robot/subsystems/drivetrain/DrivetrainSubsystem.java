@@ -70,7 +70,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ChassisSpeeds m_robotRelativeChassisSpeeds = new ChassisSpeeds();
 
     // Heading Controller Initialization
-    private final ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
+    private ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
     private Rotation2d desiredHeading = new Rotation2d();
     private boolean headingControllerEnabled = true;
 
@@ -365,6 +365,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public boolean headingIsFinished() {
-        return Math.abs(desiredHeading.minus(getHeading()).getDegrees()) < 1;
+        return Math.abs(desiredHeading.minus(getHeading()).getRadians()) < 0.01;
+    }
+
+    public void setHeadingPID(ProfiledPIDController controller) {
+        m_headingController = controller;
     }
 }

@@ -11,7 +11,7 @@ public class ShootCommand extends SequentialCommandGroup {
 
     public ShootCommand(ShooterSubsystem shooter, IndexerSubsystem indexer) {
         addCommands(
-                new ShooterRPMCommand(shooter, () -> -5000, () -> 400, () -> 0).withTimeout(1),
+                new ShooterRPMCommand(shooter, () -> -5000, () -> 400, () -> 0).withTimeout(0.5),
                 new IndexerCommand(indexer, () -> -1.0).withTimeout(1));
     }
 

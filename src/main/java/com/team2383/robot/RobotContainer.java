@@ -197,7 +197,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
 
-        m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem));
+        m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, false));
 
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
         m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
@@ -205,8 +205,7 @@ public class RobotContainer {
         m_fullFeedFront.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
 
-        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.1).withTimeout(0.05)
-                .raceWith(new FeederPowerCommand(m_feederSubsystem, () -> 0)));
+        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
         m_shoot.onTrue(new ShootCommand(m_shooterSubsystem, m_indexerSubsystem));
 
@@ -245,8 +244,8 @@ public class RobotContainer {
                 new PivotDefaultCommand(m_pivotSubsystem,
                         () -> pivotAngle.get() * (Math.PI / 180)));
 
-        // m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
-        // () -> 0));
+        m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
+                () -> 0));
 
         m_indexerSubsystem
                 .setDefaultCommand(
@@ -325,6 +324,11 @@ public class RobotContainer {
                 new OrchestraCommand("music/MarioOverworld.chrp",
                         m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem,
                         m_shooterSubsystem));
+
+        testDashboardChooser.addOption("Drivetrain Heading Tuning",
+                new DrivetrainHeadingControllerCommand(m_drivetrainSubsystem, () -> Math.toRadians(100 * MathUtil
+                        .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1)),
+                        () -> m_driverController.getRawButton(9)));
     }
 
     public void registerAutoNamedCommands() {
@@ -332,7 +336,7 @@ public class RobotContainer {
                 new FullFeedAutoCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
 
         NamedCommands.registerCommand("Seek",
-                new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem));
+                new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, false));
 
         NamedCommands.registerCommand("Shoot", new IndexerCommand(m_indexerSubsystem, () -> 1));
     }
