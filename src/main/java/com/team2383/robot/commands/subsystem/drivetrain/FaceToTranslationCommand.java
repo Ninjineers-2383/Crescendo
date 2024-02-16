@@ -48,6 +48,9 @@ public class FaceToTranslationCommand extends Command {
             angle = angle.minus(new Rotation2d(Math.PI));
         }
 
+        System.out.println(heading.getDegrees() + "-" + angle.getDegrees() + "=" + heading.minus(angle).getDegrees());
+        System.out.println("Angle: " + angle.getDegrees());
+
         m_drivetrain.setHeading(angle);
     }
 

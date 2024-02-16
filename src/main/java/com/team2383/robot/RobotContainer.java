@@ -10,7 +10,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
-import com.team2383.robot.commands.auto.OneRingAuto;
+import com.team2383.robot.commands.auto.ThreeNoteAuto;
+import com.team2383.robot.commands.auto.TwoNoteAuto;
 import com.team2383.robot.commands.feeding.FullFeedAutoCommand;
 import com.team2383.robot.commands.feeding.FullFeedCommand;
 import com.team2383.robot.commands.speaker.SeekCommand;
@@ -160,7 +161,8 @@ public class RobotContainer {
         new SimComponents(m_pivotSubsystem);
 
         new GamePieceSimSubsystem(m_drivetrainSubsystem::getEstimatorPose3d,
-                m_drivetrainSubsystem::getRobotRelativeSpeeds, m_shoot, m_fullFeedFront, () -> false,
+                m_drivetrainSubsystem::getRobotRelativeSpeeds, m_shoot, () -> m_feederSubsystem.getPower() > 0,
+                () -> false,
                 m_pivotSubsystem::getAngle,
                 m_shooterSubsystem::getTopBottomRPM);
 
@@ -275,8 +277,12 @@ public class RobotContainer {
     private void registerAutoCommands() {
         autoChooser.addDefaultOption("None", (Command) null);
 
-        autoChooser.addOption("One Ring", new OneRingAuto(m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem,
+        autoChooser.addOption("Two Note", new TwoNoteAuto(m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem,
                 m_shooterSubsystem, m_indexerSubsystem));
+
+        autoChooser.addOption("Three Note",
+                new ThreeNoteAuto(m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem,
+                        m_shooterSubsystem, m_indexerSubsystem));
     }
 
     private void registerTestCommands() {

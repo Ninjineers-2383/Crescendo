@@ -23,11 +23,8 @@ public class StartPathCommand extends Command {
     @Override
     public void initialize() {
         command = new SequentialCommandGroup(
-                AutoBuilder.pathfindToPose(
-                        AllianceUtil.flipPath(PathPlannerPath.fromPathFile(pathString))
-                                .getPreviewStartingHolonomicPose(),
-                        DriveConstants.AUTO_CONSTRAINTS),
-                AutoBuilder.followPath(AllianceUtil.flipPath(PathPlannerPath.fromPathFile(pathString))));
+                AutoBuilder.pathfindThenFollowPath(AllianceUtil.flipPath(PathPlannerPath.fromPathFile(pathString)),
+                        DriveConstants.AUTO_CONSTRAINTS));
 
         command.initialize();
 
