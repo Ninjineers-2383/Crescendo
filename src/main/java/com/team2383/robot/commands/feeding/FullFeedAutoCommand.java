@@ -1,6 +1,6 @@
-package com.team2383.robot.commands;
+package com.team2383.robot.commands.feeding;
 
-import com.team2383.robot.commands.subsystem.feeder.FeederPowerCommand;
+import com.team2383.robot.commands.subsystem.feeder.FeederAutoCommand;
 import com.team2383.robot.commands.subsystem.indexer.IndexerCommand;
 import com.team2383.robot.commands.subsystem.pivot.PivotPositionCommand;
 import com.team2383.robot.commands.subsystem.pivot.PivotPresets;
@@ -12,13 +12,13 @@ import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
-public class FullFeedCommand extends ParallelCommandGroup {
+public class FullFeedAutoCommand extends ParallelCommandGroup {
 
-    public FullFeedCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,
+    public FullFeedAutoCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,
             FeederSubsystem feeder) {
 
         addCommands(
-                new FeederPowerCommand(feeder, () -> -1.0),
+                new FeederAutoCommand(feeder, () -> -1.0),
                 new IndexerCommand(indexer, () -> -0.5),
                 new ShooterRPMCommand(shooter, () -> 0, () -> -200, () -> 0),
                 new PivotPositionCommand(pivot, PivotPresets.FEED_FRONT));

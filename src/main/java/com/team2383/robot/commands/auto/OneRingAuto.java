@@ -1,9 +1,9 @@
 package com.team2383.robot.commands.auto;
 
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
-import com.team2383.robot.commands.speaker.SeekCommand;
-import com.team2383.robot.commands.speaker.ShootCommand;
 import com.team2383.robot.commands.subsystem.drivetrain.auto.StartPathCommand;
+import com.team2383.robot.commands.subsystem.feeder.FeederPowerCommand;
+import com.team2383.robot.commands.subsystem.indexer.IndexerCommand;
 import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
@@ -23,8 +23,9 @@ public class OneRingAuto extends SequentialCommandGroup {
                 new InstantCommand(() -> drivetrain.forceHeading(drivetrain.getPose().getRotation())),
                 new SeekAndShootCommand(drivetrain, pivot, shooter, indexer),
                 new StartPathCommand(drivetrain, "DriveTo1"),
-                new SeekCommand(drivetrain, pivot).withTimeout(1),
-                new ShootCommand(shooter, indexer));
+                new IndexerCommand(indexer, () -> 0.1).withTimeout(0.01),
+                new FeederPowerCommand(feeder, () -> 0).withTimeout(0.1),
+                new SeekAndShootCommand(drivetrain, pivot, shooter, indexer));
     }
 
 }

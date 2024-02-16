@@ -9,9 +9,10 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.team2383.robot.Constants.*;
-import com.team2383.robot.commands.FullFeedCommand;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
 import com.team2383.robot.commands.auto.OneRingAuto;
+import com.team2383.robot.commands.feeding.FullFeedAutoCommand;
+import com.team2383.robot.commands.feeding.FullFeedCommand;
 import com.team2383.robot.commands.speaker.SeekCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
 import com.team2383.robot.commands.subsystem.drivetrain.*;
@@ -202,7 +203,8 @@ public class RobotContainer {
         m_fullFeedFront.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
 
-        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
+        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.1).withTimeout(0.05)
+                .raceWith(new FeederPowerCommand(m_feederSubsystem, () -> 0)));
 
         m_shoot.onTrue(new ShootCommand(m_shooterSubsystem, m_indexerSubsystem));
 
@@ -216,10 +218,6 @@ public class RobotContainer {
                                         ? m_drivetrainSubsystem.getPose().getRotation()
                                         : m_drivetrainSubsystem.getPose().getRotation()
                                                 .plus(new Rotation2d(Math.PI)))));
-
-        // new JoystickButton(m_driverController, 10).whileTrue(AutoBuilder
-        // .pathfindThenFollowPath(PathPlannerPath.fromPathFile("DriveToAmp"),
-        // DriveConstants.AUTO_CONSTRAINTS));
 
         new JoystickButton(m_driverController, 3).whileTrue(
                 new ScoreAmpCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem));
@@ -245,8 +243,8 @@ public class RobotContainer {
                 new PivotDefaultCommand(m_pivotSubsystem,
                         () -> pivotAngle.get() * (Math.PI / 180)));
 
-        m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
-                () -> m_operatorController.getRawAxis(2) - m_operatorController.getRawAxis(3)));
+        // m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
+        // () -> 0));
 
         m_indexerSubsystem
                 .setDefaultCommand(
@@ -325,7 +323,7 @@ public class RobotContainer {
 
     public void registerAutoNamedCommands() {
         NamedCommands.registerCommand("FeedFront",
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
+                new FullFeedAutoCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
 
         NamedCommands.registerCommand("Seek",
                 new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem));
