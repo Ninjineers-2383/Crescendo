@@ -8,12 +8,11 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
 import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
-import com.team2383.robot.commands.auto.ThreeNoteAuto;
-import com.team2383.robot.commands.auto.TwoNoteAuto;
-import com.team2383.robot.commands.feeding.FullFeedAutoCommand;
 import com.team2383.robot.commands.feeding.FullFeedCommand;
+import com.team2383.robot.commands.speaker.SeekAndShootCommand;
 import com.team2383.robot.commands.speaker.SeekCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
 import com.team2383.robot.commands.subsystem.drivetrain.*;
@@ -168,9 +167,9 @@ public class RobotContainer {
 
         configureDefaultCommands();
 
-        registerAutoCommands();
-
         registerAutoNamedCommands();
+
+        registerAutoCommands();
 
         registerTestCommands();
 
@@ -197,7 +196,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
 
-        m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, false));
+        m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, false));
 
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
         m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
@@ -207,7 +206,7 @@ public class RobotContainer {
 
         m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
-        m_shoot.onTrue(new ShootCommand(m_shooterSubsystem, m_indexerSubsystem));
+        m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
 
         new JoystickButton(m_driverController, Constants.OI.ResetHeading)
                 .onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetHeading()));
@@ -276,12 +275,7 @@ public class RobotContainer {
     private void registerAutoCommands() {
         autoChooser.addDefaultOption("None", (Command) null);
 
-        autoChooser.addOption("Two Note", new TwoNoteAuto(m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem,
-                m_shooterSubsystem, m_indexerSubsystem));
-
-        autoChooser.addOption("Three Note",
-                new ThreeNoteAuto(m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem,
-                        m_shooterSubsystem, m_indexerSubsystem));
+        autoChooser.addOption("Two Note", new PathPlannerAuto("TwoPieceTop"));
     }
 
     private void registerTestCommands() {
@@ -333,11 +327,10 @@ public class RobotContainer {
 
     public void registerAutoNamedCommands() {
         NamedCommands.registerCommand("FeedFront",
-                new FullFeedAutoCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
 
-        NamedCommands.registerCommand("Seek",
-                new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, false));
-
-        NamedCommands.registerCommand("Shoot", new IndexerCommand(m_indexerSubsystem, () -> 1));
+        NamedCommands.registerCommand("SeekAndShoot",
+                new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
+                        m_indexerSubsystem));
     }
 }

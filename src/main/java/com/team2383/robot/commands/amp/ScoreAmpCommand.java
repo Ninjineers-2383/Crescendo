@@ -21,7 +21,8 @@ public class ScoreAmpCommand extends SequentialCommandGroup {
 
         addCommands(
                 new PivotPositionCommand(pivot, PivotPresets.SCORE_AMP).alongWith(
-                        new PathfindCommandAlliance(drivetrain, () -> AllianceUtil.flipPose2d(DriveConstants.SPEAKER_POSE))),
+                        new PathfindCommandAlliance(drivetrain,
+                                () -> AllianceUtil.flipPose2d(DriveConstants.SPEAKER_POSE))),
                 new IndexerCommand(indexer, () -> -0.5).withTimeout(0.4),
                 new ShooterRPMCommand(shooter, () -> 0, () -> -500, () -> 0)
                         .alongWith(new IndexerCommand(indexer, () -> 0.45).withTimeout(1)));

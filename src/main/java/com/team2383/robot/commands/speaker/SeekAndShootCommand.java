@@ -13,8 +13,8 @@ public class SeekAndShootCommand extends SequentialCommandGroup {
             ShooterSubsystem shooter, IndexerSubsystem indexer) {
 
         addCommands(
-                new SeekCommand(drivetrain, pivot, true),
-                new ShootCommand(shooter, indexer));
+                new SeekCommand(drivetrain, pivot, shooter, true),
+                new ShootCommand(indexer));
 
     }
 
