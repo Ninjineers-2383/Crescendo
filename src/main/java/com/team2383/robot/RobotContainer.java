@@ -62,6 +62,7 @@ public class RobotContainer {
     private final JoystickButton m_seek = new JoystickButton(m_operatorController, 2);
 
     private final JoystickButton m_fullFeedFront = new JoystickButton(m_driverController, 5);
+    private final JoystickButton m_fullFeedRear = new JoystickButton(m_driverController, 6);
 
     private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
     private final POVButton m_feedLeft = new POVButton(m_operatorController, 0);
@@ -69,9 +70,14 @@ public class RobotContainer {
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
+
     private PivotSubsystem m_pivotSubsystem;
-    private FeederSubsystem m_feederSubsystem;
+
+    private FeederSubsystem m_frontFeederSubsystem;
+    private FeederSubsystem m_backFeederSubsystem;
+
     private IndexerSubsystem m_indexerSubsystem;
+
     private ShooterSubsystem m_shooterSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
@@ -93,14 +99,29 @@ public class RobotContainer {
         if (Constants.getMode() != Mode.REPLAY) {
             switch (Constants.getRobot()) {
                 case ROBOT_COMP:
+                    m_drivetrainSubsystem = new DrivetrainSubsystem(
+                            Constants.getRobot() == RobotType.ROBOT_COMP
+                                    ? new GyroIOPigeon(0, Constants.kCANivoreBus)
+                                    : new GyroIONavX(),
+                            new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
+                                    Constants.kCANivoreBus),
+                            new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
+                                    Constants.kCANivoreBus),
+                            new SwerveModuleIOFalcon500(DriveConstants.rearLeftConstants,
+                                    Constants.kCANivoreBus),
+                            new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
+                                    Constants.kCANivoreBus));
+
                     m_pivotSubsystem = new PivotSubsystem(new PivotIOFalconTrapezoidal());
 
-                    m_feederSubsystem = new FeederSubsystem(new FeederIONEO());
+                    m_frontFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kFrontMotorID));
+                    m_backFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kRearMotorID));
 
                     m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
 
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
 
+                    break;
                 case ROBOT_PROTO:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             Constants.getRobot() == RobotType.ROBOT_COMP
@@ -114,6 +135,14 @@ public class RobotContainer {
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
                                     Constants.kCANivoreBus));
+
+                    m_pivotSubsystem = new PivotSubsystem(new PivotIOFalconTrapezoidal());
+
+                    m_frontFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kFrontMotorID));
+
+                    m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
+
+                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
 
                     break;
                 case ROBOT_SIM:
@@ -132,7 +161,8 @@ public class RobotContainer {
 
                     m_pivotSubsystem = new PivotSubsystem(new PivotIOSim());
 
-                    m_feederSubsystem = new FeederSubsystem(new FeederIOSim());
+                    m_frontFeederSubsystem = new FeederSubsystem(new FeederIOSim());
+                    m_backFeederSubsystem = new FeederSubsystem(new FeederIOSim());
 
                     m_indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
 
@@ -151,7 +181,11 @@ public class RobotContainer {
 
         m_pivotSubsystem = m_pivotSubsystem == null ? new PivotSubsystem(new PivotIO() {}) : m_pivotSubsystem;
 
-        m_feederSubsystem = m_feederSubsystem == null ? new FeederSubsystem(new FeederIO() {}) : m_feederSubsystem;
+        m_frontFeederSubsystem = m_frontFeederSubsystem == null ? new FeederSubsystem(new FeederIO() {})
+                : m_frontFeederSubsystem;
+
+        m_backFeederSubsystem = m_backFeederSubsystem == null ? new FeederSubsystem(new FeederIO() {})
+                : m_backFeederSubsystem;
 
         m_indexerSubsystem = m_indexerSubsystem == null ? new IndexerSubsystem(new IndexerIO() {}) : m_indexerSubsystem;
 
@@ -160,8 +194,8 @@ public class RobotContainer {
         new SimComponents(m_pivotSubsystem);
 
         new GamePieceSimSubsystem(m_drivetrainSubsystem::getEstimatorPose3d,
-                m_drivetrainSubsystem::getRobotRelativeSpeeds, m_shoot, () -> m_feederSubsystem.getPower() > 0,
-                () -> false,
+                m_drivetrainSubsystem::getRobotRelativeSpeeds, m_shoot, () -> m_frontFeederSubsystem.getPower() > 0,
+                () -> m_backFeederSubsystem.getPower() > 0,
                 m_pivotSubsystem::getAngle,
                 m_shooterSubsystem::getTopBottomRPM);
 
@@ -202,7 +236,10 @@ public class RobotContainer {
         m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
 
         m_fullFeedFront.whileTrue(
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_frontFeederSubsystem));
+
+        m_fullFeedRear.whileTrue(
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_frontFeederSubsystem));
 
         m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
@@ -243,7 +280,10 @@ public class RobotContainer {
                 new PivotDefaultCommand(m_pivotSubsystem,
                         () -> pivotAngle.get() * (Math.PI / 180)));
 
-        m_feederSubsystem.setDefaultCommand(new FeederPowerCommand(m_feederSubsystem,
+        m_frontFeederSubsystem.setDefaultCommand(new FeederPowerCommand(m_frontFeederSubsystem,
+                () -> 0));
+
+        m_backFeederSubsystem.setDefaultCommand(new FeederPowerCommand(m_backFeederSubsystem,
                 () -> 0));
 
         m_indexerSubsystem
@@ -312,11 +352,12 @@ public class RobotContainer {
                         () -> m_operatorController.getRawButton(1)));
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
-                m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem, m_shooterSubsystem));
+                m_drivetrainSubsystem, m_pivotSubsystem, m_frontFeederSubsystem, m_indexerSubsystem,
+                m_shooterSubsystem));
 
         testDashboardChooser.addOption("Super Mario Bros Overworld Theme",
                 new OrchestraCommand("music/MarioOverworld.chrp",
-                        m_drivetrainSubsystem, m_pivotSubsystem, m_feederSubsystem, m_indexerSubsystem,
+                        m_drivetrainSubsystem, m_pivotSubsystem, m_frontFeederSubsystem, m_indexerSubsystem,
                         m_shooterSubsystem));
 
         testDashboardChooser.addOption("Drivetrain Heading Tuning",
@@ -327,7 +368,7 @@ public class RobotContainer {
 
     public void registerAutoNamedCommands() {
         NamedCommands.registerCommand("FeedFront",
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_feederSubsystem));
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_frontFeederSubsystem));
 
         NamedCommands.registerCommand("SeekAndShoot",
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,

@@ -1,19 +1,19 @@
-package com.team2383.robot.subsystems.feeder;
+package com.team2383.robot.subsystems.trapFeeder;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 
-public class FeederIONEO implements FeederIO {
+public class TrapFeederIONeo550 implements TrapFeederIO {
     private final CANSparkMax feeder;
 
     double voltage = 0;
 
-    public FeederIONEO(int id) {
-        feeder = new CANSparkMax(id, MotorType.kBrushless);
+    public TrapFeederIONeo550() {
+        feeder = new CANSparkMax(TrapFeederConstants.kTrapFeederID, MotorType.kBrushless);
     }
 
     @Override
-    public void updateInputs(FeederIOInputs inputs) {
+    public void updateInputs(TrapFeederIOInputs inputs) {
         inputs.current = feeder.getOutputCurrent();
         inputs.power = voltage;
     }

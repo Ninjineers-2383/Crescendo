@@ -64,8 +64,6 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
 
         leftMotor.getConfigurator().apply(feedback);
 
-        // leftMotor.setPosition(0);
-
         goal = new TrapezoidProfile.State(leftMotor.getPosition().getValueAsDouble(), 0);
         setpoint = goal;
     }
