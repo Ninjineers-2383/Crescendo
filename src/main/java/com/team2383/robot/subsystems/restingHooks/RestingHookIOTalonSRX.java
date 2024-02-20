@@ -7,8 +7,6 @@ public class RestingHookIOTalonSRX implements RestingHookIO {
     private final TalonSRX leftHook;
     private final TalonSRX rightHook;
 
-    double voltage = 0;
-
     public RestingHookIOTalonSRX() {
         leftHook = new TalonSRX(RestingHookConstants.kLeftHookID);
         rightHook = new TalonSRX(RestingHookConstants.kRightHookID);
@@ -18,11 +16,12 @@ public class RestingHookIOTalonSRX implements RestingHookIO {
 
     @Override
     public void updateInputs(RestingHookIOInputs inputs) {
+        inputs.voltage = leftHook.getMotorOutputVoltage();
+        inputs.current = leftHook.getSupplyCurrent();
     }
 
     @Override
     public void setPower(double power) {
-        voltage = power * 12.0;
         leftHook.set(ControlMode.PercentOutput, power);
     }
 }

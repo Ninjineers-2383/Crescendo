@@ -18,8 +18,26 @@ public class RestingHookSubsystem extends SubsystemBase {
         Logger.processInputs("RestingHook", inputs);
     }
 
+    /**
+     * This power must be positive. The hooks are on a ratchet
+     * 
+     * @param power
+     *            the power to set the hooks to [0, 1]
+     */
     public void setPower(double power) {
+        if (power < 0.0) {
+            throw new IllegalArgumentException("RestingHook power must be positive");
+        }
         io.setPower(power);
+    }
+
+    /**
+     * This is a little dangerous because it may slam into the bolts under
+     * the hooks and push very hard. It is also the only reliable method as we
+     * don't have encoders.
+     */
+    public boolean isDone() {
+        return inputs.current > 10.0;
     }
 
 }
