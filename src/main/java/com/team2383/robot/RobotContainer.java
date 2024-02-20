@@ -316,6 +316,8 @@ public class RobotContainer {
         autoChooser.addDefaultOption("None", (Command) null);
 
         autoChooser.addOption("Two Note", new PathPlannerAuto("TwoPieceTop"));
+
+        autoChooser.addOption("Three Note", new PathPlannerAuto("ThreePieceTop"));
     }
 
     private void registerTestCommands() {
