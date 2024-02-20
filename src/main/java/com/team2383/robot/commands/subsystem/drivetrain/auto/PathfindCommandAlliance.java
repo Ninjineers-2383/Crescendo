@@ -1,4 +1,4 @@
-package com.team2383.robot.commands.subsystem.drivetrain;
+package com.team2383.robot.commands.subsystem.drivetrain.auto;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants;
@@ -9,12 +9,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 import java.util.function.Supplier;
 
-public class PathfindCommand extends Command {
+public class PathfindCommandAlliance extends Command {
     private Supplier<Pose2d> pose;
 
     private Command command;
 
-    public PathfindCommand(DrivetrainSubsystem drivetrain, Supplier<Pose2d> pose) {
+    public PathfindCommandAlliance(DrivetrainSubsystem drivetrain, Supplier<Pose2d> pose) {
         this.pose = pose;
 
         addRequirements(drivetrain);

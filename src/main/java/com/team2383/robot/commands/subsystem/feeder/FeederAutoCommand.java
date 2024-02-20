@@ -6,11 +6,11 @@ import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
 
-public class FeederPowerCommand extends Command {
+public class FeederAutoCommand extends Command {
     private final FeederSubsystem feeder;
     private final DoubleSupplier power;
 
-    public FeederPowerCommand(FeederSubsystem feeder, DoubleSupplier power) {
+    public FeederAutoCommand(FeederSubsystem feeder, DoubleSupplier power) {
         this.feeder = feeder;
         this.power = power;
 
@@ -22,8 +22,8 @@ public class FeederPowerCommand extends Command {
         feeder.setPower(power.getAsDouble());
     }
 
-    // @Override
-    // public boolean isFinished() {
-    // return false;
-    // }
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

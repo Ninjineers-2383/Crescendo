@@ -17,10 +17,13 @@ import org.littletonrobotics.junction.Logger;;
 public class FaceToTranslationCommand extends Command {
     private final DrivetrainSubsystem m_drivetrain;
     private final Supplier<Translation2d> m_translation;
+    private final boolean m_shouldFinish;
 
-    public FaceToTranslationCommand(DrivetrainSubsystem drivetrain, Supplier<Translation2d> translation) {
+    public FaceToTranslationCommand(DrivetrainSubsystem drivetrain, Supplier<Translation2d> translation,
+            boolean finish) {
         m_drivetrain = drivetrain;
         m_translation = translation;
+        m_shouldFinish = finish;
 
         // addRequirements(drivetrain);
     }
@@ -48,12 +51,20 @@ public class FaceToTranslationCommand extends Command {
             angle = angle.minus(new Rotation2d(Math.PI));
         }
 
+        // System.out.println(heading.getDegrees() + "-" + angle.getDegrees() + "=" +
+        // heading.minus(angle).getDegrees());
+        // System.out.println("Angle: " + angle.getDegrees());
+
         m_drivetrain.setHeading(angle);
     }
 
     @Override
     public boolean isFinished() {
-        return false;
+        if (m_shouldFinish) {
+            return m_drivetrain.headingIsFinished();
+        } else {
+            return false;
+        }
     }
 
     @Override

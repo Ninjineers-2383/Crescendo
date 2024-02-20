@@ -46,17 +46,17 @@ public final class DriveConstants {
 
     public final static HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(
             new PIDConstants(5, 0, 0),
-            new PIDConstants(2, 0, 0),
-            4.5,
+            new PIDConstants(4, 0, 0),
+            2,
             0.5,
             new ReplanningConfig());
 
     public final static PathConstraints AUTO_CONSTRAINTS = new PathConstraints(
-            2, 1,
-            Units.degreesToRadians(400), Units.degreesToRadians(400));
+            1, 1,
+            Units.degreesToRadians(180), Units.degreesToRadians(180));
 
-    public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(7.0, 0, 0,
-            new Constraints(2 * Math.PI, 2 * Math.PI));
+    public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(10.0, 0, 0,
+            new Constraints(4 * Math.PI, 4 * Math.PI));
 
     public final static Pose2d SPEAKER_POSE = new Pose2d(new Translation2d(1.9, 8.17), Rotation2d.fromDegrees(90));
 

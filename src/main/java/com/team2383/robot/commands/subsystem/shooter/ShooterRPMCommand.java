@@ -28,9 +28,8 @@ public class ShooterRPMCommand extends Command {
         shooter.setSideRPM(sideRPM.getAsDouble());
     }
 
-    // @Override
-    // public boolean isFinished() {
-    // return Math.abs(shooter.getTopBottomRPM() - topBottomRPM.getAsDouble()) <
-    // 0.5;
-    // }
+    @Override
+    public boolean isFinished() {
+        return true;
+    }
 }

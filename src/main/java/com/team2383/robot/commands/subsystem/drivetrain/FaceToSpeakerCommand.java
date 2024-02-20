@@ -7,10 +7,10 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 public class FaceToSpeakerCommand extends SequentialCommandGroup {
 
-    public FaceToSpeakerCommand(DrivetrainSubsystem drivetrain) {
+    public FaceToSpeakerCommand(DrivetrainSubsystem drivetrain, boolean finish) {
 
         addCommands(
-                new FaceToTranslationCommand(drivetrain, () -> FieldConstants.getSpeakerLocation()));
+                new FaceToTranslationCommand(drivetrain, () -> FieldConstants.getSpeakerLocation(), finish));
     }
 
 }

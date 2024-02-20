@@ -20,4 +20,9 @@ public class DrivetrainHeadingCommand extends Command {
     public void initialize() {
         drivetrain.setHeading(angle);
     }
+
+    @Override
+    public boolean isFinished() {
+        return drivetrain.headingIsFinished();
+    }
 }

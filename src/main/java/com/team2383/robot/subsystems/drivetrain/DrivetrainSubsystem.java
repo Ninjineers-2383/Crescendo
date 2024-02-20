@@ -70,7 +70,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ChassisSpeeds m_robotRelativeChassisSpeeds = new ChassisSpeeds();
 
     // Heading Controller Initialization
-    private final ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
+    private ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
     private Rotation2d desiredHeading = new Rotation2d();
     private boolean headingControllerEnabled = true;
 
@@ -116,7 +116,18 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     drive(speeds, false, false);
                 },
                 DriveConstants.CONFIG,
-                () -> false,
+                () -> {
+                    // Boolean supplier that controls when the path will be mirrored for the red
+                    // alliance
+                    // This will flip the path being followed to the red side of the field.
+                    // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+                    var alliance = DriverStation.getAlliance();
+                    if (alliance.isPresent()) {
+                        return alliance.get() == DriverStation.Alliance.Red;
+                    }
+                    return false;
+                },
                 this);
     }
 
@@ -367,6 +378,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public boolean headingIsFinished() {
-        return Math.abs(desiredHeading.minus(getHeading()).getDegrees()) < 1;
+        return Math.abs(desiredHeading.minus(getHeading()).getRadians()) < 0.01;
+    }
+
+    public void setHeadingPID(ProfiledPIDController controller) {
+        m_headingController = controller;
     }
 }

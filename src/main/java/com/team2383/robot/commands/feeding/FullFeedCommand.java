@@ -1,4 +1,4 @@
-package com.team2383.robot.commands;
+package com.team2383.robot.commands.feeding;
 
 import com.team2383.robot.commands.subsystem.feeder.FeederPowerCommand;
 import com.team2383.robot.commands.subsystem.indexer.IndexerCommand;
