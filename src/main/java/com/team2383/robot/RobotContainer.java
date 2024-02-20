@@ -11,7 +11,8 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
-import com.team2383.robot.commands.feeding.FullFeedCommand;
+import com.team2383.robot.commands.feeding.FullFeedBackCommand;
+import com.team2383.robot.commands.feeding.FullFeedFrontCommand;
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
 import com.team2383.robot.commands.speaker.SeekCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
@@ -236,10 +237,12 @@ public class RobotContainer {
         m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
 
         m_fullFeedFront.whileTrue(
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_frontFeederSubsystem));
+                new FullFeedFrontCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                        m_frontFeederSubsystem));
 
         m_fullFeedRear.whileTrue(
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_frontFeederSubsystem));
+                new FullFeedBackCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                        m_backFeederSubsystem));
 
         m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
@@ -370,7 +373,12 @@ public class RobotContainer {
 
     public void registerAutoNamedCommands() {
         NamedCommands.registerCommand("FeedFront",
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem, m_frontFeederSubsystem));
+                new FullFeedFrontCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                        m_frontFeederSubsystem));
+
+        NamedCommands.registerCommand("FeedBack",
+                new FullFeedBackCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                        m_backFeederSubsystem));
 
         NamedCommands.registerCommand("SeekAndShoot",
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,

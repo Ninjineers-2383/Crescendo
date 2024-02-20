@@ -12,16 +12,16 @@ import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 
-public class FullFeedCommand extends ParallelCommandGroup {
+public class FullFeedBackCommand extends ParallelCommandGroup {
 
-    public FullFeedCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,
+    public FullFeedBackCommand(ShooterSubsystem shooter, IndexerSubsystem indexer, PivotSubsystem pivot,
             FeederSubsystem feeder) {
 
         addCommands(
                 new FeederPowerCommand(feeder, () -> -1.0),
                 new IndexerCommand(indexer, () -> -0.5),
                 new ShooterRPMCommand(shooter, () -> 0, () -> -200, () -> 0),
-                new PivotPositionCommand(pivot, PivotPresets.FEED_FRONT));
+                new PivotPositionCommand(pivot, PivotPresets.FEED_BACK));
     }
 
 }
