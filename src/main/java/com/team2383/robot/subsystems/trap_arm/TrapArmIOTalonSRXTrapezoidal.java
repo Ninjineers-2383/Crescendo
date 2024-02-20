@@ -1,4 +1,4 @@
-package com.team2383.robot.subsystems.trapArm;
+package com.team2383.robot.subsystems.trap_arm;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;

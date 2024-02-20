@@ -1,4 +1,4 @@
-package com.team2383.robot.subsystems.trapFeeder;
+package com.team2383.robot.subsystems.trap_feeder;
 
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;

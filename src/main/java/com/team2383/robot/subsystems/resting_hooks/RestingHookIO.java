@@ -1,4 +1,4 @@
-package com.team2383.robot.subsystems.restingHooks;
+package com.team2383.robot.subsystems.resting_hooks;
 
 import org.littletonrobotics.junction.AutoLog;
 
