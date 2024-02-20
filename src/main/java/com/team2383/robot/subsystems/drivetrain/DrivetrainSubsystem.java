@@ -92,7 +92,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         try {
             aprilTags = new AprilTagFieldLayout(
-                    Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "2024-crescendo.json"));
+                    Path.of(Filesystem.getDeployDirectory().getAbsolutePath(), "out.json"));
         } catch (Exception e) {
             aprilTags = new AprilTagFieldLayout(null, 0, 0);
         }
@@ -181,7 +181,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("Robot Pose", m_slamRobotPose.toPose2d());
 
         Logger.recordOutput("SLAM/Robot Pose", m_slamRobotPose);
-        Logger.recordOutput("SLAM/landmarks", update.landmarks());
+        // Logger.recordOutput("SLAM/landmarks", update.landmarks());
         Logger.recordOutput("SLAM/seenLandmarks", update.seenLandmarks());
         Logger.recordOutput("SLAM/newValue", update.newValue());
 
@@ -199,6 +199,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         for (int i = 1; i <= aprilTags.getTags().size(); i++) {
             landmarks[i - 1] = aprilTags.getTagPose(i).get();
         }
+
+        Logger.recordOutput("SLAM/landmarks", landmarks.clone());
 
         m_SLAMClient = new SLAMClient(new SLAMIOServer(moduleLocations, landmarks));
 
