@@ -2,7 +2,8 @@ package com.team2383.robot.subsystems.trap_arm;
 
 import org.littletonrobotics.junction.AutoLog;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
+import com.team2383.lib.controller.TunableArmFeedforward;
+
 import edu.wpi.first.math.controller.PIDController;
 
 public interface TrapArmIO {
@@ -30,7 +31,7 @@ public interface TrapArmIO {
     public default void setPIDController(PIDController controller) {
     }
 
-    public default void setFeedforward(ArmFeedforward feedforward) {
+    public default void setFeedforward(TunableArmFeedforward feedforward) {
     }
 
     public default void disable() {

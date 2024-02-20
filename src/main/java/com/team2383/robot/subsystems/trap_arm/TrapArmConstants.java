@@ -1,6 +1,7 @@
 package com.team2383.robot.subsystems.trap_arm;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
+import com.team2383.lib.controller.TunableArmFeedforward;
+
 import edu.wpi.first.math.controller.PIDController;
 
 public class TrapArmConstants {
@@ -16,6 +17,6 @@ public class TrapArmConstants {
     public static final double kG = 0;
 
     public static final PIDController kFeedbackController = new PIDController(kP, kI, kD);
-    public static final ArmFeedforward kFeedforwardController = new ArmFeedforward(kS, kG, kV, kA);
+    public static final TunableArmFeedforward kFeedforwardController = new TunableArmFeedforward(kS, kG, kV, kA);
 
 }
