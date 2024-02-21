@@ -5,7 +5,7 @@ import com.team2383.lib.controller.TunableArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 
 public class TrapArmConstants {
-    public static final int kPivotID = 0; // TODO: Set these to the correct values
+    public static final int kPivotID = 12; // TODO: Set these to the correct values
 
     public static final double kP = 0;
     public static final double kI = 0;

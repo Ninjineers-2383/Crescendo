@@ -24,7 +24,7 @@ public final class Constants {
     public static RobotType getRobot() {
         if (RobotBase.isReal()) {
             if (robot == RobotType.ROBOT_SIM) { // Invalid robot selected
-                return RobotType.ROBOT_COMP;
+                return RobotType.ROBOT_PROTO;
             } else {
                 return robot;
             }

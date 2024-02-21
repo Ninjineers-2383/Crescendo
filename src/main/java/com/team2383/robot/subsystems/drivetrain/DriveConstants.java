@@ -13,7 +13,6 @@ import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
 import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.team2383.lib.swerve.AbsoluteCancoder;
-import com.team2383.lib.swerve.AbsoluteMagEncoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
 import com.team2383.robot.Constants;
 import com.team2383.robot.Constants.RobotType;
@@ -161,19 +160,13 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.01, 0, 0,
-            20, 21,
-            Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? new AbsoluteCancoder(1, "Drive", cancoderConfig)
-                    : new AbsoluteMagEncoder(6),
+            20, 22,
+            new AbsoluteCancoder(21, "Drive", cancoderConfig),
             "frontLeft",
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
-            Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? Rotation2d.fromRotations(
-                            -0.467773 + 0.5)
-                    : Rotation2d.fromRadians(
-                            -1.500),
+            Rotation2d.fromRotations(-0.060059),
             true, false);
 
     public final static ModuleConstants frontRightConstants = new ModuleConstants(
@@ -181,19 +174,13 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.01, 0, 0,
-            22, 23,
-            Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? new AbsoluteCancoder(2, "Drive", cancoderConfig)
-                    : new AbsoluteMagEncoder(7),
+            23, 25,
+            new AbsoluteCancoder(24, "Drive", cancoderConfig),
             "frontRight",
             new Translation2d(
                     DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
-            Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? Rotation2d.fromRotations(
-                            0.13501 + 0.5)
-                    : Rotation2d.fromRadians(
-                            2.792),
+            Rotation2d.fromRotations(0.326660),
             false, true);
 
     public final static ModuleConstants rearLeftConstants = new ModuleConstants(
@@ -201,18 +188,13 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.01, 0, 0,
-            24, 25,
-            Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? new AbsoluteCancoder(3, "Drive", cancoderConfig)
-                    : new AbsoluteMagEncoder(8),
+            26, 28,
+            new AbsoluteCancoder(27, "Drive", cancoderConfig),
             "rearLeft",
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
                     DriveConstants.kTrackWidthMeters / 2),
-            Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? Rotation2d.fromRotations(-0.130371 + 0.5)
-                    : Rotation2d.fromRadians(
-                            0.070),
+            Rotation2d.fromRotations(-0.167236),
             false, true);
 
     public final static ModuleConstants rearRightConstants = new ModuleConstants(
@@ -220,19 +202,13 @@ public final class DriveConstants {
             0.15,
             0.015968,
             0.01, 0, 0,
-            26, 27,
-            Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? new AbsoluteCancoder(4, "Drive", cancoderConfig)
-                    : new AbsoluteMagEncoder(9),
+            29, 31,
+            new AbsoluteCancoder(30, "Drive", cancoderConfig),
             "rearRight",
             new Translation2d(
                     -DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
-            Constants.getRobot() == RobotType.ROBOT_COMP
-                    ? Rotation2d.fromRotations(
-                            -0.402344 + 0.5)
-                    : Rotation2d.fromRadians(
-                            0.433),
+            Rotation2d.fromRotations(0.194580),
             true, false);
 
 }

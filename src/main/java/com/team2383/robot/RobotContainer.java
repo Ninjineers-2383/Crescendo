@@ -24,6 +24,8 @@ import com.team2383.robot.commands.subsystem.orchestra.*;
 import com.team2383.robot.commands.subsystem.pivot.*;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotTuningCommand;
 import com.team2383.robot.commands.subsystem.shooter.*;
+import com.team2383.robot.commands.subsystem.trap_arm.TrapArmPositionCommand;
+import com.team2383.robot.commands.subsystem.trap_arm.tuning.TrapArmTuningCommand;
 import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
 import com.team2383.robot.subsystems.drivetrain.SLAM.*;
@@ -31,8 +33,18 @@ import com.team2383.robot.subsystems.feeder.*;
 import com.team2383.robot.subsystems.gamePieceSim.GamePieceSimSubsystem;
 import com.team2383.robot.subsystems.indexer.*;
 import com.team2383.robot.subsystems.pivot.*;
+import com.team2383.robot.subsystems.resting_hooks.RestingHookIO;
+import com.team2383.robot.subsystems.resting_hooks.RestingHookIOTalonSRX;
+import com.team2383.robot.subsystems.resting_hooks.RestingHookSubsystem;
 import com.team2383.robot.subsystems.shooter.*;
 import com.team2383.robot.subsystems.sim_components.*;
+import com.team2383.robot.subsystems.trap_arm.TrapArmIO;
+import com.team2383.robot.subsystems.trap_arm.TrapArmIOTalonSRXTrapezoidal;
+import com.team2383.robot.subsystems.trap_arm.TrapArmSubsystem;
+import com.team2383.robot.subsystems.trap_feeder.TrapFeederIO;
+import com.team2383.robot.subsystems.trap_feeder.TrapFeederIONeo550;
+import com.team2383.robot.subsystems.trap_feeder.TrapFeederSubsystem;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
@@ -70,6 +82,8 @@ public class RobotContainer {
 
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
+    // private final JoystickButton
+
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
     private PivotSubsystem m_pivotSubsystem;
@@ -81,12 +95,18 @@ public class RobotContainer {
 
     private ShooterSubsystem m_shooterSubsystem;
 
+    private TrapArmSubsystem m_trapArmSubsystem;
+    private TrapFeederSubsystem m_trapFeederSubsystem;
+
+    private RestingHookSubsystem m_restingHookSubsystem;
+
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
     LoggedDashboardNumber shooterTopBottomRPM = new LoggedDashboardNumber("Top Bottom RPM", 0);
     LoggedDashboardNumber shooterSideRPM = new LoggedDashboardNumber("Side RPM", 0);
     LoggedDashboardNumber shooterDifferentialRPM = new LoggedDashboardNumber("Differential RPM", 0);
     LoggedDashboardNumber pivotAngle = new LoggedDashboardNumber("Pivot Angle", 0);
+    LoggedDashboardNumber trapArmAngle = new LoggedDashboardNumber("Trap Arm Angle", 0);
 
     LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto Command");
     LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
@@ -101,9 +121,7 @@ public class RobotContainer {
             switch (Constants.getRobot()) {
                 case ROBOT_COMP:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            Constants.getRobot() == RobotType.ROBOT_COMP
-                                    ? new GyroIOPigeon(0, Constants.kCANivoreBus)
-                                    : new GyroIONavX(),
+                            new GyroIOPigeon(0, Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
@@ -125,9 +143,7 @@ public class RobotContainer {
                     break;
                 case ROBOT_PROTO:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            Constants.getRobot() == RobotType.ROBOT_COMP
-                                    ? new GyroIOPigeon(0, Constants.kCANivoreBus)
-                                    : new GyroIONavX(),
+                            new GyroIOPigeon(0, Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
@@ -144,6 +160,12 @@ public class RobotContainer {
                     m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
 
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
+
+                    m_trapArmSubsystem = new TrapArmSubsystem(new TrapArmIOTalonSRXTrapezoidal());
+
+                    m_trapFeederSubsystem = new TrapFeederSubsystem(new TrapFeederIONeo550());
+
+                    m_restingHookSubsystem = new RestingHookSubsystem(new RestingHookIOTalonSRX());
 
                     break;
                 case ROBOT_SIM:
@@ -191,6 +213,14 @@ public class RobotContainer {
         m_indexerSubsystem = m_indexerSubsystem == null ? new IndexerSubsystem(new IndexerIO() {}) : m_indexerSubsystem;
 
         m_shooterSubsystem = m_shooterSubsystem == null ? new ShooterSubsystem(new ShooterIO() {}) : m_shooterSubsystem;
+
+        m_trapArmSubsystem = m_trapArmSubsystem == null ? new TrapArmSubsystem(new TrapArmIO() {}) : m_trapArmSubsystem;
+
+        m_trapFeederSubsystem = m_trapFeederSubsystem == null ? new TrapFeederSubsystem(new TrapFeederIO() {})
+                : m_trapFeederSubsystem;
+
+        m_restingHookSubsystem = m_restingHookSubsystem == null ? new RestingHookSubsystem(new RestingHookIO() {})
+                : m_restingHookSubsystem;
 
         new SimComponents(m_pivotSubsystem);
 
@@ -296,6 +326,9 @@ public class RobotContainer {
         m_shooterSubsystem.setDefaultCommand(
                 new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get,
                         shooterDifferentialRPM::get));
+
+        m_trapArmSubsystem.setDefaultCommand(
+                new TrapArmPositionCommand(m_trapArmSubsystem, () -> trapArmAngle.get() * (Math.PI / 180)));
     }
 
     public void disable() {
@@ -369,6 +402,8 @@ public class RobotContainer {
                 new DrivetrainHeadingControllerCommand(m_drivetrainSubsystem, () -> Math.toRadians(100 * MathUtil
                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1)),
                         () -> m_driverController.getRawButton(9)));
+
+        testDashboardChooser.addOption("Trap Arm Tuning", new TrapArmTuningCommand(m_trapArmSubsystem));
     }
 
     public void registerAutoNamedCommands() {

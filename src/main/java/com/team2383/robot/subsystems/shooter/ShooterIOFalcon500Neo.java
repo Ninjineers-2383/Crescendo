@@ -6,6 +6,7 @@ import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkBase.ControlType;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 public class ShooterIOFalcon500Neo implements ShooterIO {
     private final TalonFX topMotor = new TalonFX(ShooterConstants.kTopMotorID, "Drive");
@@ -30,6 +31,8 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
         sideMotor.getPIDController().setI(ShooterConstants.kSideI, 0);
         sideMotor.getPIDController().setD(ShooterConstants.kSideD, 0);
         sideMotor.getPIDController().setFF(ShooterConstants.kSideV, 0);
+
+        sideMotor.setIdleMode(IdleMode.kBrake);
     }
 
     @Override

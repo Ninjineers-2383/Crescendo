@@ -3,8 +3,8 @@ package com.team2383.robot.subsystems.shooter;
 import com.ctre.phoenix6.configs.Slot0Configs;
 
 public class ShooterConstants {
-    public static int kTopMotorID = 7;
-    public static int kBottomMotorID = 8;
+    public static int kTopMotorID = 9;
+    public static int kBottomMotorID = 10;
 
     public static Slot0Configs kBottomConfigs = new Slot0Configs()
             .withKP(0.08)
@@ -22,7 +22,7 @@ public class ShooterConstants {
             .withKV(0.11179)
             .withKS(0.03017);
 
-    public static int kSideMotorID = 9;
+    public static int kSideMotorID = 11;
 
     public static double kSideP = 0.00011;
     public static double kSideI = 0.0;
