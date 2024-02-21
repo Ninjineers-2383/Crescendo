@@ -276,6 +276,8 @@ public class RobotContainer {
 
         m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
 
+        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
+
         m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
 
         new JoystickButton(m_driverController, Constants.OI.ResetHeading)
@@ -418,5 +420,16 @@ public class RobotContainer {
         NamedCommands.registerCommand("SeekAndShoot",
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
                         m_indexerSubsystem));
+
+        NamedCommands.registerCommand("StartShooter",
+                new ShooterRPMCommand(m_shooterSubsystem, () -> 6000, () -> 1000, () -> 0));
+
+        NamedCommands.registerCommand("StopShooter",
+                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0));
+
+        NamedCommands.registerCommand("Shoot", new ShootCommand(m_indexerSubsystem));
+
+        NamedCommands.registerCommand("PivotSeek",
+                new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d));
     }
 }

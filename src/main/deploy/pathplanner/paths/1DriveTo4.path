@@ -3,43 +3,59 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8860675227711784,
-        "y": 7.19618986311764
+        "x": 3.7896100219681363,
+        "y": 6.371082462266705
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1345481395612285,
-        "y": 7.184479026571858
+        "x": 5.4607136186282546,
+        "y": 7.112634683284635
+      },
+      "isLocked": false,
+      "linkedName": "End1"
+    },
+    {
+      "anchor": {
+        "x": 8.228478950591358,
+        "y": 7.384189017741904
+      },
+      "prevControl": {
+        "x": 7.487588994154975,
+        "y": 8.12507897417829
+      },
+      "nextControl": {
+        "x": 8.731547750844928,
+        "y": 6.881120217488333
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.7896100219681363,
-        "y": 6.371082462266705
+        "x": 5.293603258962244,
+        "y": 6.715747579077855
       },
       "prevControl": {
-        "x": 3.1455140119501537,
-        "y": 6.921491779918436
+        "x": 7.309371972433512,
+        "y": 6.412860052183209
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "End1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.45,
+      "waypointRelativePos": 1.0,
       "rotationDegrees": 0,
-      "rotateFast": true
+      "rotateFast": false
     }
   ],
   "constraintZones": [],
   "eventMarkers": [
     {
       "name": "FeedFront",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.35,
       "command": {
         "type": "sequential",
         "data": {
@@ -56,7 +72,7 @@
     },
     {
       "name": "PivotSeekRev",
-      "waypointRelativePos": 0.85,
+      "waypointRelativePos": 1.6,
       "command": {
         "type": "parallel",
         "data": {
@@ -70,7 +86,7 @@
             {
               "type": "named",
               "data": {
-                "name": "StartShooter"
+                "name": "StartFlywheel"
               }
             }
           ]
@@ -79,18 +95,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
-    "rotation": 20.0,
+    "velocity": 0,
+    "rotation": 16.260204708312024,
     "rotateFast": false
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
-  "useDefaultConstraints": false
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
 }
