@@ -5,7 +5,7 @@
       "x": 0.8860675227711784,
       "y": 7.19618986311764
     },
-    "rotation": 70.0
+    "rotation": 80.0
   },
   "command": {
     "type": "sequential",
@@ -21,6 +21,24 @@
           "type": "path",
           "data": {
             "pathName": "DriveTo1"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooter"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "1DriveTo4"
           }
         },
         {

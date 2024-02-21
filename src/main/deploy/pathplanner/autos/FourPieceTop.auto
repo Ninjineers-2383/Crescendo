@@ -5,18 +5,12 @@
       "x": 0.8860675227711784,
       "y": 7.19618986311764
     },
-    "rotation": 70.0
+    "rotation": 45.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
-        {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
-          }
-        },
         {
           "type": "path",
           "data": {
@@ -27,6 +21,18 @@
           "type": "named",
           "data": {
             "name": "Shoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveTo2"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveTo3"
           }
         }
       ]
