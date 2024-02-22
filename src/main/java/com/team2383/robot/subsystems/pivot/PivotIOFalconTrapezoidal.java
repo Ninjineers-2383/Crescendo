@@ -24,7 +24,7 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     private final TalonFX leftMotor = new TalonFX(PivotConstants.kLeftMotorID, Constants.kCANivoreBus);
     private final TalonFX rightMotor = new TalonFX(PivotConstants.kRightMotorID, Constants.kCANivoreBus);
 
-    private final Follower follower = new Follower(PivotConstants.kLeftMotorID, false);
+    private final Follower follower = new Follower(PivotConstants.kLeftMotorID, true);
 
     private final PositionVoltage positionOut = new PositionVoltage(0);
 
