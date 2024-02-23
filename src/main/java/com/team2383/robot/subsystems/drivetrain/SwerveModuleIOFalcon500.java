@@ -5,8 +5,6 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.team2383.lib.math.Conversions;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
-import com.team2383.robot.Constants;
-import com.team2383.robot.Constants.RobotType;
 import com.team2383.robot.subsystems.drivetrain.DriveConstants.ModuleConstants;
 import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 

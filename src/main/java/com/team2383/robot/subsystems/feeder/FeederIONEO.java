@@ -22,5 +22,6 @@ public class FeederIONEO implements FeederIO {
     public void setPower(double power) {
         voltage = power * 12.0;
         feeder.setVoltage(voltage);
+
     }
 }

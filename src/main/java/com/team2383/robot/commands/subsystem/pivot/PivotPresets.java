@@ -6,4 +6,6 @@ public class PivotPresets {
     public static double FEED_FRONT = Math.toRadians(145);
 
     public static double SCORE_AMP = Math.toRadians(216);
+
+    public static double SCORE_TRAP = Math.toRadians(50);
 }

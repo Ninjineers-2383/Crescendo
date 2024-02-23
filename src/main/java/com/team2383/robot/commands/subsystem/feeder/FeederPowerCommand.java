@@ -22,8 +22,8 @@ public class FeederPowerCommand extends Command {
         feeder.setPower(power.getAsDouble());
     }
 
-    // @Override
-    // public boolean isFinished() {
-    // return false;
-    // }
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

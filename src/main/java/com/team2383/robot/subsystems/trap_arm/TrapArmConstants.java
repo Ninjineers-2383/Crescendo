@@ -7,7 +7,7 @@ import edu.wpi.first.math.controller.PIDController;
 public class TrapArmConstants {
     public static final int kPivotID = 12; // TODO: Set these to the correct values
 
-    public static final double kP = 0;
+    public static final double kP = 2;
     public static final double kI = 0;
     public static final double kD = 0;
 

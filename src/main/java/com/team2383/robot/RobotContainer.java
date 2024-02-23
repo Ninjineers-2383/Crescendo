@@ -23,9 +23,11 @@ import com.team2383.robot.commands.subsystem.indexer.*;
 import com.team2383.robot.commands.subsystem.orchestra.*;
 import com.team2383.robot.commands.subsystem.pivot.*;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotTuningCommand;
+import com.team2383.robot.commands.subsystem.resting_hooks.RestingHooksPowerCommand;
 import com.team2383.robot.commands.subsystem.shooter.*;
 import com.team2383.robot.commands.subsystem.trap_arm.TrapArmPositionCommand;
 import com.team2383.robot.commands.subsystem.trap_arm.tuning.TrapArmTuningCommand;
+import com.team2383.robot.commands.subsystem.trap_feeder.TrapFeederPowerCommand;
 import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
 import com.team2383.robot.subsystems.drivetrain.SLAM.*;
@@ -53,6 +55,10 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
@@ -76,13 +82,15 @@ public class RobotContainer {
 
     private final JoystickButton m_fullFeedFront = new JoystickButton(m_driverController, 5);
     private final JoystickButton m_fullFeedRear = new JoystickButton(m_driverController, 6);
+    private final JoystickButton m_trapScore = new JoystickButton(m_operatorController, 6);
 
     private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
-    private final POVButton m_feedLeft = new POVButton(m_operatorController, 0);
+    private final POVButton m_trapArmUp = new POVButton(m_operatorController, 0);
+    private final POVButton m_trapArmHalfUp = new POVButton(m_operatorController, 90);
+    private final POVButton m_hooksDown = new POVButton(m_operatorController, 180);
+    private final POVButton m_hooksDown2 = new POVButton(m_operatorController, 270);
 
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
-
-    // private final JoystickButton
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
@@ -120,27 +128,6 @@ public class RobotContainer {
         if (Constants.getMode() != Mode.REPLAY) {
             switch (Constants.getRobot()) {
                 case ROBOT_COMP:
-                    m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            new GyroIOPigeon(0, Constants.kCANivoreBus),
-                            new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
-                                    Constants.kCANivoreBus),
-                            new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
-                                    Constants.kCANivoreBus),
-                            new SwerveModuleIOFalcon500(DriveConstants.rearLeftConstants,
-                                    Constants.kCANivoreBus),
-                            new SwerveModuleIOFalcon500(DriveConstants.rearRightConstants,
-                                    Constants.kCANivoreBus));
-
-                    m_pivotSubsystem = new PivotSubsystem(new PivotIOFalconTrapezoidal());
-
-                    m_frontFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kFrontMotorID));
-                    m_backFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kRearMotorID));
-
-                    m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
-
-                    m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
-
-                    break;
                 case ROBOT_PROTO:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
                             new GyroIOPigeon(0, Constants.kCANivoreBus),
@@ -156,6 +143,7 @@ public class RobotContainer {
                     m_pivotSubsystem = new PivotSubsystem(new PivotIOFalconTrapezoidal());
 
                     m_frontFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kFrontMotorID));
+                    m_backFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kRearMotorID));
 
                     m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
 
@@ -264,7 +252,6 @@ public class RobotContainer {
         m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, false));
 
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
-        m_feedLeft.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.FEED_FRONT));
 
         m_fullFeedFront.whileTrue(
                 new FullFeedFrontCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
@@ -274,9 +261,9 @@ public class RobotContainer {
                 new FullFeedBackCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem));
 
-        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
+        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.5).withTimeout(0.1));
 
-        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.2).withTimeout(0.1));
+        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.5).withTimeout(0.1));
 
         m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
 
@@ -297,6 +284,24 @@ public class RobotContainer {
         new JoystickButton(m_operatorController, 3).onTrue(new IndexerCommand(m_indexerSubsystem, () -> 0.7))
                 .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0));
 
+        m_trapScore.whileTrue(new SequentialCommandGroup(
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
+                new ParallelCommandGroup(
+                        new TrapFeederPowerCommand(m_trapFeederSubsystem, 1),
+                        new ParallelDeadlineGroup(
+                                new SequentialCommandGroup(
+                                        new WaitCommand(0.5),
+                                        new IndexerCommand(m_indexerSubsystem, () -> -1).withTimeout(1)),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> -2000, () -> 200, () -> 0)))));
+
+        // m_trapArmHalfUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () ->
+        // 75));
+        m_trapArmHalfUp.onTrue(new PivotPositionCommand(m_pivotSubsystem, Math.PI / 2.0));
+        m_trapArmUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () -> 145));
+
+        m_hooksDown.onTrue(
+                new PivotClimbCommand(m_pivotSubsystem));
+        m_hooksDown2.onTrue(new RestingHooksPowerCommand(m_restingHookSubsystem));
     }
 
     private void configureDefaultCommands() {
@@ -331,6 +336,7 @@ public class RobotContainer {
 
         m_trapArmSubsystem.setDefaultCommand(
                 new TrapArmPositionCommand(m_trapArmSubsystem, () -> trapArmAngle.get() * (Math.PI / 180)));
+
     }
 
     public void disable() {

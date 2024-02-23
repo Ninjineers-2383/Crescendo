@@ -11,6 +11,8 @@ public class RestingHookIOTalonSRX implements RestingHookIO {
         leftHook = new TalonSRX(RestingHookConstants.kLeftHookID);
         rightHook = new TalonSRX(RestingHookConstants.kRightHookID);
 
+        leftHook.setInverted(true);
+
         rightHook.follow(leftHook);
     }
 

@@ -2,6 +2,7 @@ package com.team2383.robot.subsystems.trap_arm;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.FeedbackDevice;
+import com.ctre.phoenix.motorcontrol.SupplyCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
 import com.team2383.lib.controller.TunableArmFeedforward;
 
@@ -12,7 +13,7 @@ public class TrapArmIOTalonSRXTrapezoidal implements TrapArmIO {
     private final TalonSRX pivot = new TalonSRX(TrapArmConstants.kPivotID);
 
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-            5, 7);
+            1.5, 0.5);
 
     private TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
@@ -30,11 +31,16 @@ public class TrapArmIOTalonSRXTrapezoidal implements TrapArmIO {
         pivot.configFactoryDefault();
         pivot.configSelectedFeedbackSensor(FeedbackDevice.CTRE_MagEncoder_Relative);
         pivot.setSelectedSensorPosition(0);
+        pivot.setSensorPhase(true);
+
+        pivot.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15, 20, 1));
+        pivot.enableCurrentLimit(true);
 
         goal = new TrapezoidProfile.State(pivot.getSelectedSensorPosition(), 0);
         setpoint = goal;
     }
 
+    @Override
     public void updateInputs(TrapArmIOInputs inputs) {
         setpoint = profile.calculate(0.02, setpoint, goal);
 

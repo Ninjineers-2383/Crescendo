@@ -15,6 +15,7 @@ import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
@@ -24,7 +25,7 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     private final TalonFX leftMotor = new TalonFX(PivotConstants.kLeftMotorID, Constants.kCANivoreBus);
     private final TalonFX rightMotor = new TalonFX(PivotConstants.kRightMotorID, Constants.kCANivoreBus);
 
-    private final Follower follower = new Follower(PivotConstants.kLeftMotorID, false);
+    private final Follower follower = new Follower(PivotConstants.kLeftMotorID, true);
 
     private final PositionVoltage positionOut = new PositionVoltage(0);
 
@@ -39,6 +40,8 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
 
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+
+    // private double offset = -0.22265625;
 
     private double offset = 0;
 
@@ -84,8 +87,9 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
         inputs.desiredVelocity = leftMotor.getClosedLoopReferenceSlope().getValue();
         inputs.currentVelocity = leftMotor.getVelocity().getValue();
 
-        inputs.pivotAngle = leftMotor.getPosition().getValue() - offset;
-        inputs.currentDesiredAngle = leftMotor.getClosedLoopReference().getValue() - offset;
+        inputs.pivotAngle = Rotation2d.fromRotations(leftMotor.getPosition().getValue() - offset).getRotations();
+        inputs.currentDesiredAngle = Rotation2d.fromRotations(leftMotor.getClosedLoopReference().getValue() - offset)
+                .getDegrees();
 
         inputs.desiredAngle = goal.position - offset;
 
