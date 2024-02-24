@@ -47,6 +47,29 @@
           ]
         }
       }
+    },
+    {
+      "name": "PivotSeekRev",
+      "waypointRelativePos": 0.8,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotSeek"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheel"
+              }
+            }
+          ]
+        }
+      }
     }
   ],
   "globalConstraints": {

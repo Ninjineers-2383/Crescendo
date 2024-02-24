@@ -261,9 +261,9 @@ public class RobotContainer {
                 new FullFeedBackCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem));
 
-        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.5).withTimeout(0.1));
+        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.1));
 
-        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.5).withTimeout(0.1));
+        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.1));
 
         m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
 
