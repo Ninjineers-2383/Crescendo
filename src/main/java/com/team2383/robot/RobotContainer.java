@@ -435,6 +435,6 @@ public class RobotContainer {
         NamedCommands.registerCommand("Shoot", new ShootCommand(m_indexerSubsystem));
 
         NamedCommands.registerCommand("PivotSeek",
-                new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d));
+                new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d, true));
     }
 }

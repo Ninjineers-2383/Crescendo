@@ -15,10 +15,12 @@ import edu.wpi.first.wpilibj2.command.Command;
 public class PivotSeekCommand extends Command {
     private final PivotSubsystem pivot;
     private final Supplier<Pose3d> poseSupplier;
+    private final boolean finish;
 
-    public PivotSeekCommand(PivotSubsystem pivot, Supplier<Pose3d> poseSupplier) {
+    public PivotSeekCommand(PivotSubsystem pivot, Supplier<Pose3d> poseSupplier, boolean finish) {
         this.pivot = pivot;
         this.poseSupplier = poseSupplier;
+        this.finish = finish;
 
         addRequirements(pivot);
     }
@@ -51,6 +53,10 @@ public class PivotSeekCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return pivot.isFinished();
+        if (finish) {
+            return pivot.isFinished();
+        }
+
+        return false;
     }
 }

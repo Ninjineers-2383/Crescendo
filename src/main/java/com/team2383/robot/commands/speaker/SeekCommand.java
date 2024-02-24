@@ -15,7 +15,7 @@ public class SeekCommand extends ParallelCommandGroup {
 
         addCommands(
                 new FaceToSpeakerCommand(drivetrain, finish),
-                new PivotSeekCommand(pivot, drivetrain::getEstimatorPose3d),
+                new PivotSeekCommand(pivot, drivetrain::getEstimatorPose3d, finish),
                 new ShooterRPMCommand(shooter, () -> -5000, () -> 1000, () -> 0));
     }
 
