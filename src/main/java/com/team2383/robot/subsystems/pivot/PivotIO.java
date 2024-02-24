@@ -38,4 +38,7 @@ public interface PivotIO {
 
     public default void disable() {
     }
+
+    public default void setVoltage(double voltage) {
+    }
 }

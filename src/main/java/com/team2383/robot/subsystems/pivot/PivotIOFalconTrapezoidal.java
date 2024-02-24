@@ -5,6 +5,7 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
@@ -15,7 +16,6 @@ import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 
@@ -32,6 +32,8 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     private Slot0Configs leftConfigs = new Slot0Configs();
     private Slot0Configs rightConfigs = new Slot0Configs();
 
+    private final VoltageOut voltage = new VoltageOut(0);
+
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
             5, 7);
 
@@ -42,6 +44,8 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
     private double offset = 0;
+
+    private boolean voltageControl = false;
 
     public PivotIOFalconTrapezoidal() {
         OrchestraContainer.getInstance().addMotor(leftMotor);
@@ -73,7 +77,9 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     public void updateInputs(PivotIOInputs inputs) {
         setpoint = profile.calculate(0.02, setpoint, goal);
 
-        leftMotor.setControl(positionOut.withPosition(setpoint.position).withVelocity(setpoint.velocity));
+        if (!voltageControl) {
+            leftMotor.setControl(positionOut.withPosition(setpoint.position).withVelocity(setpoint.velocity));
+        }
 
         inputs.current = leftMotor.getTorqueCurrent().getValue();
         inputs.appliedVolts = leftMotor.getDutyCycle().getValue() * rightMotor.getSupplyVoltage().getValue();
@@ -86,9 +92,8 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
         inputs.desiredVelocity = leftMotor.getClosedLoopReferenceSlope().getValue();
         inputs.currentVelocity = leftMotor.getVelocity().getValue();
 
-        inputs.pivotAngle = Rotation2d.fromRotations(leftMotor.getPosition().getValue() - offset).getRotations();
-        inputs.currentDesiredAngle = Rotation2d.fromRotations(leftMotor.getClosedLoopReference().getValue() - offset)
-                .getDegrees();
+        inputs.pivotAngle = leftMotor.getPosition().getValue() - offset;
+        inputs.currentDesiredAngle = leftMotor.getClosedLoopReference().getValue() - offset;
 
         // if (leftMotor.getPosition().getValueAsDouble() > 0.9 && offset == 0) {
         // offset = 1;
@@ -100,6 +105,7 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
 
     @Override
     public void setAngle(double angle) {
+        voltageControl = false;
         // setpoint = new
         // TrapezoidProfile.State(leftMotor.getPosition().getValueAsDouble(),
         // leftMotor.getVelocity().getValueAsDouble());
@@ -145,6 +151,13 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
         rightConfigs.GravityType = GravityTypeValue.Arm_Cosine;
 
         rightMotor.getConfigurator().apply(rightConfigs);
+    }
+
+    @Override
+    public void setVoltage(double volts) {
+        voltageControl = true;
+
+        leftMotor.setControl(voltage.withOutput(volts));
     }
 
 }

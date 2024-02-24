@@ -37,8 +37,8 @@ public class PivotTuningCommand extends Command {
 
     @Override
     public void execute() {
-        // pivot.setPIDController(PivotConstants.kPIDController);
-        // pivot.setFeedforward(PivotConstants.kFeedforwardController);
+        pivot.setPIDController(pidController);
+        pivot.setFeedforward(feedforward.toArmFeedforward());
 
         pivot.addPosition(speed.getAsDouble() * 2 * Math.PI * 0.02);
 

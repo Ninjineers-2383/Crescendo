@@ -11,8 +11,7 @@ import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
-import com.team2383.robot.commands.feeding.FullFeedBackCommand;
-import com.team2383.robot.commands.feeding.FullFeedFrontCommand;
+import com.team2383.robot.commands.feeding.FullFeedCommand;
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
 import com.team2383.robot.commands.speaker.SeekCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
@@ -22,6 +21,7 @@ import com.team2383.robot.commands.subsystem.feeder.*;
 import com.team2383.robot.commands.subsystem.indexer.*;
 import com.team2383.robot.commands.subsystem.orchestra.*;
 import com.team2383.robot.commands.subsystem.pivot.*;
+import com.team2383.robot.commands.subsystem.pivot.tuning.PivotSysIDCommand;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotTuningCommand;
 import com.team2383.robot.commands.subsystem.resting_hooks.RestingHooksPowerCommand;
 import com.team2383.robot.commands.subsystem.shooter.*;
@@ -52,8 +52,11 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.PowerDistribution;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
@@ -119,6 +122,8 @@ public class RobotContainer {
     LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto Command");
     LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
+    private PowerDistribution pdh;
+
     private boolean lwEnabled = false;
 
     /**
@@ -155,6 +160,7 @@ public class RobotContainer {
 
                     m_restingHookSubsystem = new RestingHookSubsystem(new RestingHookIOTalonSRX());
 
+                    pdh = new PowerDistribution(1, ModuleType.kRev);
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -237,6 +243,13 @@ public class RobotContainer {
     public void periodic() {
         // autoChooser.periodic();
 
+        if (pdh != null) {
+            if (!pdh.getSwitchableChannel()) {
+                // System.err.println("Switchable channel initialized off");
+                pdh.setSwitchableChannel(true);
+            }
+        }
+
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
             lwEnabled = true;
@@ -251,19 +264,27 @@ public class RobotContainer {
 
         m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, false));
 
-        m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
+        // m_pivotZero.onTrue(
+        // new ConditionalCommand(
+        // new PivotPositionCommand(m_pivotSubsystem,
+        // PivotPresets.ZERO),
+        // new PivotPositionCommand(m_pivotSubsystem,
+        // Math.PI),
+        // () -> m_pivotSubsystem.getAngle() < Math.PI / 2.0));
+        m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem,
+                PivotPresets.ZERO));
 
         m_fullFeedFront.whileTrue(
-                new FullFeedFrontCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                        m_frontFeederSubsystem));
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                        m_frontFeederSubsystem, PivotPresets.FEED_FRONT));
 
         m_fullFeedRear.whileTrue(
-                new FullFeedBackCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                        m_backFeederSubsystem));
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                        m_backFeederSubsystem, PivotPresets.FEED_BACK));
 
-        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.1));
+        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2));
 
-        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.1));
+        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2));
 
         m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
 
@@ -411,16 +432,23 @@ public class RobotContainer {
                         () -> m_driverController.getRawButton(9)));
 
         testDashboardChooser.addOption("Trap Arm Tuning", new TrapArmTuningCommand(m_trapArmSubsystem));
+
+        PivotSysIDCommand pivotSysID = new PivotSysIDCommand(m_pivotSubsystem);
+
+        testDashboardChooser.addOption("Pivot Quasi Forward", pivotSysID.getQuasiStatic(Direction.kForward));
+        testDashboardChooser.addOption("Pivot Quasi Backward", pivotSysID.getQuasiStatic(Direction.kReverse));
+        testDashboardChooser.addOption("Pivot Dyn Forward", pivotSysID.getDynamic(Direction.kForward));
+        testDashboardChooser.addOption("Pivot Dyn Backward", pivotSysID.getDynamic(Direction.kReverse));
     }
 
     public void registerAutoNamedCommands() {
         NamedCommands.registerCommand("FeedFront",
-                new FullFeedFrontCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                        m_frontFeederSubsystem));
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                        m_frontFeederSubsystem, PivotPresets.FEED_FRONT));
 
         NamedCommands.registerCommand("FeedBack",
-                new FullFeedBackCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                        m_backFeederSubsystem));
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                        m_backFeederSubsystem, PivotPresets.FEED_BACK));
 
         NamedCommands.registerCommand("SeekAndShoot",
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,

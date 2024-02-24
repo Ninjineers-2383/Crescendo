@@ -12,15 +12,15 @@ public class PivotConstants {
 
     // feedforward constants
     public static final double kG = 0.4;
-    public static final double kS = 0.9;
-    public static final double kV = 6.98;
-    public static final double kA = 1.6;
+    public static final double kS = 0.2;
+    public static final double kV = 16.5;
+    public static final double kA = 5;
 
     public static final ArmFeedforward kFeedforwardController = new ArmFeedforward(kS, kG, kV, kA);
 
     // PID constants
-    public static final double kP = 22;
-    public static final double kI = 7;
+    public static final double kP = 50;
+    public static final double kI = 4;
     public static final double kD = 0;
 
     public static final PIDController kPIDController = new PIDController(kP, kI, kD);
@@ -29,6 +29,6 @@ public class PivotConstants {
     public static double kMaxVelo = 30;
     public static double kMaxAccel = 12;
 
-    public static double kPivotMotorGearRatio = 144.0;
+    public static double kPivotMotorGearRatio = 154.6875;
 
 }

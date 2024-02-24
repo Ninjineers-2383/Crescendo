@@ -36,29 +36,32 @@ public class TrapArmIOTalonSRXTrapezoidal implements TrapArmIO {
         pivot.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15, 20, 1));
         pivot.enableCurrentLimit(true);
 
-        goal = new TrapezoidProfile.State(pivot.getSelectedSensorPosition(), 0);
+        // goal = new TrapezoidProfile.State(pivot.getSelectedSensorPosition(), 0);
+        goal = null;
         setpoint = goal;
     }
 
     @Override
     public void updateInputs(TrapArmIOInputs inputs) {
-        setpoint = profile.calculate(0.02, setpoint, goal);
+        if (goal != null) {
+            setpoint = profile.calculate(0.02, setpoint, goal);
 
-        pivot.set(ControlMode.PercentOutput,
-                m_feedforwardController.calculate(setpoint.position, setpoint.velocity)
-                        + m_feedbackController.calculate(getAngle(), setpoint.position));
+            pivot.set(ControlMode.PercentOutput,
+                    m_feedforwardController.calculate(setpoint.position, setpoint.velocity)
+                            + m_feedbackController.calculate(getAngle(), setpoint.position));
+        }
 
         inputs.current = pivot.getSupplyCurrent();
         inputs.appliedVolts = pivot.getMotorOutputVoltage();
         inputs.velocityRadPerS = getVelocity();
 
-        inputs.desiredVelocity = goal.velocity;
-        inputs.currentVelocity = setpoint.velocity;
+        inputs.desiredVelocity = goal == null ? 0 : goal.velocity;
+        inputs.currentVelocity = setpoint == null ? 0 : setpoint.velocity;
 
         inputs.pivotAngle = getAngle();
-        inputs.currentDesiredAngle = setpoint.position;
+        inputs.currentDesiredAngle = setpoint == null ? 0 : setpoint.position;
 
-        inputs.desiredAngle = goal.position;
+        inputs.desiredAngle = goal == null ? 0 : goal.position;
     }
 
     @Override
