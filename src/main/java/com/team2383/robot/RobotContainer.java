@@ -294,10 +294,9 @@ public class RobotContainer {
                                         new IndexerCommand(m_indexerSubsystem, () -> -1).withTimeout(1)),
                                 new ShooterRPMCommand(m_shooterSubsystem, () -> -2000, () -> 200, () -> 0)))));
 
-        // m_trapArmHalfUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () ->
-        // 75));
+        m_trapArmHalfUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () -> Math.toRadians(75)));
         m_trapArmHalfUp.onTrue(new PivotPositionCommand(m_pivotSubsystem, Math.PI / 2.0));
-        m_trapArmUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () -> 145));
+        m_trapArmUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () -> Math.toRadians(145)));
 
         m_hooksDown.onTrue(
                 new PivotClimbCommand(m_pivotSubsystem));

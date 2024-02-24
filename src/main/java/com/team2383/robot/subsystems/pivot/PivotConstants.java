@@ -8,7 +8,7 @@ public class PivotConstants {
     public static int kLeftMotorID = 3;
     public static int kRightMotorID = 4;
     public static int kEncoderID = 5;
-    public static double kEncoderOffset = -0.224365;
+    public static double kEncoderOffset = -0.757324;
 
     // feedforward constants
     public static final double kG = 0.4;
