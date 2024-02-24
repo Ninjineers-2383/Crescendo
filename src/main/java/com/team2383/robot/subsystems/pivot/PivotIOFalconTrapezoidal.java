@@ -41,8 +41,6 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
 
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
-    // private double offset = -0.22265625;
-
     private double offset = 0;
 
     public PivotIOFalconTrapezoidal() {
@@ -66,6 +64,7 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
         encoder.getConfigurator().apply(encoderConfig);
 
         leftMotor.getConfigurator().apply(feedback);
+        leftMotor.setInverted(true);
 
         goal = new TrapezoidProfile.State(leftMotor.getPosition().getValueAsDouble(), 0);
         setpoint = goal;
