@@ -56,8 +56,8 @@ import edu.wpi.first.wpilibj.PowerDistribution;
 import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -86,6 +86,8 @@ public class RobotContainer {
     private final JoystickButton m_fullFeedFront = new JoystickButton(m_driverController, 5);
     private final JoystickButton m_fullFeedRear = new JoystickButton(m_driverController, 6);
     private final JoystickButton m_trapScore = new JoystickButton(m_operatorController, 6);
+
+    private final JoystickButton m_manualAmp = new JoystickButton(m_operatorController, 5);
 
     private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
     private final POVButton m_trapArmUp = new POVButton(m_operatorController, 0);
@@ -220,8 +222,7 @@ public class RobotContainer {
 
         new GamePieceSimSubsystem(m_drivetrainSubsystem::getEstimatorPose3d,
                 m_drivetrainSubsystem::getRobotRelativeSpeeds, m_shoot, () -> m_frontFeederSubsystem.getPower() > 0,
-                () -> m_backFeederSubsystem.getPower() > 0,
-                m_pivotSubsystem::getAngle,
+                () -> m_backFeederSubsystem.getPower() > 0, m_pivotSubsystem::getAngle,
                 m_shooterSubsystem::getTopBottomRPM);
 
         configureDefaultCommands();
@@ -322,6 +323,23 @@ public class RobotContainer {
         m_hooksDown.onTrue(
                 new PivotClimbCommand(m_pivotSubsystem));
         m_hooksDown2.onTrue(new RestingHooksPowerCommand(m_restingHookSubsystem));
+
+        m_manualAmp.whileTrue(
+                new SequentialCommandGroup(
+                        new PivotPositionCommand(m_pivotSubsystem,
+                                PivotPresets.SCORE_AMP),
+                        new ParallelCommandGroup(
+                                new IndexerCommand(m_indexerSubsystem, () -> -0.5).withTimeout(0.4),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> 500, () -> 0)
+                                        .withTimeout(0.5))));
+        m_manualAmp.onFalse(
+                new ParallelDeadlineGroup(
+                        new SequentialCommandGroup(
+                                new WaitCommand(0.5),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> -900, () -> 0, false)
+                                        .withTimeout(1)),
+                        new IndexerCommand(m_indexerSubsystem, () -> 0.7)));
+
     }
 
     private void configureDefaultCommands() {

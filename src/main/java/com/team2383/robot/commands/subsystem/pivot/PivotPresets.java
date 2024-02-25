@@ -5,7 +5,7 @@ public class PivotPresets {
     public static double FEED_BACK = Math.toRadians(30);
     public static double FEED_FRONT = Math.toRadians(160);
 
-    public static double SCORE_AMP = Math.toRadians(-35);
+    public static double SCORE_AMP = Math.toRadians(-36);
 
     public static double SCORE_TRAP = Math.toRadians(50);
 }

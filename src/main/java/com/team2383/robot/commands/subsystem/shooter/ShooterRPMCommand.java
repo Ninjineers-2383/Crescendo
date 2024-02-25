@@ -12,14 +12,23 @@ public class ShooterRPMCommand extends Command {
     private final DoubleSupplier sideRPM;
     private final DoubleSupplier differentialRPM;
 
+    private final boolean finish;
+
     public ShooterRPMCommand(ShooterSubsystem shooter, DoubleSupplier topBottomRPM, DoubleSupplier sideRPM,
-            DoubleSupplier differentialRPM) {
+            DoubleSupplier differentialRPM, boolean finish) {
         this.shooter = shooter;
         this.topBottomRPM = topBottomRPM;
         this.sideRPM = sideRPM;
         this.differentialRPM = differentialRPM;
 
+        this.finish = finish;
+
         addRequirements(shooter);
+    }
+
+    public ShooterRPMCommand(ShooterSubsystem shooter, DoubleSupplier topBottomRPM, DoubleSupplier sideRPM,
+            DoubleSupplier differentialRPM) {
+        this(shooter, topBottomRPM, sideRPM, differentialRPM, true);
     }
 
     @Override
@@ -30,6 +39,6 @@ public class ShooterRPMCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return true;
+        return finish;
     }
 }
