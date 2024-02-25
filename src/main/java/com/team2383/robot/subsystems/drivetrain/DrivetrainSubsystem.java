@@ -27,6 +27,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.nio.file.Path;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.team2383.lib.swerve.ModuleLimits;
+import com.team2383.lib.swerve.SwerveSetpoint;
+import com.team2383.lib.swerve.SwerveSetpointGenerator;
+import com.team2383.robot.Constants;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMIOServer;
@@ -73,6 +77,17 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
     private Rotation2d desiredHeading = new Rotation2d();
     private boolean headingControllerEnabled = true;
+
+    private final SwerveSetpointGenerator setpointGenerator;
+    private final ModuleLimits currentModuleLimits = DriveConstants.kModuleLimits;
+    private SwerveSetpoint currentSetpoint = new SwerveSetpoint(
+            new ChassisSpeeds(),
+            new SwerveModuleState[] {
+                    new SwerveModuleState(),
+                    new SwerveModuleState(),
+                    new SwerveModuleState(),
+                    new SwerveModuleState()
+            });
 
     public DrivetrainSubsystem(GyroIO gyro, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
             SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
@@ -129,6 +144,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     return false;
                 },
                 this);
+
+        setpointGenerator = new SwerveSetpointGenerator(m_kinematics, DriveConstants.frontLeftConstants.translation,
+                DriveConstants.frontRightConstants.translation,
+                DriveConstants.rearLeftConstants.translation,
+                DriveConstants.rearRightConstants.translation);
     }
 
     @Override
@@ -261,12 +281,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void setChassisSpeedsSetpoint(ChassisSpeeds speeds) {
-        SwerveModuleState[] swerveModuleStates = m_kinematics.toSwerveModuleStates(
+        currentSetpoint = setpointGenerator.generateSetpoint(currentModuleLimits, currentSetpoint, speeds,
+                Constants.loopPeriodSecs);
+
+        SwerveModuleState[] unoptimizedStates = m_kinematics.toSwerveModuleStates(
                 speeds);
 
-        setModuleStates(swerveModuleStates);
+        SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
+        for (int i = 0; i < m_modules.length; i++) {
+            // Optimize setpoints
+            optimizedSetpointStates[i] = SwerveModuleState.optimize(currentSetpoint.moduleStates()[i],
+                    m_modules[i].getPosition().angle);
+        }
 
-        Logger.recordOutput("Swerve/Desired Module States", swerveModuleStates);
+        setModuleStates(optimizedSetpointStates);
+        Logger.recordOutput("Swerve/Desired Module States", optimizedSetpointStates);
+
+        Logger.recordOutput("Swerve/Unoptimized Module States", unoptimizedStates);
     }
 
     public void setModuleStates(SwerveModuleState[] states) {

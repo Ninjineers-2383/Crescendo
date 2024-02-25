@@ -54,6 +54,8 @@ public final class Constants {
         REAL, REPLAY, SIM
     }
 
+    public static final double loopPeriodSecs = 0.02;
+
     public static final class OI {
         // Axis
         public static int DriveX = Robot.isReal() ? 1 : 0;
