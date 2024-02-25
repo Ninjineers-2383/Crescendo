@@ -29,6 +29,11 @@ public class FaceToTranslationCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+
+    }
+
+    @Override
     public void execute() {
         Translation2d drivetrainPose = m_drivetrain.getPose().getTranslation();
         Rotation2d heading = m_drivetrain.getHeading();
@@ -70,5 +75,6 @@ public class FaceToTranslationCommand extends Command {
     @Override
     public void end(boolean interrupted) {
         m_drivetrain.setHeading(m_drivetrain.getHeading());
+        m_drivetrain.endManualHeadingControl();
     }
 }

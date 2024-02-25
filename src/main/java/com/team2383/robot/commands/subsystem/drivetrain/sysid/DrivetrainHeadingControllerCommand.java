@@ -49,4 +49,9 @@ public class DrivetrainHeadingControllerCommand extends Command {
         return false;
     }
 
+    @Override
+    public void end(boolean interrupted) {
+        drivetrain.endManualHeadingControl();
+    }
+
 }

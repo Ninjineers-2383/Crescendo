@@ -14,7 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "SeekAndShoot"
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotSeekAndShoot"
           }
         },
         {
@@ -26,7 +32,13 @@
         {
           "type": "named",
           "data": {
-            "name": "SeekAndShoot"
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "wait",
+          "data": {
+            "waitTime": 0.25
           }
         },
         {
@@ -38,7 +50,7 @@
         {
           "type": "named",
           "data": {
-            "name": "SeekAndShoot"
+            "name": "PivotSeekAndShoot"
           }
         }
       ]

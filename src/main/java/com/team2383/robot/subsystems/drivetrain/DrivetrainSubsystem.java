@@ -77,6 +77,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
     private Rotation2d desiredHeading = new Rotation2d();
     private boolean headingControllerEnabled = true;
+    private boolean useManualHeadingTarget = false;
 
     private final SwerveSetpointGenerator setpointGenerator;
     private final ModuleLimits currentModuleLimits = DriveConstants.kModuleLimits;
@@ -262,7 +263,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         } else {
             m_robotRelativeChassisSpeeds = drive;
         }
-        if (!headingControllerEnabled && useHeadingController) {
+        if (!headingControllerEnabled && useHeadingController && !useManualHeadingTarget) {
             desiredHeading = getHeading()
                     .plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02));
             m_headingController.reset(getHeading().getRadians());
@@ -392,8 +393,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public void setHeading(Rotation2d heading) {
+        useManualHeadingTarget = true;
         headingControllerEnabled = true;
         desiredHeading = heading;
+    }
+
+    public void endManualHeadingControl() {
+        useManualHeadingTarget = false;
     }
 
     public boolean shouldFlipPath() {

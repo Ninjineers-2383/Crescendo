@@ -53,4 +53,9 @@ public class DriveFaceToTranslationCommand extends Command {
                 m_fieldRelative.getAsBoolean(),
                 true);
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        m_drivetrain.endManualHeadingControl();
+    }
 }

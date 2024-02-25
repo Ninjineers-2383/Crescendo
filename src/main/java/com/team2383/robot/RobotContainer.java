@@ -339,7 +339,7 @@ public class RobotContainer {
                                 new WaitCommand(0.5),
                                 new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> -900, () -> 0, false)
                                         .withTimeout(1)),
-                        new IndexerCommand(m_indexerSubsystem, () -> 0.7)));
+                        new IndexerCommand(m_indexerSubsystem, () -> 1)));
 
     }
 
@@ -474,13 +474,26 @@ public class RobotContainer {
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_frontFeederSubsystem, PivotPresets.FEED_FRONT));
 
+        NamedCommands.registerCommand("PartialFeedFront",
+                new ParallelCommandGroup(
+                        new IndexerCommand(m_indexerSubsystem, () -> -0.5),
+                        new FeederPowerCommand(m_frontFeederSubsystem, () -> -0.8)));
+
         NamedCommands.registerCommand("FeedBack",
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
 
+        NamedCommands.registerCommand("PartialFeedFront",
+                new ParallelCommandGroup(
+                        new IndexerCommand(m_indexerSubsystem, () -> -0.5),
+                        new FeederPowerCommand(m_frontFeederSubsystem, () -> -0.8)));
+
         NamedCommands.registerCommand("SeekAndShoot",
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
                         m_indexerSubsystem));
+
+        NamedCommands.registerCommand("Seek",
+                new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, false));
 
         NamedCommands.registerCommand("StartShooter",
                 new ShooterRPMCommand(m_shooterSubsystem, () -> -6000, () -> 1000, () -> 0));
@@ -492,5 +505,18 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("PivotSeek",
                 new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d, true));
+
+        NamedCommands.registerCommand("PivotSeekContinuous",
+                new PivotSeekCommand(m_pivotSubsystem,
+                        m_drivetrainSubsystem::getEstimatorPose3d, false));
+
+        NamedCommands.registerCommand("PivotSeekAndShoot",
+                new SequentialCommandGroup(
+                        new ParallelCommandGroup(
+                                new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d,
+                                        true),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> -6000, () -> 1000, () -> 0)),
+                        new ShootCommand(m_indexerSubsystem),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0)));
     }
 }

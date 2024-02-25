@@ -25,4 +25,9 @@ public class DrivetrainHeadingCommand extends Command {
     public boolean isFinished() {
         return drivetrain.headingIsFinished();
     }
+
+    @Override
+    public void end(boolean interrupted) {
+        drivetrain.endManualHeadingControl();
+    }
 }

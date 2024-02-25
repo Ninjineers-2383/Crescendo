@@ -12,34 +12,9 @@
           }
         },
         {
-          "type": "parallel",
-          "data": {
-            "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "StartShooter"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "PivotSeek"
-                }
-              }
-            ]
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "StopShooter"
+            "name": "PivotSeekAndShoot"
           }
         },
         {
@@ -51,7 +26,7 @@
         {
           "type": "named",
           "data": {
-            "name": "SeekAndShoot"
+            "name": "Shoot"
           }
         }
       ]

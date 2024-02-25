@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.668625167856688,
-        "y": 6.639851970753028
+        "x": 0.8517011066745906,
+        "y": 6.878646673558988
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.1505068562791616,
-        "y": 7.474495538337828
+        "x": 1.4964468042506827,
+        "y": 7.618910252257463
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.8366348917490907,
-        "y": 7.077642259230621
+        "x": 3.725197363772976,
+        "y": 6.655771617606757
       },
       "prevControl": {
-        "x": 2.6426555088015293,
-        "y": 6.80703415630379
+        "x": 3.0631881271492687,
+        "y": 6.597853314252732
       },
       "nextControl": null,
       "isLocked": false,
@@ -43,16 +43,39 @@
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "FeedFront",
+      "name": "PartialFeedFront",
       "waypointRelativePos": 0.55,
       "command": {
-        "type": "sequential",
+        "type": "parallel",
         "data": {
           "commands": [
             {
               "type": "named",
               "data": {
-                "name": "FeedFront"
+                "name": "PartialFeedFront"
+              }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotSeekContinuous"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "StartShooter",
+      "waypointRelativePos": 0.6,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartShooter"
               }
             }
           ]
@@ -68,7 +91,7 @@
   },
   "goalEndState": {
     "velocity": 0.0,
-    "rotation": 20.0,
+    "rotation": 15.7,
     "rotateFast": false
   },
   "reversed": false,
