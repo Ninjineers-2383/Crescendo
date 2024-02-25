@@ -60,6 +60,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -352,7 +353,7 @@ public class RobotContainer {
                                         .1),
                                 Math.toRadians(100 * MathUtil
                                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1))),
-                        () -> !(m_driverController.getRawButton(Constants.OI.FieldCentric))));
+                        () -> false));
 
         m_pivotSubsystem.setDefaultCommand(
                 new PivotDefaultCommand(m_pivotSubsystem,
@@ -460,6 +461,15 @@ public class RobotContainer {
     }
 
     public void registerAutoNamedCommands() {
+        NamedCommands.registerCommand("InitializeHeading",
+                new RunCommand(
+                        () -> m_drivetrainSubsystem
+                                .forceHeading(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue
+                                        ? m_drivetrainSubsystem.getPose().getRotation()
+                                        : m_drivetrainSubsystem.getPose().getRotation()
+                                                .plus(new Rotation2d(Math.PI))),
+                        m_drivetrainSubsystem).withTimeout(0.02));
+
         NamedCommands.registerCommand("FeedFront",
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_frontFeederSubsystem, PivotPresets.FEED_FRONT));
@@ -473,7 +483,7 @@ public class RobotContainer {
                         m_indexerSubsystem));
 
         NamedCommands.registerCommand("StartShooter",
-                new ShooterRPMCommand(m_shooterSubsystem, () -> 6000, () -> 1000, () -> 0));
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -6000, () -> 1000, () -> 0));
 
         NamedCommands.registerCommand("StopShooter",
                 new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0));

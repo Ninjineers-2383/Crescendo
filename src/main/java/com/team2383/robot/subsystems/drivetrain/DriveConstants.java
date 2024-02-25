@@ -46,7 +46,7 @@ public final class DriveConstants {
     public final static HolonomicPathFollowerConfig CONFIG = new HolonomicPathFollowerConfig(
             new PIDConstants(5, 0, 0),
             new PIDConstants(4, 0, 0),
-            2,
+            4,
             0.5,
             new ReplanningConfig());
 

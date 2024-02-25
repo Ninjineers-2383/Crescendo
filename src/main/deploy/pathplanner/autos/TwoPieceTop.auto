@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.8860675227711784,
-      "y": 7.19618986311764
-    },
-    "rotation": 70.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -14,7 +8,38 @@
         {
           "type": "named",
           "data": {
-            "name": "SeekAndShoot"
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "StartShooter"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotSeek"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "StopShooter"
           }
         },
         {
@@ -26,7 +51,7 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "SeekAndShoot"
           }
         }
       ]

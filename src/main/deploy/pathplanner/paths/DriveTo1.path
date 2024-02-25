@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.8860675227711784,
-        "y": 7.19618986311764
+        "x": 0.668625167856688,
+        "y": 6.639851970753028
       },
       "prevControl": null,
       "nextControl": {
-        "x": 3.1345481395612285,
-        "y": 7.184479026571858
+        "x": 1.1505068562791616,
+        "y": 7.474495538337828
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 3.7896100219681363,
-        "y": 6.371082462266705
+        "x": 3.8366348917490907,
+        "y": 7.077642259230621
       },
       "prevControl": {
-        "x": 3.1455140119501537,
-        "y": 6.921491779918436
+        "x": 2.6426555088015293,
+        "y": 6.80703415630379
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,12 @@
   ],
   "rotationTargets": [
     {
-      "waypointRelativePos": 0.45,
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": 60.0,
+      "rotateFast": false
+    },
+    {
+      "waypointRelativePos": 0.6,
       "rotationDegrees": 0,
       "rotateFast": true
     }
@@ -39,7 +44,7 @@
   "eventMarkers": [
     {
       "name": "FeedFront",
-      "waypointRelativePos": 0,
+      "waypointRelativePos": 0.55,
       "command": {
         "type": "sequential",
         "data": {
@@ -53,33 +58,10 @@
           ]
         }
       }
-    },
-    {
-      "name": "PivotSeekRev",
-      "waypointRelativePos": 0.85,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "PivotSeek"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "StartShooter"
-              }
-            }
-          ]
-        }
-      }
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 4.0,
+    "maxVelocity": 1.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -91,6 +73,9 @@
   },
   "reversed": false,
   "folder": null,
-  "previewStartingState": null,
+  "previewStartingState": {
+    "rotation": 60.0,
+    "velocity": 0
+  },
   "useDefaultConstraints": false
 }
