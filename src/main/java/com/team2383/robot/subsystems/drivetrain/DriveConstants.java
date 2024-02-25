@@ -14,6 +14,7 @@ import com.pathplanner.lib.util.PIDConstants;
 import com.pathplanner.lib.util.ReplanningConfig;
 import com.team2383.lib.swerve.AbsoluteCancoder;
 import com.team2383.lib.swerve.IAbsoluteEncoder;
+import com.team2383.lib.swerve.ModuleLimits;
 import com.team2383.robot.Constants;
 import com.team2383.robot.Constants.RobotType;
 
@@ -58,6 +59,9 @@ public final class DriveConstants {
             new Constraints(4 * Math.PI, 4 * Math.PI));
 
     public final static Pose2d SPEAKER_POSE = new Pose2d(new Translation2d(1.84, 7.71), Rotation2d.fromDegrees(270));
+
+    public static final ModuleLimits kModuleLimits = new ModuleLimits(
+            1, 1, 1);
 
     public static final class ModuleConstants {
         public final double kS;
