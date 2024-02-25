@@ -24,10 +24,10 @@ public class ShooterConstants {
 
     public static int kSideMotorID = 11;
 
-    public static double kSideP = 1;
-    public static double kSideI = 0.0;
+    public static double kSideP = 0.0001;
+    public static double kSideI = 0.0000001;
     public static double kSideD = 0.0;
-    public static double kSideV = 0.0020796;
-    public static double kSideS = 0.14016;
+    public static double kSideV = 0.0;
+    public static double kSideS = 0.0;
 
 }

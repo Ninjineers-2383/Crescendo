@@ -95,9 +95,9 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
         inputs.pivotAngle = leftMotor.getPosition().getValue() - offset;
         inputs.currentDesiredAngle = leftMotor.getClosedLoopReference().getValue() - offset;
 
-        // if (leftMotor.getPosition().getValueAsDouble() > 0.9 && offset == 0) {
-        // offset = 1;
-        // }
+        if (leftMotor.getPosition().getValueAsDouble() > 0.9 && offset == 0) {
+            offset = 1;
+        }
 
         inputs.desiredAngle = goal.position - offset;
 
