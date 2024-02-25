@@ -156,8 +156,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
             headingEffort = m_headingController.calculate(getHeading().getRadians(),
                     desiredHeading.getRadians());
         } else {
+            headingEffort = m_robotRelativeChassisSpeeds.omegaRadiansPerSecond;
         }
-        headingEffort = m_robotRelativeChassisSpeeds.omegaRadiansPerSecond;
 
         setChassisSpeedsSetpoint(new ChassisSpeeds(m_robotRelativeChassisSpeeds.vxMetersPerSecond,
                 m_robotRelativeChassisSpeeds.vyMetersPerSecond,

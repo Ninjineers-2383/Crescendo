@@ -24,6 +24,8 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
 
     private final Rotation2d m_angleOffset;
 
+    private boolean voltageControl = false;
+
     public SwerveModuleIOFalcon500(ModuleConstants constants, String CANbus) {
         this.m_angleMotor = new TalonFX(constants.kAngleMotorID, CANbus);
         this.m_driveMotor = new TalonFX(constants.kDriveMotorID, CANbus);
@@ -78,8 +80,10 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
 
     @Override
     public void setVoltage(double voltage) {
-        m_angleMotor.setVoltage(voltage);
+        voltageControl = true;
+        // m_angleMotor.setVoltage(voltage);
         m_driveMotor.setVoltage(voltage);
+        setAngle(new SwerveModuleState(10, new Rotation2d()));
     }
 
     private void configAngleMotor(ModuleConstants constants) {
@@ -95,10 +99,11 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
     }
 
     private void setSpeed(SwerveModuleState desiredState) {
-        var desiredRPS = Conversions.MPSToFalconRPS(desiredState.speedMetersPerSecond,
-                DriveConstants.kDriveWheelCircumferenceMeters, DriveConstants.kDriveGearRatio);
-        m_driveMotor.setControl(m_velocityOut.withVelocity(desiredRPS));
-
+        if (!voltageControl) {
+            var desiredRPS = Conversions.MPSToFalconRPS(desiredState.speedMetersPerSecond,
+                    DriveConstants.kDriveWheelCircumferenceMeters, DriveConstants.kDriveGearRatio);
+            m_driveMotor.setControl(m_velocityOut.withVelocity(desiredRPS));
+        }
     }
 
     private void setAngle(SwerveModuleState desiredState) {

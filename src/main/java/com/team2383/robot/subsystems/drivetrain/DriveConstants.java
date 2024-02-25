@@ -107,7 +107,7 @@ public final class DriveConstants {
 
             this.kAngleOffset = angleOffset;
 
-            this.kHardwareConfigs = new HardwareConfigs(kP, kI, kD, kS, kV);
+            this.kHardwareConfigs = new HardwareConfigs(kP, kI, kD, kS, kV, kA);
 
             this.invertDrive = invertDrive;
             this.invertAzimuth = invertAzimuth;
@@ -119,7 +119,7 @@ public final class DriveConstants {
         public TalonFXConfiguration kAngleMotorConfigs;
         public CANcoderConfiguration kAngleEncoderConfigs;
 
-        public HardwareConfigs(double kP, double kI, double kD, double kS, double kV) {
+        public HardwareConfigs(double kP, double kI, double kD, double kS, double kV, double kA) {
             kDriveMotorConfigs = new TalonFXConfiguration();
             kAngleMotorConfigs = new TalonFXConfiguration();
             kAngleEncoderConfigs = new CANcoderConfiguration();
@@ -135,6 +135,7 @@ public final class DriveConstants {
 
             kDriveMotorConfigs.Slot0.kS = kS;
             kDriveMotorConfigs.Slot0.kV = kV;
+            kDriveMotorConfigs.Slot0.kA = kA;
             kDriveMotorConfigs.ClosedLoopRamps.VoltageClosedLoopRampPeriod = 0.0;
 
             kAngleEncoderConfigs.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Unsigned_0To1;
@@ -145,7 +146,8 @@ public final class DriveConstants {
             kAngleMotorConfigs.CurrentLimits.SupplyCurrentLimitEnable = true;
 
             kAngleMotorConfigs.Slot0 = new Slot0Configs();
-            kAngleMotorConfigs.Slot0.kP = 0.8;
+            kAngleMotorConfigs.Slot0.kP = 1.3;
+            kAngleMotorConfigs.Slot0.kI = 0.3;
             kAngleMotorConfigs.Slot0.kD = 0.0;
 
             kAngleMotorConfigs.MotorOutput = new MotorOutputConfigs();
@@ -156,10 +158,10 @@ public final class DriveConstants {
     private static final CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
 
     public final static ModuleConstants frontLeftConstants = new ModuleConstants(
-            0.065635,
-            0.15,
-            0.015968,
-            0.01, 0, 0,
+            0.3212,
+            0.11395,
+            0.014899,
+            0.097969, 0, 0,
             20, 22,
             new AbsoluteCancoder(21, "Drive", cancoderConfig),
             "frontLeft",
@@ -170,10 +172,10 @@ public final class DriveConstants {
             true, false);
 
     public final static ModuleConstants frontRightConstants = new ModuleConstants(
-            0.065635,
-            0.15,
-            0.015968,
-            0.01, 0, 0,
+            0.16674,
+            0.12042,
+            0.02342,
+            0.1069, 0, 0,
             23, 25,
             new AbsoluteCancoder(24, "Drive", cancoderConfig),
             "frontRight",
@@ -184,10 +186,10 @@ public final class DriveConstants {
             false, true);
 
     public final static ModuleConstants rearLeftConstants = new ModuleConstants(
-            0.065635,
-            0.15,
-            0.015968,
-            0.01, 0, 0,
+            0.11763,
+            0.12168,
+            0.022463,
+            0.10438, 0, 0,
             26, 28,
             new AbsoluteCancoder(27, "Drive", cancoderConfig),
             "rearLeft",
@@ -198,10 +200,10 @@ public final class DriveConstants {
             false, true);
 
     public final static ModuleConstants rearRightConstants = new ModuleConstants(
-            0.065635,
-            0.15,
-            0.015968,
-            0.01, 0, 0,
+            0.2056,
+            0.12217,
+            0.015315,
+            0.0070936, 0, 0,
             29, 31,
             new AbsoluteCancoder(30, "Drive", cancoderConfig),
             "rearRight",

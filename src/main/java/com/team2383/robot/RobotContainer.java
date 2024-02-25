@@ -353,7 +353,7 @@ public class RobotContainer {
                                         .1),
                                 Math.toRadians(100 * MathUtil
                                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1))),
-                        () -> false));
+                        () -> true));
 
         m_pivotSubsystem.setDefaultCommand(
                 new PivotDefaultCommand(m_pivotSubsystem,
