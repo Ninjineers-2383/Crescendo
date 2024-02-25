@@ -61,7 +61,7 @@ public final class DriveConstants {
     public final static Pose2d SPEAKER_POSE = new Pose2d(new Translation2d(1.84, 7.71), Rotation2d.fromDegrees(270));
 
     public static final ModuleLimits kModuleLimits = new ModuleLimits(
-            1, 1, 1);
+            3, 6, 2);
 
     public static final class ModuleConstants {
         public final double kS;

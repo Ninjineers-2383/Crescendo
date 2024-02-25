@@ -284,6 +284,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         currentSetpoint = setpointGenerator.generateSetpoint(currentModuleLimits, currentSetpoint, speeds,
                 Constants.loopPeriodSecs);
 
+        SwerveModuleState[] unoptimizedStates = m_kinematics.toSwerveModuleStates(
+                speeds);
+
         SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
         for (int i = 0; i < m_modules.length; i++) {
             // Optimize setpoints
@@ -292,7 +295,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         }
 
         setModuleStates(optimizedSetpointStates);
-        Logger.recordOutput("Drive/SwerveStates/Setpoints", optimizedSetpointStates);
+        Logger.recordOutput("Swerve/Desired Module States", optimizedSetpointStates);
+
+        Logger.recordOutput("Swerve/Unoptimized Module States", unoptimizedStates);
     }
 
     public void setModuleStates(SwerveModuleState[] states) {
