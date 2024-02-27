@@ -43,8 +43,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
-import edu.wpi.first.wpilibj.PowerDistribution;
-import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -118,8 +116,6 @@ public class RobotContainer {
     LoggedDashboardChooser<Command> autoChooser = new LoggedDashboardChooser<Command>("Auto Command");
     LoggedDashboardChooser<Command> testDashboardChooser = new LoggedDashboardChooser<Command>("Test Command");
 
-    private PowerDistribution pdh;
-
     private boolean lwEnabled = false;
 
     /**
@@ -156,8 +152,6 @@ public class RobotContainer {
                     // m_trapFeederSubsystem = new TrapFeederSubsystem(new TrapFeederIONeo550());
 
                     m_restingHookSubsystem = new RestingHookSubsystem(new RestingHookIOTalonSRX());
-
-                    pdh = new PowerDistribution(1, ModuleType.kRev);
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -239,15 +233,6 @@ public class RobotContainer {
     }
 
     public void periodic() {
-        // autoChooser.periodic();
-
-        if (pdh != null) {
-            if (!pdh.getSwitchableChannel()) {
-                // System.err.println("Switchable channel initialized off");
-                pdh.setSwitchableChannel(true);
-            }
-        }
-
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
             lwEnabled = true;
