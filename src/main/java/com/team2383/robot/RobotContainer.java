@@ -20,6 +20,7 @@ import com.team2383.robot.commands.subsystem.drivetrain.sysid.*;
 import com.team2383.robot.commands.subsystem.feeder.*;
 import com.team2383.robot.commands.subsystem.indexer.*;
 import com.team2383.robot.commands.subsystem.orchestra.*;
+import com.team2383.robot.commands.subsystem.piece_detection.DriveToPieceCommand;
 import com.team2383.robot.commands.subsystem.pivot.*;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotSysIDCommand;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotTuningCommand;
@@ -31,6 +32,8 @@ import com.team2383.robot.subsystems.drivetrain.SLAM.*;
 import com.team2383.robot.subsystems.feeder.*;
 import com.team2383.robot.subsystems.gamePieceSim.GamePieceSimSubsystem;
 import com.team2383.robot.subsystems.indexer.*;
+import com.team2383.robot.subsystems.piece_detection.PieceDetectionIOPhoton;
+import com.team2383.robot.subsystems.piece_detection.PieceDetectionSubsystem;
 import com.team2383.robot.subsystems.pivot.*;
 import com.team2383.robot.subsystems.resting_hooks.RestingHookIO;
 import com.team2383.robot.subsystems.resting_hooks.RestingHookIOTalonSRX;
@@ -89,6 +92,8 @@ public class RobotContainer {
 
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
+    private final JoystickButton m_autoFeed = new JoystickButton(m_driverController, 9);
+
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
     private PivotSubsystem m_pivotSubsystem;
@@ -99,6 +104,8 @@ public class RobotContainer {
     private IndexerSubsystem m_indexerSubsystem;
 
     private ShooterSubsystem m_shooterSubsystem;
+
+    private PieceDetectionSubsystem m_pieceDetectionSubsystem;
 
     // private TrapArmSubsystem m_trapArmSubsystem;
     // private TrapFeederSubsystem m_trapFeederSubsystem;
@@ -145,6 +152,8 @@ public class RobotContainer {
                     m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
 
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
+
+                    m_pieceDetectionSubsystem = new PieceDetectionSubsystem(new PieceDetectionIOPhoton());
 
                     // m_trapArmSubsystem = new TrapArmSubsystem(new
                     // TrapArmIOTalonSRXTrapezoidal());
@@ -264,6 +273,12 @@ public class RobotContainer {
         m_fullFeedRear.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
+
+        m_autoFeed.whileTrue(
+                new ParallelCommandGroup(
+                        new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                                m_frontFeederSubsystem, PivotPresets.FEED_FRONT),
+                        new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem)));
 
         m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2));
 

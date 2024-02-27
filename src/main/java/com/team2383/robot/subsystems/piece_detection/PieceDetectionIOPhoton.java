@@ -4,10 +4,10 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 public class PieceDetectionIOPhoton implements PieceDetectionIO {
-    public PhotonCamera photonCamera;
+    private final PhotonCamera photonCamera;
 
     public PieceDetectionIOPhoton() {
-
+        photonCamera = new PhotonCamera("Camera_Module_v1");
     }
 
     @Override
