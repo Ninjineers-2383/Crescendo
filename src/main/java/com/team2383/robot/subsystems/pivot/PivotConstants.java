@@ -8,7 +8,7 @@ public class PivotConstants {
     public static int kLeftMotorID = 3;
     public static int kRightMotorID = 4;
     public static int kEncoderID = 5;
-    public static double kEncoderOffset = -0.415771;
+    public static double kEncoderOffset = -0.133057;
 
     // feedforward constants
     public static final double kG = 0.4;
@@ -29,6 +29,6 @@ public class PivotConstants {
     public static double kMaxVelo = 30;
     public static double kMaxAccel = 12;
 
-    public static double kPivotMotorGearRatio = 154.6875;
+    public static double kPivotMotorGearRatio = 225;
 
 }

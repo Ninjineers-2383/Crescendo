@@ -36,8 +36,8 @@ public class TrapArmIOTalonSRXTrapezoidal implements TrapArmIO {
         pivot.configSupplyCurrentLimit(new SupplyCurrentLimitConfiguration(true, 15, 20, 1));
         pivot.enableCurrentLimit(true);
 
-        // goal = new TrapezoidProfile.State(pivot.getSelectedSensorPosition(), 0);
-        goal = null;
+        goal = new TrapezoidProfile.State(pivot.getSelectedSensorPosition(), 0);
+        // goal = null;
         setpoint = goal;
     }
 
