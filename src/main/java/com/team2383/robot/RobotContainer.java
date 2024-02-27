@@ -25,9 +25,6 @@ import com.team2383.robot.commands.subsystem.pivot.tuning.PivotSysIDCommand;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotTuningCommand;
 import com.team2383.robot.commands.subsystem.resting_hooks.RestingHooksPowerCommand;
 import com.team2383.robot.commands.subsystem.shooter.*;
-import com.team2383.robot.commands.subsystem.trap_arm.TrapArmPositionCommand;
-import com.team2383.robot.commands.subsystem.trap_arm.tuning.TrapArmTuningCommand;
-import com.team2383.robot.commands.subsystem.trap_feeder.TrapFeederPowerCommand;
 import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
 import com.team2383.robot.subsystems.drivetrain.SLAM.*;
@@ -40,12 +37,6 @@ import com.team2383.robot.subsystems.resting_hooks.RestingHookIOTalonSRX;
 import com.team2383.robot.subsystems.resting_hooks.RestingHookSubsystem;
 import com.team2383.robot.subsystems.shooter.*;
 import com.team2383.robot.subsystems.sim_components.*;
-import com.team2383.robot.subsystems.trap_arm.TrapArmIO;
-import com.team2383.robot.subsystems.trap_arm.TrapArmIOTalonSRXTrapezoidal;
-import com.team2383.robot.subsystems.trap_arm.TrapArmSubsystem;
-import com.team2383.robot.subsystems.trap_feeder.TrapFeederIO;
-import com.team2383.robot.subsystems.trap_feeder.TrapFeederIONeo550;
-import com.team2383.robot.subsystems.trap_feeder.TrapFeederSubsystem;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -86,13 +77,15 @@ public class RobotContainer {
 
     private final JoystickButton m_fullFeedFront = new JoystickButton(m_driverController, 5);
     private final JoystickButton m_fullFeedRear = new JoystickButton(m_driverController, 6);
-    private final JoystickButton m_trapScore = new JoystickButton(m_operatorController, 6);
+    // private final JoystickButton m_trapScore = new
+    // JoystickButton(m_operatorController, 6);
 
     private final JoystickButton m_manualAmp = new JoystickButton(m_operatorController, 5);
 
     private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
-    private final POVButton m_trapArmUp = new POVButton(m_operatorController, 0);
-    private final POVButton m_trapArmHalfUp = new POVButton(m_operatorController, 90);
+    // private final POVButton m_trapArmUp = new POVButton(m_operatorController, 0);
+    // private final POVButton m_trapArmHalfUp = new POVButton(m_operatorController,
+    // 90);
     private final POVButton m_hooksDown = new POVButton(m_operatorController, 180);
     private final POVButton m_hooksDown2 = new POVButton(m_operatorController, 270);
 
@@ -109,8 +102,8 @@ public class RobotContainer {
 
     private ShooterSubsystem m_shooterSubsystem;
 
-    private TrapArmSubsystem m_trapArmSubsystem;
-    private TrapFeederSubsystem m_trapFeederSubsystem;
+    // private TrapArmSubsystem m_trapArmSubsystem;
+    // private TrapFeederSubsystem m_trapFeederSubsystem;
 
     private RestingHookSubsystem m_restingHookSubsystem;
 
@@ -157,9 +150,10 @@ public class RobotContainer {
 
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
 
-                    m_trapArmSubsystem = new TrapArmSubsystem(new TrapArmIOTalonSRXTrapezoidal());
+                    // m_trapArmSubsystem = new TrapArmSubsystem(new
+                    // TrapArmIOTalonSRXTrapezoidal());
 
-                    m_trapFeederSubsystem = new TrapFeederSubsystem(new TrapFeederIONeo550());
+                    // m_trapFeederSubsystem = new TrapFeederSubsystem(new TrapFeederIONeo550());
 
                     m_restingHookSubsystem = new RestingHookSubsystem(new RestingHookIOTalonSRX());
 
@@ -211,10 +205,12 @@ public class RobotContainer {
 
         m_shooterSubsystem = m_shooterSubsystem == null ? new ShooterSubsystem(new ShooterIO() {}) : m_shooterSubsystem;
 
-        m_trapArmSubsystem = m_trapArmSubsystem == null ? new TrapArmSubsystem(new TrapArmIO() {}) : m_trapArmSubsystem;
+        // m_trapArmSubsystem = m_trapArmSubsystem == null ? new TrapArmSubsystem(new
+        // TrapArmIO() {}) : m_trapArmSubsystem;
 
-        m_trapFeederSubsystem = m_trapFeederSubsystem == null ? new TrapFeederSubsystem(new TrapFeederIO() {})
-                : m_trapFeederSubsystem;
+        // m_trapFeederSubsystem = m_trapFeederSubsystem == null ? new
+        // TrapFeederSubsystem(new TrapFeederIO() {})
+        // : m_trapFeederSubsystem;
 
         m_restingHookSubsystem = m_restingHookSubsystem == null ? new RestingHookSubsystem(new RestingHookIO() {})
                 : m_restingHookSubsystem;
@@ -307,19 +303,23 @@ public class RobotContainer {
         new JoystickButton(m_operatorController, 3).onTrue(new IndexerCommand(m_indexerSubsystem, () -> 0.7))
                 .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0));
 
-        m_trapScore.whileTrue(new SequentialCommandGroup(
-                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
-                new ParallelCommandGroup(
-                        new TrapFeederPowerCommand(m_trapFeederSubsystem, 1),
-                        new ParallelDeadlineGroup(
-                                new SequentialCommandGroup(
-                                        new WaitCommand(0.5),
-                                        new IndexerCommand(m_indexerSubsystem, () -> -1).withTimeout(1)),
-                                new ShooterRPMCommand(m_shooterSubsystem, () -> -2000, () -> 200, () -> 0)))));
+        // m_trapScore.whileTrue(new SequentialCommandGroup(
+        // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
+        // new ParallelCommandGroup(
+        // new TrapFeederPowerCommand(m_trapFeederSubsystem, 1),
+        // new ParallelDeadlineGroup(
+        // new SequentialCommandGroup(
+        // new WaitCommand(0.5),
+        // new IndexerCommand(m_indexerSubsystem, () -> -1).withTimeout(1)),
+        // new ShooterRPMCommand(m_shooterSubsystem, () -> -2000, () -> 200, () ->
+        // 0)))));
 
-        m_trapArmHalfUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () -> Math.toRadians(75)));
-        m_trapArmHalfUp.onTrue(new PivotPositionCommand(m_pivotSubsystem, Math.PI / 2.0));
-        m_trapArmUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () -> Math.toRadians(145)));
+        // m_trapArmHalfUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () ->
+        // Math.toRadians(75)));
+        // m_trapArmHalfUp.onTrue(new PivotPositionCommand(m_pivotSubsystem, Math.PI /
+        // 2.0));
+        // m_trapArmUp.onTrue(new TrapArmPositionCommand(m_trapArmSubsystem, () ->
+        // Math.toRadians(145)));
 
         m_hooksDown.onTrue(
                 new PivotClimbCommand(m_pivotSubsystem));
@@ -373,8 +373,9 @@ public class RobotContainer {
                 new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get,
                         shooterDifferentialRPM::get));
 
-        m_trapArmSubsystem.setDefaultCommand(
-                new TrapArmPositionCommand(m_trapArmSubsystem, () -> trapArmAngle.get() * (Math.PI / 180)));
+        // m_trapArmSubsystem.setDefaultCommand(
+        // new TrapArmPositionCommand(m_trapArmSubsystem, () -> trapArmAngle.get() *
+        // (Math.PI / 180)));
 
     }
 
@@ -450,7 +451,8 @@ public class RobotContainer {
                         .applyDeadband(m_driverController.getRawAxis(Constants.OI.DriveOmega), 0.1)),
                         () -> m_driverController.getRawButton(9)));
 
-        testDashboardChooser.addOption("Trap Arm Tuning", new TrapArmTuningCommand(m_trapArmSubsystem));
+        // testDashboardChooser.addOption("Trap Arm Tuning", new
+        // TrapArmTuningCommand(m_trapArmSubsystem));
 
         PivotSysIDCommand pivotSysID = new PivotSysIDCommand(m_pivotSubsystem);
 
