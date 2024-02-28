@@ -270,15 +270,12 @@ public class RobotContainer {
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_frontFeederSubsystem, PivotPresets.FEED_FRONT));
 
+        m_fullFeedFront.and(m_autoFeed).whileTrue(
+                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem));
+
         m_fullFeedRear.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
-
-        m_autoFeed.whileTrue(
-                new ParallelCommandGroup(
-                        new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                                m_frontFeederSubsystem, PivotPresets.FEED_FRONT),
-                        new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem)));
 
         m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2));
 
@@ -326,20 +323,21 @@ public class RobotContainer {
         m_hooksDown2.onTrue(new RestingHooksPowerCommand(m_restingHookSubsystem));
 
         m_manualAmp.whileTrue(
-                new SequentialCommandGroup(
+                new ParallelCommandGroup(
                         new PivotPositionCommand(m_pivotSubsystem,
                                 PivotPresets.SCORE_AMP),
-                        new ParallelCommandGroup(
-                                new IndexerCommand(m_indexerSubsystem, () -> -0.5).withTimeout(0.4),
-                                new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> 500, () -> 0)
-                                        .withTimeout(0.5))));
+                        new IndexerCommand(m_indexerSubsystem, () -> -0.5).withTimeout(0.4),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> 500, () -> 0)
+                                .withTimeout(0.5),
+                        new DrivetrainHeadingCommand(m_drivetrainSubsystem, Rotation2d.fromDegrees(90))));
+
         m_manualAmp.onFalse(
                 new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
                                 new WaitCommand(0.5),
                                 new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> -900, () -> 0, false)
                                         .withTimeout(1)),
-                        new IndexerCommand(m_indexerSubsystem, () -> 1)));
+                        new IndexerCommand(m_indexerSubsystem, () -> 0.8)));
 
     }
 
@@ -402,6 +400,8 @@ public class RobotContainer {
         autoChooser.addOption("Two Note", new PathPlannerAuto("TwoPieceTop"));
 
         autoChooser.addOption("Three Note", new PathPlannerAuto("ThreePieceTop"));
+
+        autoChooser.addOption("Four Note", new PathPlannerAuto("FourPieceTop"));
     }
 
     private void registerTestCommands() {

@@ -27,7 +27,7 @@ public class DriveToPieceCommand extends Command {
         }
 
         if (drivetrainSubsystem.headingIsFinished()) {
-            drivetrainSubsystem.drive(new ChassisSpeeds(1, 0, 0), false, true);
+            drivetrainSubsystem.drive(new ChassisSpeeds(2, 0, 0), false, true);
         }
     }
 

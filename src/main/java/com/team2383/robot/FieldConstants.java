@@ -103,6 +103,8 @@ public class FieldConstants {
     }
 
     public static Translation2d getSpeakerLocation() {
-        return AllianceUtil.flipTranslation2d(new Translation2d(0, Speaker.centerSpeakerOpening.getY()));
+        // return new Translation2d(16.641099058697744, 5.691183445791935);
+        return AllianceUtil.flipTranslation2d(new Translation2d(0,
+                Speaker.centerSpeakerOpening.getY()));
     }
 }

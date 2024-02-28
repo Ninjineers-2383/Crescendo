@@ -34,7 +34,7 @@ public class ShooterRPMCommand extends Command {
     @Override
     public void execute() {
         shooter.setTopBottomRPM(-topBottomRPM.getAsDouble(), differentialRPM.getAsDouble());
-        shooter.setSideRPM(sideRPM.getAsDouble());
+        shooter.setSideRPM(sideRPM.getAsDouble() * 4);
     }
 
     @Override

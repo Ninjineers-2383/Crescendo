@@ -60,6 +60,12 @@
               "data": {
                 "name": "StartFlywheel"
               }
+            },
+            {
+              "type": "named",
+              "data": {
+                "name": "PivotSeek"
+              }
             }
           ]
         }

@@ -12,8 +12,6 @@ public class DrivetrainHeadingCommand extends Command {
     public DrivetrainHeadingCommand(DrivetrainSubsystem drivetrain, Rotation2d angle) {
         this.drivetrain = drivetrain;
         this.angle = angle;
-
-        addRequirements(drivetrain);
     }
 
     @Override
