@@ -6,8 +6,12 @@ public interface PieceDetectionIO {
     @AutoLog
     public static class PieceDetectionIOInputs {
         public boolean connected = false;
-        public double yaw = 0.0;
-        public boolean seesTarget = false;
+
+        public double frontYaw = 0.0;
+        public boolean frontSeesTarget = false;
+
+        public double rearYaw = 0.0;
+        public boolean rearSeesTarget = false;
     }
 
     /** Updates the set of loggable inputs. */

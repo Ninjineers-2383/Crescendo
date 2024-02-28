@@ -4,23 +4,35 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 public class PieceDetectionIOPhoton implements PieceDetectionIO {
-    private final PhotonCamera photonCamera;
+    private final PhotonCamera frontCamera;
+    private final PhotonCamera rearCamera;
 
     public PieceDetectionIOPhoton() {
-        photonCamera = new PhotonCamera("Camera_Module_v1");
+        frontCamera = new PhotonCamera("Camera_Module_Front");
+        rearCamera = new PhotonCamera("Camera_Module_Rear");
     }
 
     @Override
     public void updateInputs(PieceDetectionIOInputs inputs) {
         inputs.connected = true;
 
-        PhotonPipelineResult result = photonCamera.getLatestResult();
-        if (result.hasTargets()) {
-            inputs.seesTarget = true;
-            inputs.yaw = result.getBestTarget().getYaw();
+        PhotonPipelineResult frontResult = frontCamera.getLatestResult();
+        PhotonPipelineResult rearResult = rearCamera.getLatestResult();
+
+        if (frontResult.hasTargets()) {
+            inputs.frontSeesTarget = true;
+            inputs.frontYaw = frontResult.getBestTarget().getYaw();
         } else {
-            inputs.seesTarget = false;
-            inputs.yaw = 0.0;
+            inputs.frontSeesTarget = false;
+            inputs.frontYaw = 0.0;
+        }
+
+        if (rearResult.hasTargets()) {
+            inputs.rearSeesTarget = true;
+            inputs.rearYaw = rearResult.getBestTarget().getYaw();
+        } else {
+            inputs.rearSeesTarget = false;
+            inputs.rearYaw = 0.0;
         }
     }
 }
