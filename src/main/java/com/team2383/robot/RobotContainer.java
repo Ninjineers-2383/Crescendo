@@ -271,15 +271,18 @@ public class RobotContainer {
                         m_frontFeederSubsystem, PivotPresets.FEED_FRONT));
 
         m_fullFeedFront.and(m_autoFeed).whileTrue(
-                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem));
+                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, true));
 
         m_fullFeedRear.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
 
-        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2));
+        m_fullFeedRear.and(m_autoFeed).whileTrue(
+                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, false));
 
-        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2));
+        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.1));
+
+        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.1));
 
         m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
 
@@ -329,15 +332,17 @@ public class RobotContainer {
                         new IndexerCommand(m_indexerSubsystem, () -> -0.5).withTimeout(0.4),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> 500, () -> 0)
                                 .withTimeout(0.5),
-                        new DrivetrainHeadingCommand(m_drivetrainSubsystem, Rotation2d.fromDegrees(90))));
+                        new DrivetrainHeadingCommand(m_drivetrainSubsystem,
+                                Rotation2d.fromDegrees(90))));
 
         m_manualAmp.onFalse(
                 new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
                                 new WaitCommand(0.5),
-                                new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> -900, () -> 0, false)
-                                        .withTimeout(1)),
-                        new IndexerCommand(m_indexerSubsystem, () -> 0.8)));
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> 500, () -> -1500, () -> 0,
+                                        false)
+                                                .withTimeout(1)),
+                        new IndexerCommand(m_indexerSubsystem, () -> 0.7)));
 
     }
 
