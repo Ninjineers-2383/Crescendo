@@ -527,5 +527,15 @@ public class RobotContainer {
                                 new ShooterRPMCommand(m_shooterSubsystem, () -> -6000, () -> 1000, () -> 0)),
                         new ShootCommand(m_indexerSubsystem),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0)));
+
+        NamedCommands.registerCommand("StoreRing",
+                new ParallelDeadlineGroup(
+                        new SequentialCommandGroup(
+                                new IndexerCommand(m_indexerSubsystem, () -> 0.1).withTimeout(0.2),
+                                new IndexerCommand(m_indexerSubsystem, () -> 0).withTimeout(0.03)
+
+                        ),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)));
+
     }
 }

@@ -18,6 +18,11 @@ public class IndexerCommand extends Command {
     }
 
     @Override
+    public void initialize() {
+        indexer.setPower(power.getAsDouble());
+    }
+
+    @Override
     public void execute() {
         indexer.setPower(power.getAsDouble());
     }

@@ -12,21 +12,46 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "PivotSeekAndShoot"
+            "pathName": "DriveToPreload"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "DriveTo1"
+            "name": "PivotSeek"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Shoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "PreloadTo1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotSeekContinuous"
+                }
+              }
+            ]
           }
         }
       ]

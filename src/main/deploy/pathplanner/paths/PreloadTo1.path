@@ -3,37 +3,37 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.3140196323188638,
-        "y": 6.183321696172636
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 2.146022023471584,
-        "y": 6.57129078277042
-      },
-      "isLocked": false,
-      "linkedName": null
-    },
-    {
-      "anchor": {
         "x": 2.4148382676223257,
         "y": 6.581490138729208
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.653349765538572,
+        "y": 6.692709876765574
+      },
+      "isLocked": false,
+      "linkedName": "EndPreload"
+    },
+    {
+      "anchor": {
+        "x": 2.9418259121824937,
+        "y": 6.827417706190619
+      },
       "prevControl": {
-        "x": 1.9616843741040009,
-        "y": 6.370181007858858
+        "x": 2.7605643547751644,
+        "y": 6.7428940538424795
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EndPreload"
+      "linkedName": "EndPreloadTo1"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "StartShooter",
-      "waypointRelativePos": 0.0,
+      "name": "PartialFeedFront",
+      "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
         "data": {
@@ -41,13 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "StartShooter"
-              }
-            },
-            {
-              "type": "named",
-              "data": {
-                "name": "PivotSeekContinuous"
+                "name": "PartialFeedFront"
               }
             }
           ]
@@ -57,7 +51,7 @@
   ],
   "globalConstraints": {
     "maxVelocity": 3.0,
-    "maxAcceleration": 3.0,
+    "maxAcceleration": 1.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

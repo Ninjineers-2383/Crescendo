@@ -14,7 +14,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DriveTo1"
+            "pathName": "DriveToPreload"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotSeek"
           }
         },
         {
@@ -32,19 +38,38 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DriveTo3"
+            "name": "PivotSeek"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "Shoot"
+          }
+        },
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "DriveTo3"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotSeekContinuous"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PartialFeedFront"
           }
         }
       ]
