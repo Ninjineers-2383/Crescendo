@@ -12,9 +12,9 @@ public class PivotConstants {
 
     // feedforward constants
     public static final double kG = 0.4;
-    public static final double kS = 0.2;
-    public static final double kV = 16.5;
-    public static final double kA = 5;
+    public static final double kS = 2;
+    public static final double kV = 70;
+    public static final double kA = 25;
 
     public static final ArmFeedforward kFeedforwardController = new ArmFeedforward(kS, kG, kV, kA);
 
@@ -26,8 +26,8 @@ public class PivotConstants {
     public static final PIDController kPIDController = new PIDController(kP, kI, kD);
 
     // Trapezoid Profile Constants
-    public static double kMaxVelo = 30;
-    public static double kMaxAccel = 12;
+    public static double kMaxVelo = 60;
+    public static double kMaxAccel = 20;
 
     public static double kPivotMotorGearRatio = 225;
 

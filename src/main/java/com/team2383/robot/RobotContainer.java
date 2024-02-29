@@ -280,9 +280,11 @@ public class RobotContainer {
         m_fullFeedRear.and(m_autoFeed).whileTrue(
                 new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, false));
 
-        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2));
+        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2)
+                .deadlineWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)));
 
-        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2));
+        m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2)
+                .deadlineWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)));
 
         m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
 

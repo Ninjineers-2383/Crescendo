@@ -10,6 +10,7 @@ import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class PivotSeekCommand extends Command {
@@ -28,7 +29,7 @@ public class PivotSeekCommand extends Command {
     @Override
     public void execute() {
         double distanceToSpeaker = poseSupplier.get().getTranslation().toTranslation2d()
-                .getDistance(FieldConstants.getSpeakerLocation());
+                .getDistance(new Translation2d(16.602772869039534, 5.565045361031789));
 
         Pose2d drivePose2d = poseSupplier.get().toPose2d();
 
@@ -38,12 +39,12 @@ public class PivotSeekCommand extends Command {
 
         // https://www.desmos.com/calculator/et7ibvp93g
         // 1.58175
-        double angle = Math.atan2(1.57, distanceToSpeaker) + (0.005 * distanceToSpeaker * distanceToSpeaker);
+        double angle = Math.atan2(1.45, distanceToSpeaker) + (0.0025 * distanceToSpeaker * distanceToSpeaker);
 
         if (drivePose2d.getRotation().minus(angleToSpeaker).getDegrees() > 90) {
-            angle = Math.PI - angle;
+            angle = Math.PI - angle - 0.17;
         } else if (drivePose2d.getRotation().minus(angleToSpeaker).getDegrees() < -90) {
-            angle = Math.PI - angle;
+            angle = Math.PI - angle - 0.17;
         }
 
         Logger.recordOutput("Pivot/DistanceToSpeaker", distanceToSpeaker);

@@ -35,7 +35,7 @@ public class PivotIOFalconTrapezoidal implements PivotIO {
     private final VoltageOut voltage = new VoltageOut(0);
 
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-            5, 7);
+            1, 3);
 
     private TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
