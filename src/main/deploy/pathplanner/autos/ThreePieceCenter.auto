@@ -1,26 +1,20 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.8860675227711784,
-      "y": 7.19618986311764
-    },
-    "rotation": 80.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "SeekAndShoot"
+            "pathName": "DriveToPreload"
           }
         },
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "DriveTo1"
+            "name": "PivotSeek"
           }
         },
         {
@@ -30,15 +24,34 @@
           }
         },
         {
-          "type": "named",
+          "type": "deadline",
           "data": {
-            "name": "StopShooter"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "PreloadTo1"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "PivotSeekContinuous"
+                }
+              }
+            ]
           }
         },
         {
           "type": "path",
           "data": {
             "pathName": "1DriveTo4"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "PivotSeek"
           }
         },
         {
