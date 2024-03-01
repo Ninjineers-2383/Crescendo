@@ -29,7 +29,7 @@ public class PivotSeekCommand extends Command {
     @Override
     public void execute() {
         double distanceToSpeaker = poseSupplier.get().getTranslation().toTranslation2d()
-                .getDistance(new Translation2d(16.602772869039534, 5.565045361031789));
+                .getDistance(FieldConstants.getSpeakerLocation());
 
         Pose2d drivePose2d = poseSupplier.get().toPose2d();
 

@@ -15,7 +15,7 @@ public class RestingHooksPowerCommand extends Command {
 
     @Override
     public void execute() {
-        restingHooks.setPower(0.5);
+        restingHooks.setPower(0.75);
     }
 
     @Override

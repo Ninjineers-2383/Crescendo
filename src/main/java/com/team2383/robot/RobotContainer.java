@@ -52,6 +52,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -93,6 +94,8 @@ public class RobotContainer {
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
     private final JoystickButton m_autoFeed = new JoystickButton(m_driverController, 9);
+
+    private final POVButton m_trap = new POVButton(m_operatorController, 0);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
@@ -254,7 +257,16 @@ public class RobotContainer {
     private void configureButtonBindings() {
         m_setHeadingZero.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d()));
 
-        m_seek.toggleOnTrue(new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, false));
+        m_seek.toggleOnTrue(
+                new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, false));
+
+        new JoystickButton(m_operatorController, 3)
+                .toggleOnTrue(new ShooterRPMCommand(m_shooterSubsystem, () -> -5000, () -> 1000, () -> 0, false));
+
+        m_trap.whileTrue(new ParallelCommandGroup(
+                new PrintCommand("Trap Scoring"),
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -3000, () -> 1000, () -> -200, false)));
 
         // m_pivotZero.onTrue(
         // new ConditionalCommand(
@@ -265,6 +277,9 @@ public class RobotContainer {
         // () -> m_pivotSubsystem.getAngle() < Math.PI / 2.0));
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem,
                 PivotPresets.ZERO));
+
+        new JoystickButton(m_operatorController, 9)
+                .whileTrue(new PivotVelocityCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(0)));
 
         m_fullFeedFront.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
@@ -302,8 +317,9 @@ public class RobotContainer {
         new JoystickButton(m_driverController, 3).whileTrue(
                 new ScoreAmpCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem));
 
-        new JoystickButton(m_operatorController, 3).onTrue(new IndexerCommand(m_indexerSubsystem, () -> 0.7))
-                .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0));
+        // new JoystickButton(m_operatorController, 3).onTrue(new
+        // IndexerCommand(m_indexerSubsystem, () -> 0.7))
+        // .onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0));
 
         // m_trapScore.whileTrue(new SequentialCommandGroup(
         // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
@@ -345,6 +361,11 @@ public class RobotContainer {
                                         false)
                                                 .withTimeout(1)),
                         new IndexerCommand(m_indexerSubsystem, () -> 0.7)));
+
+        new JoystickButton(m_operatorController, 8)
+                .whileTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER));
+        new JoystickButton(m_operatorController, 7)
+                .whileTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SAFE_ZONE));
 
     }
 
@@ -409,6 +430,10 @@ public class RobotContainer {
         autoChooser.addOption("Three Note", new PathPlannerAuto("ThreePieceTop"));
 
         autoChooser.addOption("Four Note", new PathPlannerAuto("FourPieceTop"));
+
+        autoChooser.addOption("Preload Travel", new PathPlannerAuto("PreloadTravel"));
+
+        autoChooser.addOption("Three Piece Center", new PathPlannerAuto("ThreePieceCenter"));
     }
 
     private void registerTestCommands() {
