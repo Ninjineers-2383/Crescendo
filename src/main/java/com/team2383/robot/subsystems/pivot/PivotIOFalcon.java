@@ -42,6 +42,12 @@ public class PivotIOFalcon implements PivotIO {
         OrchestraContainer.getInstance().addMotor(leftMotorLeader);
         OrchestraContainer.getInstance().addMotor(rightMotorFollower);
 
+        TalonFXConfiguration motorConfig = new TalonFXConfiguration();
+
+        motorConfig.TorqueCurrent = new TorqueCurrentConfigs()
+                .withPeakForwardTorqueCurrent(80)
+                .withPeakReverseTorqueCurrent(-80);
+
         configs = new Slot0Configs()
                 .withKP(PivotConstants.kGains.kP())
                 .withKI(PivotConstants.kGains.kI())
@@ -52,12 +58,6 @@ public class PivotIOFalcon implements PivotIO {
                 .withKG(PivotConstants.kGains.kG())
                 .withGravityType(GravityTypeValue.Arm_Cosine);
 
-        TalonFXConfiguration motorConfig = new TalonFXConfiguration()
-                .withTorqueCurrent(
-                        new TorqueCurrentConfigs()
-                                .withPeakForwardTorqueCurrent(80)
-                                .withPeakReverseTorqueCurrent(-80));
-
         motorConfig.Slot0 = configs;
 
         FeedbackConfigs feedback = new FeedbackConfigs()
@@ -66,8 +66,10 @@ public class PivotIOFalcon implements PivotIO {
                 .withSensorToMechanismRatio(1)
                 .withRotorToSensorRatio(PivotConstants.kPivotMotorGearRatio);
 
-        leftMotorLeader.getConfigurator().apply(feedback);
+        motorConfig.Feedback = feedback;
+
         leftMotorLeader.setInverted(true);
+        leftMotorLeader.getConfigurator().apply(motorConfig);
 
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration()
                 .withMagnetSensor(

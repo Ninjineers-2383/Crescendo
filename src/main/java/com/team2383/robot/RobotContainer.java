@@ -23,7 +23,6 @@ import com.team2383.robot.commands.subsystem.orchestra.*;
 import com.team2383.robot.commands.subsystem.piece_detection.DriveToPieceCommand;
 import com.team2383.robot.commands.subsystem.pivot.*;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotSysIDCommand;
-import com.team2383.robot.commands.subsystem.resting_hooks.RestingHooksPowerCommand;
 import com.team2383.robot.commands.subsystem.shooter.*;
 import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
@@ -34,9 +33,6 @@ import com.team2383.robot.subsystems.piece_detection.PieceDetectionIO;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionIOPhoton;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionSubsystem;
 import com.team2383.robot.subsystems.pivot.*;
-import com.team2383.robot.subsystems.resting_hooks.RestingHookIO;
-import com.team2383.robot.subsystems.resting_hooks.RestingHookIOTalonSRX;
-import com.team2383.robot.subsystems.resting_hooks.RestingHookSubsystem;
 import com.team2383.robot.subsystems.shooter.*;
 import com.team2383.robot.subsystems.sim_components.*;
 
@@ -55,7 +51,6 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
@@ -75,15 +70,11 @@ public class RobotContainer {
 
     private final JoystickButton m_seek = new JoystickButton(m_operatorController, 2);
 
-    private final JoystickButton m_fullFeedFront = new JoystickButton(m_driverController, 5);
     private final JoystickButton m_fullFeedRear = new JoystickButton(m_driverController, 6);
 
     private final JoystickButton m_manualAmp = new JoystickButton(m_operatorController, 5);
 
     private final JoystickButton m_pivotZero = new JoystickButton(m_operatorController, 1);
-
-    private final POVButton m_hooksDown = new POVButton(m_operatorController, 180);
-    private final POVButton m_hooksDown2 = new POVButton(m_operatorController, 270);
 
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
@@ -100,7 +91,6 @@ public class RobotContainer {
 
     private PivotSubsystem m_pivotSubsystem;
 
-    private FeederSubsystem m_frontFeederSubsystem;
     private FeederSubsystem m_backFeederSubsystem;
 
     private IndexerSubsystem m_indexerSubsystem;
@@ -108,8 +98,6 @@ public class RobotContainer {
     private ShooterSubsystem m_shooterSubsystem;
 
     private PieceDetectionSubsystem m_pieceDetectionSubsystem;
-
-    private RestingHookSubsystem m_restingHookSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -145,7 +133,6 @@ public class RobotContainer {
 
                     m_pivotSubsystem = new PivotSubsystem(new PivotIOFalcon());
 
-                    m_frontFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kFrontMotorID));
                     m_backFeederSubsystem = new FeederSubsystem(new FeederIONEO(FeederConstants.kRearMotorID));
 
                     m_indexerSubsystem = new IndexerSubsystem(new IndexerIONEO());
@@ -154,7 +141,6 @@ public class RobotContainer {
 
                     m_pieceDetectionSubsystem = new PieceDetectionSubsystem(new PieceDetectionIOPhoton());
 
-                    m_restingHookSubsystem = new RestingHookSubsystem(new RestingHookIOTalonSRX());
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -172,7 +158,6 @@ public class RobotContainer {
 
                     m_pivotSubsystem = new PivotSubsystem(new PivotIOSim());
 
-                    m_frontFeederSubsystem = new FeederSubsystem(new FeederIOSim());
                     m_backFeederSubsystem = new FeederSubsystem(new FeederIOSim());
 
                     m_indexerSubsystem = new IndexerSubsystem(new IndexerIOSim());
@@ -192,18 +177,12 @@ public class RobotContainer {
 
         m_pivotSubsystem = m_pivotSubsystem == null ? new PivotSubsystem(new PivotIO() {}) : m_pivotSubsystem;
 
-        m_frontFeederSubsystem = m_frontFeederSubsystem == null ? new FeederSubsystem(new FeederIO() {})
-                : m_frontFeederSubsystem;
-
         m_backFeederSubsystem = m_backFeederSubsystem == null ? new FeederSubsystem(new FeederIO() {})
                 : m_backFeederSubsystem;
 
         m_indexerSubsystem = m_indexerSubsystem == null ? new IndexerSubsystem(new IndexerIO() {}) : m_indexerSubsystem;
 
         m_shooterSubsystem = m_shooterSubsystem == null ? new ShooterSubsystem(new ShooterIO() {}) : m_shooterSubsystem;
-
-        m_restingHookSubsystem = m_restingHookSubsystem == null ? new RestingHookSubsystem(new RestingHookIO() {})
-                : m_restingHookSubsystem;
 
         m_pieceDetectionSubsystem = m_pieceDetectionSubsystem == null
                 ? new PieceDetectionSubsystem(new PieceDetectionIO() {})
@@ -245,22 +224,12 @@ public class RobotContainer {
         m_pivotZero.onTrue(new PivotPositionCommand(m_pivotSubsystem,
                 PivotPresets.ZERO));
 
-        m_fullFeedFront.whileTrue(
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                        m_frontFeederSubsystem, PivotPresets.FEED_FRONT));
-
-        m_fullFeedFront.and(m_autoFeed).whileTrue(
-                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, true));
-
         m_fullFeedRear.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
 
         m_fullFeedRear.and(m_autoFeed).whileTrue(
                 new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, false));
-
-        m_fullFeedFront.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2)
-                .deadlineWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)));
 
         m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2)
                 .deadlineWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)));
@@ -279,10 +248,6 @@ public class RobotContainer {
 
         m_autoAmp.whileTrue(
                 new ScoreAmpCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem));
-
-        m_hooksDown.onTrue(
-                new PivotClimbCommand(m_pivotSubsystem));
-        m_hooksDown2.onTrue(new RestingHooksPowerCommand(m_restingHookSubsystem));
 
         m_manualAmp.whileTrue(
                 new ParallelCommandGroup(
@@ -320,9 +285,6 @@ public class RobotContainer {
         m_pivotSubsystem.setDefaultCommand(
                 new PivotDefaultCommand(m_pivotSubsystem,
                         () -> pivotAngle.get() * (Math.PI / 180)));
-
-        m_frontFeederSubsystem.setDefaultCommand(new FeederPowerCommand(m_frontFeederSubsystem,
-                () -> 0));
 
         m_backFeederSubsystem.setDefaultCommand(new FeederPowerCommand(m_backFeederSubsystem,
                 () -> 0));
@@ -394,13 +356,8 @@ public class RobotContainer {
                 m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
-                m_drivetrainSubsystem, m_pivotSubsystem, m_frontFeederSubsystem, m_indexerSubsystem,
+                m_drivetrainSubsystem, m_pivotSubsystem, m_backFeederSubsystem, m_indexerSubsystem,
                 m_shooterSubsystem));
-
-        testDashboardChooser.addOption("Super Mario Bros Overworld Theme",
-                new OrchestraCommand("music/MarioOverworld.chrp",
-                        m_drivetrainSubsystem, m_pivotSubsystem, m_frontFeederSubsystem, m_indexerSubsystem,
-                        m_shooterSubsystem));
 
         testDashboardChooser.addOption("Drivetrain Heading Tuning",
                 new DrivetrainHeadingControllerCommand(m_drivetrainSubsystem, () -> Math.toRadians(100 * MathUtil
@@ -425,23 +382,14 @@ public class RobotContainer {
                                                 .plus(new Rotation2d(Math.PI))),
                         m_drivetrainSubsystem).withTimeout(0.02));
 
-        NamedCommands.registerCommand("FeedFront",
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                        m_frontFeederSubsystem, PivotPresets.FEED_FRONT));
-
-        NamedCommands.registerCommand("PartialFeedFront",
-                new ParallelCommandGroup(
-                        new IndexerCommand(m_indexerSubsystem, () -> -0.5),
-                        new FeederPowerCommand(m_frontFeederSubsystem, () -> -0.8)));
-
         NamedCommands.registerCommand("FeedBack",
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
 
-        NamedCommands.registerCommand("PartialFeedFront",
+        NamedCommands.registerCommand("PartialFeedBack",
                 new ParallelCommandGroup(
                         new IndexerCommand(m_indexerSubsystem, () -> -0.5),
-                        new FeederPowerCommand(m_frontFeederSubsystem, () -> -0.8)));
+                        new FeederPowerCommand(m_backFeederSubsystem, () -> -0.8)));
 
         NamedCommands.registerCommand("SeekAndShoot",
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
