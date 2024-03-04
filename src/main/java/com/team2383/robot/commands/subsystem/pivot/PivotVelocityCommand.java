@@ -19,7 +19,7 @@ public class PivotVelocityCommand extends Command {
 
     @Override
     public void execute() {
-        pivot.addPosition(velocity.getAsDouble() * 0.02);
+        pivot.incrementPosition(velocity.getAsDouble() * 0.02);
     }
 
 }

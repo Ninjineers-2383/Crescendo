@@ -37,9 +37,9 @@ public class PivotSysIDCommand {
 
                             log.motor("Pivot")
                                     .voltage(voltage.mut_replace(pivot.getVoltage(), Volts))
-                                    .angularPosition(position.mut_replace(pivot.getAngle(), Radians))
+                                    .angularPosition(position.mut_replace(pivot.getAngle().getRadians(), Radians))
                                     .angularVelocity(
-                                            velocity.mut_replace(pivot.getVelocity(), RadiansPerSecond));
+                                            velocity.mut_replace(pivot.getVelocityRadPerSec(), RadiansPerSecond));
                         }, pivot));
     }
 

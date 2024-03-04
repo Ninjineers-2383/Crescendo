@@ -4,58 +4,101 @@ import static edu.wpi.first.units.Units.Volts;
 
 import org.littletonrobotics.junction.Logger;
 
-import edu.wpi.first.math.controller.ArmFeedforward;
-import edu.wpi.first.math.controller.PIDController;
+import com.team2383.lib.util.mechanical_advantage.Alert;
+import com.team2383.lib.util.mechanical_advantage.LoggedTunableNumber;
+
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
+    private static final LoggedTunableNumber kP = new LoggedTunableNumber("Pivot/Gains/kP", PivotConstants.kGains.kP());
+    private static final LoggedTunableNumber kI = new LoggedTunableNumber("Pivot/Gains/kI", PivotConstants.kGains.kI());
+    private static final LoggedTunableNumber kD = new LoggedTunableNumber("Pivot/Gains/kD", PivotConstants.kGains.kD());
+    private static final LoggedTunableNumber kS = new LoggedTunableNumber("Pivot/Gains/kS", PivotConstants.kGains.kS());
+    private static final LoggedTunableNumber kV = new LoggedTunableNumber("Pivot/Gains/kV", PivotConstants.kGains.kV());
+    private static final LoggedTunableNumber kA = new LoggedTunableNumber("Pivot/Gains/kA", PivotConstants.kGains.kA());
+    private static final LoggedTunableNumber kG = new LoggedTunableNumber("Pivot/Gains/kG", PivotConstants.kGains.kG());
+
+    private final LoggedTunableNumber kMaxAngleDegrees = new LoggedTunableNumber("Pivot/MaxAngle",
+            PivotConstants.kMaxAngleDegrees);
+
+    private final LoggedTunableNumber kMinAngleDegrees = new LoggedTunableNumber("Pivot/MinAngle",
+            PivotConstants.kMinAngleDegrees);
+
+    private final Alert leftMotorDisconnected = new Alert("Pivot left motor disconnected!", Alert.AlertType.WARNING);
+    private final Alert rightMotorDisconnected = new Alert("Pivot right motor disconnected!", Alert.AlertType.WARNING);
+    private final Alert encoderDisconnected = new Alert("Pivot encoder disconnected!", Alert.AlertType.WARNING);
+
+    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
+            PivotConstants.kMaxVelo, PivotConstants.kMaxAccel);
+
+    private TrapezoidProfile profile = new TrapezoidProfile(constraints);
+
+    private TrapezoidProfile.State goal = new TrapezoidProfile.State();
+
+    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+
     private final PivotIO io;
     private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
 
     public PivotSubsystem(PivotIO io) {
         this.io = io;
-    }
 
-    public void setVoltage(Measure<Voltage> voltage) {
-        io.setVoltage(voltage.in(Volts));
+        goal = new TrapezoidProfile.State(getAngle().getRotations(), 0);
+        setpoint = goal;
     }
 
     @Override
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("Pivot", inputs);
+
+        setpoint = profile.calculate(0.02, setpoint,
+                new TrapezoidProfile.State(
+                        MathUtil.clamp(
+                                goal.position,
+                                Units.degreesToRotations(kMinAngleDegrees.get()),
+                                Units.degreesToRotations(kMaxAngleDegrees.get())),
+                        0.0));
+
+        io.setAngleRadians(setpoint.position);
+
+        leftMotorDisconnected.set(!inputs.leftMotorConnected);
+        rightMotorDisconnected.set(!inputs.rightMotorConnected);
+        encoderDisconnected.set(!inputs.encoderConnected);
+
+        LoggedTunableNumber.ifChanged(hashCode(), () -> io.setPIDController(kP.get(), kI.get(), kD.get()), kP, kI, kD);
+        LoggedTunableNumber.ifChanged(hashCode(), () -> io.setFeedforward(kS.get(), kV.get(), kA.get(), kG.get()), kS,
+                kV, kA, kG);
     }
 
-    public void addPosition(double velocity) {
-        io.setAngle(Units.rotationsToRadians(inputs.desiredAngle) + velocity);
+    public void setVoltage(Measure<Voltage> voltage) {
+        io.setVoltage(voltage.in(Volts));
+    }
+
+    public void incrementPosition(double deltaAngle) {
+        io.setAngleRadians(Units.rotationsToRadians(inputs.desiredAngle) + deltaAngle);
     }
 
     public void setPosition(double angleRads) {
-        io.setAngle(angleRads);
+        goal = new TrapezoidProfile.State(angleRads, 0);
     }
 
     public boolean isFinished() {
         return Math.abs(inputs.pivotAngle - inputs.desiredAngle) < (1.2) / 360;
-        // return false;
     }
 
-    public double getAngle() {
-        return Units.rotationsToRadians(inputs.pivotAngle);
+    public Rotation2d getAngle() {
+        return Rotation2d.fromRotations(inputs.pivotAngle);
     }
 
-    public double getVelocity() {
+    public double getVelocityRadPerSec() {
         return Units.rotationsToRadians(inputs.currentVelocity);
-    }
-
-    public void setPIDController(PIDController controller) {
-        io.setPIDController(controller);
-    }
-
-    public void setFeedforward(ArmFeedforward feedforward) {
-        io.setFeedforward(feedforward);
     }
 
     public void disable() {

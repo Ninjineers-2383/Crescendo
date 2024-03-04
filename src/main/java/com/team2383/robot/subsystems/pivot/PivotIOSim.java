@@ -1,40 +1,37 @@
 package com.team2383.robot.subsystems.pivot;
 
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.simulation.DCMotorSim;
 
 public class PivotIOSim implements PivotIO {
-    private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
-            5, 7);
+    private DCMotorSim motor = new DCMotorSim(DCMotor.getFalcon500(2), PivotConstants.kPivotMotorGearRatio, 0.01);
 
-    private TrapezoidProfile profile = new TrapezoidProfile(constraints);
+    private double desiredAngle = 0;
+    private PIDController controller = new PIDController(PivotConstants.kGains.kP(), PivotConstants.kGains.kI(),
+            PivotConstants.kGains.kD());
 
-    private TrapezoidProfile.State goal = new TrapezoidProfile.State();
-
-    private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
+    private ArmFeedforward feedforward = new ArmFeedforward(PivotConstants.kGains.kS(), PivotConstants.kGains.kV(),
+            PivotConstants.kGains.kA());
 
     public PivotIOSim() {
-        goal = new TrapezoidProfile.State(0, 0);
-        setpoint = goal;
+
     }
 
     public void updateInputs(PivotIOInputs inputs) {
-        setpoint = profile.calculate(0.02, setpoint, goal);
+        motor.setInputVoltage(controller.calculate(motor.getAngularPositionRotations(), desiredAngle)
+                + feedforward.calculate(desiredAngle, 3));
 
-        inputs.current = 0;
         inputs.appliedVolts = 0;
-        inputs.velocityRadPerS = setpoint.velocity;
+        inputs.velocityRadPerS = motor.getAngularVelocityRadPerSec();
 
-        inputs.desiredVelocity = setpoint.velocity;
-
-        inputs.pivotAngle = setpoint.position;
-        inputs.currentDesiredAngle = setpoint.position;
-
-        inputs.desiredAngle = goal.position;
+        inputs.pivotAngle = motor.getAngularPositionRad();
+        inputs.currentDesiredAngle = desiredAngle;
     }
 
     @Override
-    public void setAngle(double angle) {
-        goal = new TrapezoidProfile.State(Units.radiansToRotations(angle), 0);
+    public void setAngleRadians(double angle) {
+        desiredAngle = angle;
     }
 }

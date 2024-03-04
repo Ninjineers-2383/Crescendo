@@ -19,6 +19,8 @@ public final class Constants {
     public static final String kRIOBus = "rio";
     public static final String kCANivoreBus = "Drive";
 
+    public static final boolean tuningMode = true;
+
     private static final RobotType robot = RobotType.ROBOT_SIM;
 
     public static RobotType getRobot() {

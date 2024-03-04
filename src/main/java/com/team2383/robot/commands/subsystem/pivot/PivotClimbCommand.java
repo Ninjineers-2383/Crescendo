@@ -20,7 +20,7 @@ public class PivotClimbCommand extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        pivot.setPosition(pivot.getAngle());
+        pivot.setPosition(pivot.getAngle().getRadians());
     }
 
     @Override
