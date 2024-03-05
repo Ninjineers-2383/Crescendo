@@ -5,6 +5,8 @@ import org.littletonrobotics.junction.AutoLog;
 public interface IndexerIO {
     @AutoLog
     public static class IndexerIOInputs {
+        public boolean motorConnected = true;
+
         public double power = 0.0;
     }
 

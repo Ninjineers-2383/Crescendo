@@ -1,6 +1,7 @@
 package com.team2383.robot.subsystems.indexer;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 
 public class IndexerIONEO implements IndexerIO {
     private final CANSparkMax m_indexer;
@@ -11,6 +12,8 @@ public class IndexerIONEO implements IndexerIO {
 
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
+        inputs.motorConnected = m_indexer.getLastError() == REVLibError.kOk;
+
         inputs.power = m_indexer.get();
     }
 
