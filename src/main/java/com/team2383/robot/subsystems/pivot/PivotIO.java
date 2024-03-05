@@ -25,7 +25,7 @@ public interface PivotIO {
     public default void updateInputs(PivotIOInputs inputs) {
     }
 
-    public default void setAngleRadians(double angle) {
+    public default void setAngleRadians(double angle, double velocity) {
     }
 
     public default void forceAngle(double angle) {

@@ -14,6 +14,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
+import com.ctre.phoenix6.signals.InvertedValue;
 import com.team2383.robot.Constants;
 import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 
@@ -30,6 +31,8 @@ public class PivotIOFalcon implements PivotIO {
     private Slot0Configs configs;
 
     private double offset = 0;
+
+    private boolean offsetSet = false;
 
     public PivotIOFalcon() {
         leftMotorLeader = new TalonFX(PivotConstants.kLeftMotorID, Constants.kCANivoreBus);
@@ -68,13 +71,13 @@ public class PivotIOFalcon implements PivotIO {
 
         motorConfig.Feedback = feedback;
 
-        leftMotorLeader.setInverted(true);
+        motorConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
         leftMotorLeader.getConfigurator().apply(motorConfig);
 
         CANcoderConfiguration encoderConfig = new CANcoderConfiguration()
                 .withMagnetSensor(
                         new MagnetSensorConfigs()
-                                .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Unsigned_0To1)
+                                .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf)
                                 .withMagnetOffset(PivotConstants.kEncoderOffset));
 
         encoder.getConfigurator().apply(encoderConfig);
@@ -94,14 +97,18 @@ public class PivotIOFalcon implements PivotIO {
         inputs.pivotAngle = leftMotorLeader.getPosition().getValue() - offset;
         inputs.currentDesiredAngle = leftMotorLeader.getClosedLoopReference().getValue() - offset;
 
-        if (leftMotorLeader.getPosition().getValueAsDouble() > 0.9 && offset == 0) {
-            offset = 1;
+        if (leftMotorLeader.getPosition().getValueAsDouble() > 0.9 && offset == 0 && !offsetSet) {
+            offset = Math.ceil(leftMotorLeader.getPosition().getValueAsDouble());
         }
+        if (leftMotorLeader.getPosition().getValueAsDouble() < -0.4 && offset == 0 && !offsetSet) {
+            offset = Math.floor(leftMotorLeader.getPosition().getValueAsDouble());
+        }
+        offsetSet = true;
     }
 
     @Override
-    public void setAngleRadians(double angle) {
-        leftMotorLeader.setControl(positionOut.withPosition(angle));
+    public void setAngleRadians(double angle, double velocity) {
+        leftMotorLeader.setControl(positionOut.withPosition(angle).withVelocity(velocity));
     }
 
     @Override
@@ -134,5 +141,7 @@ public class PivotIOFalcon implements PivotIO {
         configs.GravityType = GravityTypeValue.Arm_Cosine;
 
         leftMotorLeader.getConfigurator().apply(configs);
+
+        System.out.println("Pivot Feedforward changes");
     }
 }

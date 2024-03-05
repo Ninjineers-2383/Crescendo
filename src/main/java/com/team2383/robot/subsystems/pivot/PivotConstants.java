@@ -7,21 +7,21 @@ public class PivotConstants {
     public static int kEncoderID = 5;
 
     // Encoder Offset
-    public static double kEncoderOffset = -0.133057;
+    public static double kEncoderOffset = -0.473877;
 
     // Feedback and Feedforward Gains
-    public static final ArmGains kGains = new ArmGains(129, 11, 0, 2, 70, 25, 0.4);
+    public static final ArmGains kGains = new ArmGains(375, 0, 0, 2.5, 0, 0, 0.5);
 
     // Trapezoid Profile Constants (In rotations / s and rotations / s^2)
-    public static double kMaxVelo = 1;
-    public static double kMaxAccel = 3;
+    public static double kMaxVelo = 2;
+    public static double kMaxAccel = 0.25;
 
     // Gear Ratio
     public static double kPivotMotorGearRatio = 225;
 
     // Pivot Bounds
     public static double kMaxAngleDegrees = 180;
-    public static double kMinAngleDegrees = -40;
+    public static double kMinAngleDegrees = -45;
 
     // Current Limits
     public static double kCurrentLimit = 40;

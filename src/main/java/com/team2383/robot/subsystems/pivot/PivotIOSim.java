@@ -31,7 +31,7 @@ public class PivotIOSim implements PivotIO {
     }
 
     @Override
-    public void setAngleRadians(double angle) {
+    public void setAngleRadians(double angle, double velocity) {
         desiredAngle = angle;
     }
 }

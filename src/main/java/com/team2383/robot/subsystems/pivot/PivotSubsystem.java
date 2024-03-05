@@ -30,6 +30,11 @@ public class PivotSubsystem extends SubsystemBase {
     private final LoggedTunableNumber kMinAngleDegrees = new LoggedTunableNumber("Pivot/MinAngle",
             PivotConstants.kMinAngleDegrees);
 
+    private final LoggedTunableNumber kMaxVelocity = new LoggedTunableNumber("Pivot/MaxVelocity",
+            PivotConstants.kMaxVelo);
+    private final LoggedTunableNumber kMaxAccel = new LoggedTunableNumber("Pivot/MaxAcceleration",
+            PivotConstants.kMaxAccel);
+
     private final Alert leftMotorDisconnected = new Alert("Pivot left motor disconnected!", Alert.AlertType.WARNING);
     private final Alert rightMotorDisconnected = new Alert("Pivot right motor disconnected!", Alert.AlertType.WARNING);
     private final Alert encoderDisconnected = new Alert("Pivot encoder disconnected!", Alert.AlertType.WARNING);
@@ -56,6 +61,7 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
+        inputs.desiredAngle = goal.position;
         Logger.processInputs("Pivot", inputs);
 
         setpoint = profile.calculate(0.02, setpoint,
@@ -66,15 +72,20 @@ public class PivotSubsystem extends SubsystemBase {
                                 Units.degreesToRotations(kMaxAngleDegrees.get())),
                         0.0));
 
-        io.setAngleRadians(setpoint.position);
+        io.setAngleRadians(setpoint.position, setpoint.velocity);
 
         leftMotorDisconnected.set(!inputs.leftMotorConnected);
         rightMotorDisconnected.set(!inputs.rightMotorConnected);
         encoderDisconnected.set(!inputs.encoderConnected);
 
-        LoggedTunableNumber.ifChanged(hashCode(), () -> io.setPIDController(kP.get(), kI.get(), kD.get()), kP, kI, kD);
-        LoggedTunableNumber.ifChanged(hashCode(), () -> io.setFeedforward(kS.get(), kV.get(), kA.get(), kG.get()), kS,
+        LoggedTunableNumber.ifChanged(hashCode(), (pid) -> io.setPIDController(pid[0], pid[1], pid[2]), kP, kI, kD);
+        LoggedTunableNumber.ifChanged(hashCode(), (ff) -> io.setFeedforward(ff[0], ff[1], ff[2], ff[3]), kS,
                 kV, kA, kG);
+
+        LoggedTunableNumber.ifChanged(hashCode(),
+                (constraints) -> profile = new TrapezoidProfile(
+                        new TrapezoidProfile.Constraints(constraints[0], constraints[1])),
+                kMaxVelocity, kMaxAccel);
     }
 
     public void setVoltage(Measure<Voltage> voltage) {
@@ -82,11 +93,11 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public void incrementPosition(double deltaAngle) {
-        io.setAngleRadians(Units.rotationsToRadians(inputs.desiredAngle) + deltaAngle);
+        goal.position += deltaAngle;
     }
 
     public void setPosition(double angleRads) {
-        goal = new TrapezoidProfile.State(angleRads, 0);
+        goal = new TrapezoidProfile.State(Units.radiansToRotations(angleRads), 0);
     }
 
     public boolean isFinished() {
