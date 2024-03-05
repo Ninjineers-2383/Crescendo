@@ -15,6 +15,8 @@ public class IndexerIONEO implements IndexerIO {
         inputs.motorConnected = m_indexer.getLastError() == REVLibError.kOk;
 
         inputs.power = m_indexer.get();
+        inputs.supplyVoltage = m_indexer.getAppliedOutput();
+        inputs.supplyCurrent = m_indexer.getOutputCurrent();
     }
 
     @Override
