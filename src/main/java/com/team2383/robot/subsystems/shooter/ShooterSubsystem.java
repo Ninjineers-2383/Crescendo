@@ -2,6 +2,9 @@ package com.team2383.robot.subsystems.shooter;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.team2383.lib.util.mechanical_advantage.Alert;
+import com.team2383.lib.util.mechanical_advantage.Alert.AlertType;
+
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.MutableMeasure.mutable;
 import static edu.wpi.first.units.Units.Rotations;
@@ -21,6 +24,9 @@ public class ShooterSubsystem extends SubsystemBase {
     private final ShooterIO shooter;
     private final ShooterIOInputsAutoLogged inputs = new ShooterIOInputsAutoLogged();
 
+    private final Alert topMotorDisconnected;
+    private final Alert bottomMotorDisconnected;
+
     // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
     private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
     // Mutable holder for unit-safe linear distance values, persisted to avoid
@@ -34,6 +40,13 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public ShooterSubsystem(ShooterIO io) {
         shooter = io;
+
+        topMotorDisconnected = new Alert("Top Shooter Motor Disconnected! CAN ID: " + ShooterConstants.kTopMotorID,
+                AlertType.WARNING);
+
+        bottomMotorDisconnected = new Alert(
+                "Bottom Shooter Motor Disconnected! CAN ID: " + ShooterConstants.kBottomMotorID,
+                AlertType.WARNING);
 
         m_sysIdRoutine = new SysIdRoutine(
                 // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
@@ -83,6 +96,9 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         shooter.updateInputs(inputs);
         Logger.processInputs("Shooter", inputs);
+
+        topMotorDisconnected.set(!inputs.topMotorConnected);
+        bottomMotorDisconnected.set(!inputs.bottomMotorConnected);
     }
 
     public void setTopBottomRPM(double RPM, double differential) {

@@ -5,6 +5,9 @@ import org.littletonrobotics.junction.AutoLog;
 public interface ShooterIO {
     @AutoLog
     public static class ShooterIOInputs {
+        public boolean topMotorConnected = true;
+        public boolean bottomMotorConnected = true;
+
         public double topVoltage = 0.0;
         public double bottomVoltage = 0.0;
         public double sideVoltage = 0.0;
