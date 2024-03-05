@@ -229,7 +229,7 @@ public class RobotContainer {
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
 
         m_fullFeedRear.and(m_autoFeed).whileTrue(
-                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, false));
+                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem));
 
         m_fullFeedRear.onFalse(new IndexerCommand(m_indexerSubsystem, () -> 0.25).withTimeout(0.2)
                 .deadlineWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)));

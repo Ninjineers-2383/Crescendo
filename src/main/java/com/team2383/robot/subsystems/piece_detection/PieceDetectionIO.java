@@ -9,9 +9,6 @@ public interface PieceDetectionIO {
 
         public double frontYaw = 0.0;
         public boolean frontSeesTarget = false;
-
-        public double rearYaw = 0.0;
-        public boolean rearSeesTarget = false;
     }
 
     /** Updates the set of loggable inputs. */
