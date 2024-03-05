@@ -24,15 +24,16 @@ public class PivotSubsystem extends SubsystemBase {
     private static final LoggedTunableNumber kA = new LoggedTunableNumber("Pivot/Gains/kA", PivotConstants.kGains.kA());
     private static final LoggedTunableNumber kG = new LoggedTunableNumber("Pivot/Gains/kG", PivotConstants.kGains.kG());
 
-    private final LoggedTunableNumber kMaxAngleDegrees = new LoggedTunableNumber("Pivot/MaxAngle",
+    private final LoggedTunableNumber kMaxAngleDegrees = new LoggedTunableNumber("Pivot/Bounds/MaxAngle",
             PivotConstants.kMaxAngleDegrees);
 
-    private final LoggedTunableNumber kMinAngleDegrees = new LoggedTunableNumber("Pivot/MinAngle",
+    private final LoggedTunableNumber kMinAngleDegrees = new LoggedTunableNumber("Pivot/Bounds/MinAngle",
             PivotConstants.kMinAngleDegrees);
 
-    private final LoggedTunableNumber kMaxVelocity = new LoggedTunableNumber("Pivot/MaxVelocity",
+    private final LoggedTunableNumber kMaxVelocity = new LoggedTunableNumber("Pivot/TrapezoidalConstraints/MaxVelocity",
             PivotConstants.kMaxVelo);
-    private final LoggedTunableNumber kMaxAccel = new LoggedTunableNumber("Pivot/MaxAcceleration",
+    private final LoggedTunableNumber kMaxAccel = new LoggedTunableNumber(
+            "Pivot/TrapezoidalConstraints/MaxAcceleration",
             PivotConstants.kMaxAccel);
 
     private final Alert leftMotorDisconnected = new Alert(

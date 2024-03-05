@@ -9,6 +9,8 @@ import org.littletonrobotics.junction.networktables.LoggedDashboardNumber;
 
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.team2383.lib.util.mechanical_advantage.Alert;
+import com.team2383.lib.util.mechanical_advantage.Alert.AlertType;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
 import com.team2383.robot.commands.feeding.FullFeedCommand;
@@ -65,6 +67,9 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 public class RobotContainer {
     private final GenericHID m_driverController = new GenericHID(0);
     private final GenericHID m_operatorController = new GenericHID(1);
+    private final Alert driverDisconnected = new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
+    private final Alert operatorDisconnected = new Alert("Operator controller disconnected (port 1).",
+            AlertType.WARNING);
 
     private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
 
@@ -207,6 +212,8 @@ public class RobotContainer {
     }
 
     public void periodic() {
+        checkControllers();
+        
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
             lwEnabled = true;
@@ -214,6 +221,16 @@ public class RobotContainer {
             lwEnabled = false;
             LiveWindow.disableAllTelemetry();
         }
+    }
+
+    public void checkControllers() {
+        // Check if theyre connected and if driver is xbox and if operator is NOT xbox
+        driverDisconnected.set(
+                !DriverStation.isJoystickConnected(m_driverController.getPort())
+                        || !DriverStation.getJoystickIsXbox(m_driverController.getPort()));
+        operatorDisconnected.set(
+                !DriverStation.isJoystickConnected(m_operatorController.getPort())
+                        || DriverStation.getJoystickIsXbox(m_operatorController.getPort()));
     }
 
     private void configureButtonBindings() {
