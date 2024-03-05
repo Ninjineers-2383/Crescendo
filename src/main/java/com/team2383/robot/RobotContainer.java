@@ -67,9 +67,15 @@ import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 public class RobotContainer {
     private final GenericHID m_driverController = new GenericHID(0);
     private final GenericHID m_operatorController = new GenericHID(1);
+
     private final Alert driverDisconnected = new Alert("Driver controller disconnected (port 0).", AlertType.WARNING);
     private final Alert operatorDisconnected = new Alert("Operator controller disconnected (port 1).",
             AlertType.WARNING);
+
+    private final Alert driverWrongController = new Alert("Driver controler not identified as Xbox controller (port 0)",
+            AlertType.WARNING);
+    private final Alert operatorWrongController = new Alert(
+            "Operator controller identified as Xbox controller, should be F310 (port 1)", AlertType.WARNING);
 
     private final JoystickButton m_setHeadingZero = new JoystickButton(m_driverController, 1);
 
@@ -213,7 +219,7 @@ public class RobotContainer {
 
     public void periodic() {
         checkControllers();
-        
+
         if (enableLW.get() && !lwEnabled) {
             LiveWindow.enableAllTelemetry();
             lwEnabled = true;
@@ -226,11 +232,16 @@ public class RobotContainer {
     public void checkControllers() {
         // Check if theyre connected and if driver is xbox and if operator is NOT xbox
         driverDisconnected.set(
-                !DriverStation.isJoystickConnected(m_driverController.getPort())
-                        || !DriverStation.getJoystickIsXbox(m_driverController.getPort()));
+                !DriverStation.isJoystickConnected(m_driverController.getPort()));
+
         operatorDisconnected.set(
-                !DriverStation.isJoystickConnected(m_operatorController.getPort())
-                        || DriverStation.getJoystickIsXbox(m_operatorController.getPort()));
+                !DriverStation.isJoystickConnected(m_operatorController.getPort()));
+
+        driverWrongController.set(DriverStation.isJoystickConnected(m_driverController.getPort())
+                && !DriverStation.getJoystickIsXbox(m_driverController.getPort()));
+
+        operatorWrongController.set(!DriverStation.isJoystickConnected(m_driverController.getPort())
+                && DriverStation.getJoystickIsXbox(m_operatorController.getPort()));
     }
 
     private void configureButtonBindings() {
