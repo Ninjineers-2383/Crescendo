@@ -1,5 +1,7 @@
 package com.team2383.robot.subsystems.pivot;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
@@ -18,11 +20,21 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.team2383.robot.Constants;
 import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 
+import java.util.List;
+
 public class PivotIOFalcon implements PivotIO {
     private final TalonFX leftMotorLeader;
     private final TalonFX rightMotorFollower;
 
     private final CANcoder encoder;
+
+    private final StatusSignal<Double> internalPositionRotations;
+    private final StatusSignal<Double> absolutePositionRotations;
+    private final StatusSignal<Double> velocityRps;
+    private final List<StatusSignal<Double>> appliedVoltage;
+    private final List<StatusSignal<Double>> supplyCurrent;
+    private final List<StatusSignal<Double>> torqueCurrent;
+    private final List<StatusSignal<Double>> tempCelsius;
 
     private final PositionTorqueCurrentFOC positionOut = new PositionTorqueCurrentFOC(0.0).withUpdateFreqHz(0.0);
 
@@ -81,21 +93,64 @@ public class PivotIOFalcon implements PivotIO {
                                 .withMagnetOffset(PivotConstants.kEncoderOffset));
 
         encoder.getConfigurator().apply(encoderConfig);
+
+        // Status signals
+        internalPositionRotations = leftMotorLeader.getRotorPosition();
+        absolutePositionRotations = leftMotorLeader.getPosition();
+        velocityRps = leftMotorLeader.getVelocity();
+        appliedVoltage = List.of(leftMotorLeader.getMotorVoltage(), rightMotorFollower.getMotorVoltage());
+        supplyCurrent = List.of(leftMotorLeader.getSupplyCurrent(), rightMotorFollower.getSupplyCurrent());
+        torqueCurrent = List.of(leftMotorLeader.getTorqueCurrent(), rightMotorFollower.getTorqueCurrent());
+        tempCelsius = List.of(leftMotorLeader.getDeviceTemp(), rightMotorFollower.getDeviceTemp());
+
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                100,
+                internalPositionRotations,
+                absolutePositionRotations,
+                velocityRps,
+                appliedVoltage.get(0),
+                appliedVoltage.get(1),
+                supplyCurrent.get(0),
+                supplyCurrent.get(1),
+                torqueCurrent.get(0),
+                torqueCurrent.get(1),
+                tempCelsius.get(0),
+                tempCelsius.get(1));
+
+        // Optimize bus utilization
+        rightMotorFollower.optimizeBusUtilization(1.0);
+        leftMotorLeader.optimizeBusUtilization(1.0);
     }
 
     public void updateInputs(PivotIOInputs inputs) {
-        inputs.current = leftMotorLeader.getTorqueCurrent().getValue();
+        inputs.leftMotorConnected = BaseStatusSignal.refreshAll(
+                internalPositionRotations,
+                velocityRps,
+                appliedVoltage.get(0),
+                supplyCurrent.get(0),
+                torqueCurrent.get(0),
+                tempCelsius.get(0))
+                .isOK();
+        inputs.rightMotorConnected = BaseStatusSignal.refreshAll(
+                appliedVoltage.get(1),
+                supplyCurrent.get(1),
+                torqueCurrent.get(1),
+                tempCelsius.get(1))
+                .isOK();
 
-        inputs.appliedVolts = leftMotorLeader.getDutyCycle().getValue()
-                * rightMotorFollower.getSupplyVoltage().getValue();
+        inputs.encoderConnected = BaseStatusSignal.refreshAll(absolutePositionRotations).isOK();
 
-        inputs.velocityRadPerS = encoder.getVelocity().getValue() * 2 * Math.PI;
+        inputs.rotorPositionRot = internalPositionRotations.getValueAsDouble();
+        inputs.absoluteEncoderPositionRot = absolutePositionRotations.getValueAsDouble();
+        inputs.desiredPositionRot = leftMotorLeader.getClosedLoopReference().getValue() - offset;
 
-        inputs.desiredVelocity = leftMotorLeader.getClosedLoopReferenceSlope().getValue();
-        inputs.currentVelocity = leftMotorLeader.getVelocity().getValue();
+        inputs.velocityRotPerSec = velocityRps.getValue();
+        inputs.desiredVelocityRotPerSec = leftMotorLeader.getClosedLoopReferenceSlope().getValue();
 
-        inputs.pivotAngle = leftMotorLeader.getPosition().getValue() - offset;
-        inputs.currentDesiredAngle = leftMotorLeader.getClosedLoopReference().getValue() - offset;
+        inputs.appliedVolts = appliedVoltage.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
+        inputs.supplyCurrentAmps = supplyCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
+        inputs.torqueCurrentAmps = torqueCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
+        inputs.tempCelcius = tempCelsius.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
 
         if (leftMotorLeader.getPosition().getValueAsDouble() > 0.9 && offset == 0 && !offsetSet) {
             offset = Math.ceil(leftMotorLeader.getPosition().getValueAsDouble());
@@ -107,8 +162,8 @@ public class PivotIOFalcon implements PivotIO {
     }
 
     @Override
-    public void setAngleRadians(double angle, double velocity) {
-        leftMotorLeader.setControl(positionOut.withPosition(angle).withVelocity(velocity));
+    public void setAngleRot(double angleRot, double velocityRotPerSec) {
+        leftMotorLeader.setControl(positionOut.withPosition(angleRot).withVelocity(velocityRotPerSec));
     }
 
     @Override

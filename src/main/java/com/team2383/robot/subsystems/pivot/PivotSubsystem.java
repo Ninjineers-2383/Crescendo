@@ -35,9 +35,12 @@ public class PivotSubsystem extends SubsystemBase {
     private final LoggedTunableNumber kMaxAccel = new LoggedTunableNumber("Pivot/MaxAcceleration",
             PivotConstants.kMaxAccel);
 
-    private final Alert leftMotorDisconnected = new Alert("Pivot left motor disconnected!", Alert.AlertType.WARNING);
-    private final Alert rightMotorDisconnected = new Alert("Pivot right motor disconnected!", Alert.AlertType.WARNING);
-    private final Alert encoderDisconnected = new Alert("Pivot encoder disconnected!", Alert.AlertType.WARNING);
+    private final Alert leftMotorDisconnected = new Alert(
+            "Pivot left motor disconnected! CAN ID: " + PivotConstants.kLeftMotorID, Alert.AlertType.WARNING);
+    private final Alert rightMotorDisconnected = new Alert(
+            "Pivot right motor disconnected! CAN ID: " + PivotConstants.kRightMotorID, Alert.AlertType.WARNING);
+    private final Alert encoderDisconnected = new Alert(
+            "Pivot encoder disconnected! CAN ID: " + PivotConstants.kEncoderID, Alert.AlertType.WARNING);
 
     private final TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(
             PivotConstants.kMaxVelo, PivotConstants.kMaxAccel);
@@ -61,7 +64,7 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        inputs.desiredAngle = goal.position;
+        inputs.desiredPositionRot = goal.position;
         Logger.processInputs("Pivot", inputs);
 
         setpoint = profile.calculate(0.02, setpoint,
@@ -72,7 +75,7 @@ public class PivotSubsystem extends SubsystemBase {
                                 Units.degreesToRotations(kMaxAngleDegrees.get())),
                         0.0));
 
-        io.setAngleRadians(setpoint.position, setpoint.velocity);
+        io.setAngleRot(setpoint.position, setpoint.velocity);
 
         leftMotorDisconnected.set(!inputs.leftMotorConnected);
         rightMotorDisconnected.set(!inputs.rightMotorConnected);
@@ -101,15 +104,15 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public boolean isFinished() {
-        return Math.abs(inputs.pivotAngle - inputs.desiredAngle) < (1.2) / 360;
+        return Math.abs(inputs.absoluteEncoderPositionRot - inputs.desiredPositionRot) < (1.2) / 360;
     }
 
     public Rotation2d getAngle() {
-        return Rotation2d.fromRotations(inputs.pivotAngle);
+        return Rotation2d.fromRotations(inputs.absoluteEncoderPositionRot);
     }
 
     public double getVelocityRadPerSec() {
-        return Units.rotationsToRadians(inputs.currentVelocity);
+        return Units.rotationsToRadians(inputs.desiredVelocityRotPerSec);
     }
 
     public void disable() {
@@ -117,6 +120,6 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public double getVoltage() {
-        return inputs.appliedVolts;
+        return inputs.appliedVolts[0];
     }
 }

@@ -10,22 +10,23 @@ public interface PivotIO {
         public boolean rightMotorConnected = true;
         public boolean encoderConnected = true;
 
-        public double velocityRadPerS = 0.0;
-        public double pivotAngle = 0.0;
-        public double appliedVolts = 0.0;
-        public double current = 0.0;
-        public double desiredAngle = 0.0;
-        public double desiredVelocity = 0.0;
-        public double currentVelocity = 0.0;
-        public double desiredAcceleration = 0.0;
-        public double currentAcceleration = 0.0;
-        public double currentDesiredAngle = 0.0;
+        public double rotorPositionRot = 0.0;
+        public double absoluteEncoderPositionRot = 0.0;
+        public double desiredPositionRot = 0.0;
+
+        public double velocityRotPerSec = 0.0;
+        public double desiredVelocityRotPerSec = 0.0;
+
+        public double[] appliedVolts = new double[] {};
+        public double[] supplyCurrentAmps = new double[] {};
+        public double[] torqueCurrentAmps = new double[] {};
+        public double[] tempCelcius = new double[] {};
     }
 
     public default void updateInputs(PivotIOInputs inputs) {
     }
 
-    public default void setAngleRadians(double angle, double velocity) {
+    public default void setAngleRot(double angle, double velocity) {
     }
 
     public default void forceAngle(double angle) {

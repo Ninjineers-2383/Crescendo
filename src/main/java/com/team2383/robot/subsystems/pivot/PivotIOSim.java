@@ -23,15 +23,10 @@ public class PivotIOSim implements PivotIO {
         motor.setInputVoltage(controller.calculate(motor.getAngularPositionRotations(), desiredAngle)
                 + feedforward.calculate(desiredAngle, 3));
 
-        inputs.appliedVolts = 0;
-        inputs.velocityRadPerS = motor.getAngularVelocityRadPerSec();
-
-        inputs.pivotAngle = motor.getAngularPositionRad();
-        inputs.currentDesiredAngle = desiredAngle;
     }
 
     @Override
-    public void setAngleRadians(double angle, double velocity) {
+    public void setAngleRot(double angle, double velocity) {
         desiredAngle = angle;
     }
 }
