@@ -5,20 +5,7 @@ import org.littletonrobotics.junction.Logger;
 import com.team2383.lib.util.mechanical_advantage.Alert;
 import com.team2383.lib.util.mechanical_advantage.Alert.AlertType;
 
-import static edu.wpi.first.units.Units.Volts;
-import static edu.wpi.first.units.MutableMeasure.mutable;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-
-import edu.wpi.first.units.Angle;
-import edu.wpi.first.units.Measure;
-import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Velocity;
-import edu.wpi.first.units.Voltage;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 public class ShooterSubsystem extends SubsystemBase {
     private final ShooterIO shooter;
@@ -26,17 +13,6 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final Alert topMotorDisconnected;
     private final Alert bottomMotorDisconnected;
-
-    // Mutable holder for unit-safe voltage values, persisted to avoid reallocation.
-    private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-    // Mutable holder for unit-safe linear distance values, persisted to avoid
-    // reallocation.
-    private final MutableMeasure<Angle> m_distance = mutable(Rotations.of(0));
-    // Mutable holder for unit-safe linear velocity values, persisted to avoid
-    // reallocation.
-    private final MutableMeasure<Velocity<Angle>> m_velocity = mutable(RotationsPerSecond.of(0));
-
-    private final SysIdRoutine m_sysIdRoutine;
 
     public ShooterSubsystem(ShooterIO io) {
         shooter = io;
@@ -47,49 +23,6 @@ public class ShooterSubsystem extends SubsystemBase {
         bottomMotorDisconnected = new Alert(
                 "Bottom Shooter Motor Disconnected! CAN ID: " + ShooterConstants.kBottomMotorID,
                 AlertType.WARNING);
-
-        m_sysIdRoutine = new SysIdRoutine(
-                // Empty config defaults to 1 volt/second ramp rate and 7 volt step voltage.
-                new SysIdRoutine.Config(),
-                new SysIdRoutine.Mechanism(
-                        // Tell SysId how to plumb the driving voltage to the motors.
-                        (Measure<Voltage> volts) -> {
-                            shooter.setTopBottomVoltage(volts.in(Volts));
-                            shooter.setSideVoltage(volts.in(Volts));
-                        },
-                        // Tell SysId how to record a frame of data for each motor on the mechanism
-                        // being
-                        // characterized.
-                        log -> {
-                            // Record a frame for the left motors. Since these share an encoder, we consider
-                            // the entire group to be one motor.
-                            shooter.updateInputs(inputs);
-                            log.motor("top-shooter")
-                                    .voltage(
-                                            m_appliedVoltage.mut_replace(
-                                                    inputs.topVoltage, Volts))
-                                    .angularPosition(m_distance.mut_replace(inputs.topPosition, Rotations))
-                                    .angularVelocity(
-                                            m_velocity.mut_replace(inputs.topVelocity, RotationsPerSecond));
-                            log.motor("bottom-shooter")
-                                    .voltage(
-                                            m_appliedVoltage.mut_replace(
-                                                    inputs.bottomVoltage, Volts))
-                                    .angularPosition(m_distance.mut_replace(inputs.bottomPosition, Rotations))
-                                    .angularVelocity(
-                                            m_velocity.mut_replace(inputs.bottomVelocity, RotationsPerSecond));
-                            log.motor("side-shooter")
-                                    .voltage(
-                                            m_appliedVoltage.mut_replace(
-                                                    inputs.sideVoltage, Volts))
-                                    .angularPosition(m_distance.mut_replace(inputs.bottomPosition, Rotations))
-                                    .angularVelocity(
-                                            m_velocity.mut_replace(inputs.sideVelocity, RotationsPerSecond));
-                        },
-                        // Tell SysId to make generated commands require this subsystem, suffix test
-                        // state in
-                        // WPILog with this subsystem's name
-                        this));
     }
 
     @Override
@@ -117,11 +50,23 @@ public class ShooterSubsystem extends SubsystemBase {
         return inputs.topBottomSetpointRPM;
     }
 
-    public Command getQuasiStatic(Direction direction) {
-        return m_sysIdRoutine.quasistatic(direction);
+    public void setTopBottomVoltage(double voltage) {
+        shooter.setTopBottomVoltage(voltage);
     }
 
-    public Command getDynamic(Direction direction) {
-        return m_sysIdRoutine.dynamic(direction);
+    public void setSideVoltage(double voltage) {
+        shooter.setSideVoltage(voltage);
+    }
+
+    public double[] getVoltages() {
+        return new double[] { inputs.topVoltage, inputs.bottomVoltage, inputs.sideVoltage };
+    }
+
+    public double[] getPositions() {
+        return new double[] { inputs.topPosition, inputs.bottomPosition, inputs.sidePosition };
+    }
+
+    public double[] getVelocities() {
+        return new double[] { inputs.topVelocity, inputs.bottomVelocity, inputs.sideVelocity };
     }
 }

@@ -343,17 +343,19 @@ public class RobotContainer {
         testDashboardChooser.addOption("Drivetrain Quasistatic Reverse",
                 drivetrainSysIDCommand.getQuasiStatic(Direction.kReverse));
 
+        ShooterSysIDCommand shooterSysIDCommand = new ShooterSysIDCommand(m_shooterSubsystem);
+
         testDashboardChooser.addOption("Shooter Dynamic Forward",
-                m_shooterSubsystem.getDynamic(Direction.kForward));
+                shooterSysIDCommand.getDynamic(Direction.kForward));
 
         testDashboardChooser.addOption("Shooter Dynamic Reverse",
-                m_shooterSubsystem.getDynamic(Direction.kReverse));
+                shooterSysIDCommand.getDynamic(Direction.kReverse));
 
         testDashboardChooser.addOption("Shooter Quasistatic Forward",
-                m_shooterSubsystem.getQuasiStatic(Direction.kForward));
+                shooterSysIDCommand.getQuasiStatic(Direction.kForward));
 
         testDashboardChooser.addOption("Shooter Quasistatic Reverse",
-                m_shooterSubsystem.getQuasiStatic(Direction.kReverse));
+                shooterSysIDCommand.getQuasiStatic(Direction.kReverse));
 
         testDashboardChooser.addOption("Sea Shanty 2", new OrchestraCommand("music/SeaShanty2.chrp",
                 m_drivetrainSubsystem, m_pivotSubsystem, m_backFeederSubsystem, m_indexerSubsystem,
