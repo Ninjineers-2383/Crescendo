@@ -7,6 +7,7 @@ import com.ctre.phoenix6.StatusSignal;
 
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.REVLibError;
 import com.revrobotics.CANSparkBase.ControlType;
 import com.revrobotics.CANSparkBase.IdleMode;
 
@@ -80,6 +81,8 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
                 topBottomPosition.get(1),
                 topBottomVelocityRPM.get(1))
                 .isOK();
+
+        inputs.sideMotorConnected = sideMotor.getLastError() == REVLibError.kOk;
 
         inputs.topCurrent = topBottomSupplyCurrent.get(0).getValueAsDouble();
         inputs.bottomCurrent = topBottomSupplyCurrent.get(1).getValueAsDouble();

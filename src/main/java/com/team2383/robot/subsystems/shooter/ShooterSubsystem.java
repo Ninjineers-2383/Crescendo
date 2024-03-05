@@ -13,6 +13,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final Alert topMotorDisconnected;
     private final Alert bottomMotorDisconnected;
+    private final Alert sideMotorDisconnected;
 
     public ShooterSubsystem(ShooterIO io) {
         shooter = io;
@@ -23,6 +24,10 @@ public class ShooterSubsystem extends SubsystemBase {
         bottomMotorDisconnected = new Alert(
                 "Bottom Shooter Motor Disconnected! CAN ID: " + ShooterConstants.kBottomMotorID,
                 AlertType.WARNING);
+
+        sideMotorDisconnected = new Alert(
+                "Spinner Motor Disconnected! CAN ID: " + ShooterConstants.kSideMotorID,
+                AlertType.WARNING);
     }
 
     @Override
@@ -32,6 +37,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
         topMotorDisconnected.set(!inputs.topMotorConnected);
         bottomMotorDisconnected.set(!inputs.bottomMotorConnected);
+        sideMotorDisconnected.set(!inputs.sideMotorConnected);
     }
 
     public void setTopBottomRPM(double RPM, double differential) {

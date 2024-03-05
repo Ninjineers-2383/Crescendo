@@ -7,6 +7,7 @@ public interface ShooterIO {
     public static class ShooterIOInputs {
         public boolean topMotorConnected = true;
         public boolean bottomMotorConnected = true;
+        public boolean sideMotorConnected = true;
 
         public double topVoltage = 0.0;
         public double bottomVoltage = 0.0;
