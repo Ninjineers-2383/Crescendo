@@ -30,6 +30,8 @@ import com.pathplanner.lib.auto.AutoBuilder;
 import com.team2383.lib.swerve.ModuleLimits;
 import com.team2383.lib.swerve.SwerveSetpoint;
 import com.team2383.lib.swerve.SwerveSetpointGenerator;
+import com.team2383.lib.util.mechanical_advantage.Alert;
+import com.team2383.lib.util.mechanical_advantage.Alert.AlertType;
 import com.team2383.robot.Constants;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
@@ -89,6 +91,24 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     new SwerveModuleState(),
                     new SwerveModuleState()
             });
+
+    private Alert gyroConnected;
+
+    private Alert frontLeftDriveConnected;
+    private Alert frontLeftEncoderConnected;
+    private Alert frontLeftAzimuthConnected;
+
+    private Alert frontRightDriveConnected;
+    private Alert frontRightEncoderConnected;
+    private Alert frontRightAzimuthConnected;
+
+    private Alert rearLeftDriveConnected;
+    private Alert rearLeftEncoderConnected;
+    private Alert rearLeftAzimuthConnected;
+
+    private Alert rearRightDriveConnected;
+    private Alert rearRightEncoderConnected;
+    private Alert rearRightAzimuthConnected;
 
     public DrivetrainSubsystem(GyroIO gyro, SwerveModuleIO frontLeftIO, SwerveModuleIO frontRightIO,
             SwerveModuleIO rearLeftIO, SwerveModuleIO rearRightIO) {
@@ -150,10 +170,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 DriveConstants.frontRightConstants.translation,
                 DriveConstants.rearLeftConstants.translation,
                 DriveConstants.rearRightConstants.translation);
+
+        initializeWarnings();
     }
 
     @Override
     public void periodic() {
+        refreshWarnings();
         if (DriverStation.isDisabled()) {
             for (CoaxialSwerveModule module : m_modules) {
                 module.stop();
@@ -420,5 +443,78 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void setHeadingPID(ProfiledPIDController controller) {
         m_headingController = controller;
+    }
+
+    private void initializeWarnings() {
+        gyroConnected = new Alert("Gyro Disconnected! CAN ID: " + 0, AlertType.ERROR);
+
+        frontLeftDriveConnected = new Alert(
+                "Front Left Drive Disconnected! CAN ID: " + DriveConstants.frontLeftConstants.kDriveMotorID,
+                AlertType.ERROR);
+
+        frontLeftEncoderConnected = new Alert(
+                "Front Left Encoder Disconnected! CAN ID: " + 21,
+                AlertType.ERROR);
+
+        frontLeftAzimuthConnected = new Alert(
+                "Front Left Azimuth Disconnected! CAN ID: " + DriveConstants.frontLeftConstants.kAngleMotorID,
+                AlertType.ERROR);
+
+        frontRightDriveConnected = new Alert(
+                "Front Right Drive Disconnected! CAN ID: " + DriveConstants.frontRightConstants.kDriveMotorID,
+                AlertType.ERROR);
+
+        frontRightEncoderConnected = new Alert(
+                "Front Right Encoder Disconnected! CAN ID: " + 24,
+                AlertType.ERROR);
+
+        frontRightAzimuthConnected = new Alert(
+                "Front Right Azimuth Disconnected! CAN ID: " + DriveConstants.frontRightConstants.kAngleMotorID,
+                AlertType.ERROR);
+
+        rearLeftDriveConnected = new Alert(
+                "Rear Left Drive Disconnected! CAN ID: " + DriveConstants.rearLeftConstants.kDriveMotorID,
+                AlertType.ERROR);
+
+        rearLeftEncoderConnected = new Alert(
+                "Rear Left Encoder Disconnected! CAN ID: " + 27,
+                AlertType.ERROR);
+
+        rearLeftAzimuthConnected = new Alert(
+                "Rear Left Azimuth Disconnected! CAN ID: " + DriveConstants.rearLeftConstants.kAngleMotorID,
+                AlertType.ERROR);
+
+        rearRightDriveConnected = new Alert(
+                "Rear Right Drive Disconnected! CAN ID: " + DriveConstants.rearRightConstants.kDriveMotorID,
+                AlertType.ERROR);
+
+        rearRightEncoderConnected = new Alert(
+                "Rear Right Encoder Disconnected! CAN ID: " + 30,
+                AlertType.ERROR);
+
+        rearRightAzimuthConnected = new Alert(
+                "Rear Right Azimuth Disconnected! CAN ID: " + DriveConstants.rearRightConstants.kAngleMotorID,
+                AlertType.ERROR);
+
+    }
+
+    public void refreshWarnings() {
+        gyroConnected.set(!m_gyroInputs.connected);
+
+        frontLeftDriveConnected.set(!m_frontLeftModule.m_inputs.driveMotorConnected);
+        frontLeftEncoderConnected.set(!m_frontLeftModule.m_inputs.angleEncoderConnected);
+        frontLeftAzimuthConnected.set(!m_frontLeftModule.m_inputs.angleMotorConnected);
+
+        frontRightDriveConnected.set(!m_frontRightModule.m_inputs.driveMotorConnected);
+        frontRightEncoderConnected.set(!m_frontRightModule.m_inputs.angleEncoderConnected);
+        frontRightAzimuthConnected.set(!m_frontRightModule.m_inputs.angleMotorConnected);
+
+        rearLeftDriveConnected.set(!m_rearLeftModule.m_inputs.driveMotorConnected);
+        rearLeftEncoderConnected.set(!m_rearLeftModule.m_inputs.angleEncoderConnected);
+        rearLeftAzimuthConnected.set(!m_rearLeftModule.m_inputs.angleMotorConnected);
+
+        rearRightDriveConnected.set(!m_rearRightModule.m_inputs.driveMotorConnected);
+        rearRightEncoderConnected.set(!m_rearRightModule.m_inputs.angleEncoderConnected);
+        rearRightAzimuthConnected.set(!m_rearRightModule.m_inputs.angleMotorConnected);
     }
 }

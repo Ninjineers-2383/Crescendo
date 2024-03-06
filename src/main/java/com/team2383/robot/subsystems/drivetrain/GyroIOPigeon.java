@@ -1,5 +1,7 @@
 package com.team2383.robot.subsystems.drivetrain;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -7,15 +9,21 @@ import edu.wpi.first.math.geometry.Rotation2d;
 public class GyroIOPigeon implements GyroIO {
     private final Pigeon2 m_gyro;
 
+    private final StatusSignal<Double> getYaw;
+    private final StatusSignal<Double> getRoll;
+
     public GyroIOPigeon(int id, String CANbus) {
         this.m_gyro = new Pigeon2(id, CANbus);
+
+        getYaw = m_gyro.getYaw();
+        getRoll = m_gyro.getRoll();
     }
 
     @Override
     public void updateInputs(GyroIOInputs inputs) {
-        inputs.connected = m_gyro.getFault_BootupGyroscope().getValue() == false;
-        inputs.headingDeg = m_gyro.getYaw().getValue();
-        inputs.rollDeg = m_gyro.getRoll().getValue();
+        inputs.connected = BaseStatusSignal.refreshAll(getYaw, getRoll).isOK();
+        inputs.headingDeg = getYaw.getValueAsDouble();
+        inputs.rollDeg = getRoll.getValueAsDouble();
         inputs.headingRateDPS = m_gyro.getRate();
     }
 

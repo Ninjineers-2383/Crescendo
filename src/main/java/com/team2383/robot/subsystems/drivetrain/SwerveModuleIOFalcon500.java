@@ -1,5 +1,7 @@
 package com.team2383.robot.subsystems.drivetrain;
 
+import com.ctre.phoenix6.BaseStatusSignal;
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -26,6 +28,17 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
 
     private boolean voltageControl = false;
 
+    private final StatusSignal<Double> m_angleRotorPosition;
+    private final StatusSignal<Double> m_driveVelocity;
+    private final StatusSignal<Double> m_angleVelocity;
+    private final StatusSignal<Double> m_drivePosition;
+    private final StatusSignal<Double> m_driveDutyCycle;
+    private final StatusSignal<Double> m_angleDutyCycle;
+    private final StatusSignal<Double> m_driveVoltage;
+    private final StatusSignal<Double> m_angleVoltage;
+    private final StatusSignal<Double> m_driveCurrent;
+    private final StatusSignal<Double> m_angleCurrent;
+
     public SwerveModuleIOFalcon500(ModuleConstants constants, String CANbus) {
         this.m_angleMotor = new TalonFX(constants.kAngleMotorID, CANbus);
         this.m_driveMotor = new TalonFX(constants.kDriveMotorID, CANbus);
@@ -40,28 +53,73 @@ public class SwerveModuleIOFalcon500 implements SwerveModuleIO {
         /* Motor Config */
         configAngleMotor(constants);
         configDriveMotor(constants);
+
+        m_angleRotorPosition = m_angleMotor.getRotorPosition();
+        m_driveVelocity = m_driveMotor.getVelocity();
+        m_angleVelocity = m_angleMotor.getVelocity();
+        m_drivePosition = m_driveMotor.getPosition();
+        m_driveDutyCycle = m_driveMotor.getDutyCycle();
+        m_angleDutyCycle = m_angleMotor.getDutyCycle();
+        m_driveVoltage = m_driveMotor.getSupplyVoltage();
+        m_angleVoltage = m_angleMotor.getSupplyVoltage();
+        m_driveCurrent = m_driveMotor.getStatorCurrent();
+        m_angleCurrent = m_angleMotor.getStatorCurrent();
+
+        BaseStatusSignal.setUpdateFrequencyForAll(
+                100,
+                m_angleRotorPosition,
+                m_driveVelocity,
+                m_angleVelocity,
+                m_drivePosition,
+                m_driveDutyCycle,
+                m_angleDutyCycle,
+                m_driveVoltage,
+                m_angleVoltage,
+                m_driveCurrent,
+                m_angleCurrent);
+
+        m_driveMotor.optimizeBusUtilization(1.0);
+        m_angleMotor.optimizeBusUtilization(1.0);
     }
 
     @Override
     public void updateInputs(SwerveModuleIOInputs inputs) {
+        inputs.driveMotorConnected = BaseStatusSignal.refreshAll(
+                m_driveVelocity,
+                m_drivePosition,
+                m_driveDutyCycle,
+                m_driveVoltage,
+                m_driveCurrent)
+                .isOK();
+
+        inputs.angleEncoderConnected = m_angleEncoder.getConnected();
+
+        inputs.angleMotorConnected = BaseStatusSignal.refreshAll(
+                m_angleRotorPosition,
+                m_angleVelocity,
+                m_angleDutyCycle,
+                m_angleVoltage,
+                m_angleCurrent)
+                .isOK();
+
         inputs.angleRad = Math.toRadians(Conversions.rotationsToDegrees(
-                m_angleMotor.getRotorPosition().getValue(),
+                m_angleRotorPosition.getValue(),
                 DriveConstants.kAngleGearRatio));
         inputs.absoluteAngleRad = getAbsolute().getRadians();
         inputs.driveVelocityMPS = Conversions.RPSToMPS(
-                m_driveMotor.getVelocity().getValue(),
+                m_driveVelocity.getValue(),
                 DriveConstants.kDriveWheelCircumferenceMeters,
                 DriveConstants.kDriveGearRatio);
         inputs.azimuthVelocityRPM = Conversions.falconToRPM(
-                m_driveMotor.getVelocity().getValue(),
+                m_angleVelocity.getValue(),
                 DriveConstants.kAngleGearRatio);
-        inputs.drivePositionM = Conversions.rotationsToMeters(m_driveMotor.getPosition().getValue(),
+        inputs.drivePositionM = Conversions.rotationsToMeters(m_drivePosition.getValue(),
                 DriveConstants.kDriveWheelCircumferenceMeters,
                 DriveConstants.kDriveGearRatio);
-        inputs.appliedVoltsDrive = m_driveMotor.getDutyCycle().getValue() * m_driveMotor.getSupplyVoltage().getValue();
-        inputs.appliedVoltsAngle = m_angleMotor.getDutyCycle().getValue() * m_angleMotor.getSupplyVoltage().getValue();
-        inputs.currentDrive = m_driveMotor.getStatorCurrent().getValue();
-        inputs.currentAngle = m_angleMotor.getStatorCurrent().getValue();
+        inputs.appliedVoltsDrive = m_driveDutyCycle.getValue() * m_driveVoltage.getValue();
+        inputs.appliedVoltsAngle = m_angleDutyCycle.getValue() * m_angleVoltage.getValue();
+        inputs.currentDrive = m_driveCurrent.getValue();
+        inputs.currentAngle = m_angleCurrent.getValue();
     }
 
     @Override

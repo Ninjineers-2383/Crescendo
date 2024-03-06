@@ -25,6 +25,7 @@ import com.team2383.robot.commands.subsystem.orchestra.*;
 import com.team2383.robot.commands.subsystem.piece_detection.DriveToPieceCommand;
 import com.team2383.robot.commands.subsystem.pivot.*;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotSysIDCommand;
+import com.team2383.robot.commands.subsystem.resting_hooks.RestingHooksPowerCommand;
 import com.team2383.robot.commands.subsystem.shooter.*;
 import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
@@ -35,6 +36,9 @@ import com.team2383.robot.subsystems.piece_detection.PieceDetectionIO;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionIOPhoton;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionSubsystem;
 import com.team2383.robot.subsystems.pivot.*;
+import com.team2383.robot.subsystems.resting_hooks.RestingHookIO;
+import com.team2383.robot.subsystems.resting_hooks.RestingHookIOTalonSRX;
+import com.team2383.robot.subsystems.resting_hooks.RestingHookSubsystem;
 import com.team2383.robot.subsystems.shooter.*;
 import com.team2383.robot.subsystems.sim_components.*;
 
@@ -53,6 +57,7 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
@@ -98,6 +103,9 @@ public class RobotContainer {
 
     private final JoystickButton m_autoAmp = new JoystickButton(m_driverController, 3);
 
+    private final POVButton m_hooksDown = new POVButton(m_operatorController, 270);
+    private final POVButton m_hooksUp = new POVButton(m_operatorController, 90);
+
     private DrivetrainSubsystem m_drivetrainSubsystem;
 
     private PivotSubsystem m_pivotSubsystem;
@@ -109,6 +117,8 @@ public class RobotContainer {
     private ShooterSubsystem m_shooterSubsystem;
 
     private PieceDetectionSubsystem m_pieceDetectionSubsystem;
+
+    private RestingHookSubsystem m_restingHookSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -151,6 +161,8 @@ public class RobotContainer {
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOFalcon500Neo());
 
                     m_pieceDetectionSubsystem = new PieceDetectionSubsystem(new PieceDetectionIOPhoton());
+
+                    m_restingHookSubsystem = new RestingHookSubsystem(new RestingHookIOTalonSRX());
 
                     break;
                 case ROBOT_SIM:
@@ -198,6 +210,10 @@ public class RobotContainer {
         m_pieceDetectionSubsystem = m_pieceDetectionSubsystem == null
                 ? new PieceDetectionSubsystem(new PieceDetectionIO() {})
                 : m_pieceDetectionSubsystem;
+
+        m_restingHookSubsystem = m_restingHookSubsystem == null
+                ? new RestingHookSubsystem(new RestingHookIO() {})
+                : m_restingHookSubsystem;
 
         new SimComponents(m_pivotSubsystem);
 
@@ -295,6 +311,16 @@ public class RobotContainer {
                                         false)
                                                 .withTimeout(1)),
                         new IndexerCommand(m_indexerSubsystem, () -> 0.7)));
+
+        m_hooksDown.whileTrue(
+                new RestingHooksPowerCommand(m_restingHookSubsystem,
+                        () -> Math.abs(m_operatorController.getRawAxis(0))));
+        m_hooksUp.whileTrue(
+                new RestingHooksPowerCommand(m_restingHookSubsystem,
+                        () -> -Math.abs(m_operatorController.getRawAxis(0))));
+
+        new JoystickButton(m_operatorController, 9)
+                .whileTrue(new PivotVelocityCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(0)));
 
     }
 

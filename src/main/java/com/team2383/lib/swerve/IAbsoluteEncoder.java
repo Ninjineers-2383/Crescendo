@@ -4,4 +4,6 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 public interface IAbsoluteEncoder {
     public Rotation2d getAbsoluteAngle();
+
+    public boolean getConnected();
 }

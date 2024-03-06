@@ -2,11 +2,19 @@ package com.team2383.robot.subsystems.resting_hooks;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.team2383.lib.util.mechanical_advantage.Alert;
+import com.team2383.lib.util.mechanical_advantage.Alert.AlertType;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class RestingHookSubsystem extends SubsystemBase {
     private final RestingHookIO io;
     private final RestingHookIOInputsAutoLogged inputs = new RestingHookIOInputsAutoLogged();
+
+    private final Alert leftHookAlert = new Alert(
+            "Left Hook Disconnected! CAN ID: " + RestingHookConstants.kLeftHookID, AlertType.WARNING);
+    private final Alert rightHookAlert = new Alert(
+            "Right Hook Disconnected! CAN ID: " + RestingHookConstants.kRightHookID, AlertType.WARNING);
 
     public RestingHookSubsystem(RestingHookIO restingHookIO) {
         io = restingHookIO;
@@ -16,6 +24,9 @@ public class RestingHookSubsystem extends SubsystemBase {
     public void periodic() {
         io.updateInputs(inputs);
         Logger.processInputs("RestingHook", inputs);
+
+        leftHookAlert.set(!inputs.leftHookConnected);
+        rightHookAlert.set(!inputs.rightHookConnected);
     }
 
     /**
@@ -25,9 +36,6 @@ public class RestingHookSubsystem extends SubsystemBase {
      *            the power to set the hooks to [0, 1]
      */
     public void setPower(double power) {
-        if (power < 0.0) {
-            throw new IllegalArgumentException("RestingHook power must be positive");
-        }
         io.setPower(power);
     }
 

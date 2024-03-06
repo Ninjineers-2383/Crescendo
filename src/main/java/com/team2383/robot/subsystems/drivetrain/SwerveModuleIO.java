@@ -7,6 +7,10 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 public interface SwerveModuleIO {
     @AutoLog
     public static class SwerveModuleIOInputs {
+        public boolean angleMotorConnected = true;
+        public boolean driveMotorConnected = true;
+        public boolean angleEncoderConnected = true;
+
         public double driveVelocityMPS = 0.0;
         public double azimuthVelocityRPM = 0.0;
         public double angleRad = 0.0;
