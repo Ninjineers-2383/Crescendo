@@ -15,6 +15,8 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 
 import static edu.wpi.first.units.Units.Volts;
 
@@ -172,6 +174,35 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 DriveConstants.rearRightConstants.translation);
 
         initializeWarnings();
+
+        SmartDashboard.putData("Swerve Drive", new Sendable() {
+            @Override
+            public void initSendable(SendableBuilder builder) {
+                builder.setSmartDashboardType("SwerveDrive");
+
+                builder.addDoubleProperty("Front Left Angle", () -> m_frontLeftModule.getState().angle.getRadians(),
+                        null);
+                builder.addDoubleProperty("Front Left Velocity",
+                        () -> m_frontLeftModule.getState().speedMetersPerSecond, null);
+
+                builder.addDoubleProperty("Front Right Angle", () -> m_frontRightModule.getState().angle.getRadians(),
+                        null);
+                builder.addDoubleProperty("Front Right Velocity",
+                        () -> m_frontRightModule.getState().speedMetersPerSecond, null);
+
+                builder.addDoubleProperty("Back Left Angle", () -> m_rearLeftModule.getState().angle.getRadians(),
+                        null);
+                builder.addDoubleProperty("Back Left Velocity", () -> m_rearLeftModule.getState().speedMetersPerSecond,
+                        null);
+
+                builder.addDoubleProperty("Back Right Angle", () -> m_rearRightModule.getState().angle.getRadians(),
+                        null);
+                builder.addDoubleProperty("Back Right Velocity",
+                        () -> m_rearRightModule.getState().speedMetersPerSecond, null);
+
+                builder.addDoubleProperty("Robot Angle", () -> getHeading().getRadians(), null);
+            }
+        });
     }
 
     @Override
