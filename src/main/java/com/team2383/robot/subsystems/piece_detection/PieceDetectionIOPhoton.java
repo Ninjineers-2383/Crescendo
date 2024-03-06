@@ -12,7 +12,7 @@ public class PieceDetectionIOPhoton implements PieceDetectionIO {
 
     @Override
     public void updateInputs(PieceDetectionIOInputs inputs) {
-        inputs.connected = true;
+        inputs.connected = frontCamera.isConnected();
 
         PhotonPipelineResult frontResult = frontCamera.getLatestResult();
 
