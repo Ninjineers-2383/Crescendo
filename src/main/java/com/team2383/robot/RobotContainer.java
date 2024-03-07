@@ -426,6 +426,14 @@ public class RobotContainer {
         testDashboardChooser.addOption("Pivot Quasi Backward", pivotSysID.getQuasiStatic(Direction.kReverse));
         testDashboardChooser.addOption("Pivot Dyn Forward", pivotSysID.getDynamic(Direction.kForward));
         testDashboardChooser.addOption("Pivot Dyn Backward", pivotSysID.getDynamic(Direction.kReverse));
+
+        testDashboardChooser.addOption("Wheel Radius Characterization Clockwise",
+                new WheelRadiusCharacterization(m_drivetrainSubsystem, m_drivetrainSubsystem::getHeading,
+                        WheelRadiusCharacterization.Direction.CLOCKWISE));
+
+        testDashboardChooser.addOption("Wheel Radius Characterization Counter Clockwise",
+                new WheelRadiusCharacterization(m_drivetrainSubsystem, m_drivetrainSubsystem::getHeading,
+                        WheelRadiusCharacterization.Direction.COUNTER_CLOCKWISE));
     }
 
     public void registerAutoNamedCommands() {

@@ -29,8 +29,11 @@ public final class DriveConstants {
     public static final double kMaxSpeed = 3.8; // meters per second
 
     public final static double kTrackWidthMeters = Constants.getRobot() == RobotType.ROBOT_COMP
-            ? Units.inchesToMeters(21.75)
+            ? Units.inchesToMeters(27)
             : Units.inchesToMeters(19.75);
+
+    public final static double kDriveRadius = Math.sqrt(2 * Math.pow(kTrackWidthMeters / 2, 2));
+
     public final static double kWheelBaseMeters = kTrackWidthMeters;
     public final static double kDriveMaxVoltage = 9.0;
     public final static double kMaxCurrent = 30.0;
@@ -38,7 +41,8 @@ public final class DriveConstants {
     public final static double kAngleGearRatio = ((150.0 / 7.0) / 1.0);
     public final static double kDriveGearRatio = 6.12 / 1.0;
 
-    public final static double kDriveWheelDiameterMeters = Units.inchesToMeters(4);
+    public final static double kDriveWheelRadiusMeters = Units.inchesToMeters(2);
+    public final static double kDriveWheelDiameterMeters = kDriveWheelRadiusMeters * 2;
     public final static double kDriveWheelCircumferenceMeters = Math.PI * kDriveWheelDiameterMeters;
 
     public final static double kMaxAngularVelocity = Math.PI * 20;

@@ -441,7 +441,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         return new Pose3d(m_deadReckoning.getPoseMeters());
     }
 
-    private SwerveModulePosition[] getModulePositions() {
+    public SwerveModulePosition[] getModulePositions() {
         return new SwerveModulePosition[] { m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(),
                 m_rearLeftModule.getPosition(), m_rearRightModule.getPosition() };
     }
