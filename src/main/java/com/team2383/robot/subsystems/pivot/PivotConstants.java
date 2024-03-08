@@ -7,7 +7,7 @@ public class PivotConstants {
     public static int kEncoderID = 5;
 
     // Encoder Offset
-    public static double kEncoderOffset = -0.473877;
+    public static double kEncoderOffset = -0.455811;
 
     // Feedback and Feedforward Gains
     public static final ArmGains kGains = new ArmGains(375, 0, 0, 2.5, 0, 0, 0.5);
@@ -17,7 +17,7 @@ public class PivotConstants {
     public static double kMaxAccel = 0.25;
 
     // Gear Ratio
-    public static double kPivotMotorGearRatio = 225;
+    public static double kPivotMotorGearRatio = 48.0;
 
     // Pivot Bounds
     public static double kMaxAngleDegrees = 180;

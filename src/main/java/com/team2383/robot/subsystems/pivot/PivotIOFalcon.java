@@ -9,7 +9,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.PositionTorqueCurrentFOC;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -17,6 +17,7 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.team2383.robot.Constants;
 import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
 
@@ -36,7 +37,7 @@ public class PivotIOFalcon implements PivotIO {
     private final List<StatusSignal<Double>> torqueCurrent;
     private final List<StatusSignal<Double>> tempCelsius;
 
-    private final PositionTorqueCurrentFOC positionOut = new PositionTorqueCurrentFOC(0.0).withUpdateFreqHz(0.0);
+    private final PositionVoltage positionOut = new PositionVoltage(0.0).withUpdateFreqHz(0.0);
 
     private final VoltageOut voltage = new VoltageOut(0.0).withUpdateFreqHz(0.0);
 
@@ -90,7 +91,8 @@ public class PivotIOFalcon implements PivotIO {
                 .withMagnetSensor(
                         new MagnetSensorConfigs()
                                 .withAbsoluteSensorRange(AbsoluteSensorRangeValue.Signed_PlusMinusHalf)
-                                .withMagnetOffset(PivotConstants.kEncoderOffset));
+                                .withMagnetOffset(PivotConstants.kEncoderOffset)
+                                .withSensorDirection(SensorDirectionValue.Clockwise_Positive));
 
         encoder.getConfigurator().apply(encoderConfig);
 
@@ -141,7 +143,7 @@ public class PivotIOFalcon implements PivotIO {
         inputs.encoderConnected = BaseStatusSignal.refreshAll(absolutePositionRotations).isOK();
 
         inputs.rotorPositionRot = internalPositionRotations.getValueAsDouble();
-        inputs.absoluteEncoderPositionRot = absolutePositionRotations.getValueAsDouble();
+        inputs.absoluteEncoderPositionRot = absolutePositionRotations.getValueAsDouble() - offset;
         inputs.desiredPositionRot = leftMotorLeader.getClosedLoopReference().getValue() - offset;
 
         inputs.velocityRotPerSec = velocityRps.getValue();
@@ -152,10 +154,10 @@ public class PivotIOFalcon implements PivotIO {
         inputs.torqueCurrentAmps = torqueCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
         inputs.tempCelcius = tempCelsius.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
 
-        if (leftMotorLeader.getPosition().getValueAsDouble() > 0.9 && offset == 0 && !offsetSet) {
+        if (leftMotorLeader.getPosition().getValueAsDouble() > 1.4 && offset == 0 && !offsetSet) {
             offset = Math.ceil(leftMotorLeader.getPosition().getValueAsDouble());
         }
-        if (leftMotorLeader.getPosition().getValueAsDouble() < -0.4 && offset == 0 && !offsetSet) {
+        if (leftMotorLeader.getPosition().getValueAsDouble() < -0.6 && offset == 0 && !offsetSet) {
             offset = Math.floor(leftMotorLeader.getPosition().getValueAsDouble());
         }
         offsetSet = true;
@@ -163,7 +165,7 @@ public class PivotIOFalcon implements PivotIO {
 
     @Override
     public void setAngleRot(double angleRot, double velocityRotPerSec) {
-        leftMotorLeader.setControl(positionOut.withPosition(angleRot).withVelocity(velocityRotPerSec));
+        leftMotorLeader.setControl(positionOut.withPosition(angleRot + offset).withVelocity(velocityRotPerSec));
     }
 
     @Override
