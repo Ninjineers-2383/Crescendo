@@ -15,6 +15,7 @@ import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
 import com.team2383.robot.commands.feeding.FullFeedCommand;
 import com.team2383.robot.commands.feeding.IndexerBackOut;
+import com.team2383.robot.commands.feeding.PartialFeedCommand;
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
 import com.team2383.robot.commands.speaker.SeekCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
@@ -58,6 +59,7 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
@@ -93,6 +95,7 @@ public class RobotContainer {
     private final JoystickButton m_seek = new JoystickButton(m_operatorController, 2);
 
     private final JoystickButton m_fullFeedRear = new JoystickButton(m_driverController, 6);
+    private final JoystickButton m_partialFeedRear = new JoystickButton(m_driverController, 5);
 
     private final JoystickButton m_manualAmp = new JoystickButton(m_operatorController, 5);
 
@@ -109,7 +112,8 @@ public class RobotContainer {
 
     private final JoystickButton m_autoAmp = new JoystickButton(m_driverController, 3);
 
-    private final Trigger m_beamBreakRumble;
+    private final Trigger m_indexerBeamBreak;
+    private final Trigger m_feederBeamBreak;
 
     private final POVButton m_hooksDown = new POVButton(m_operatorController, 270);
     private final POVButton m_hooksUp = new POVButton(m_operatorController, 90);
@@ -225,7 +229,8 @@ public class RobotContainer {
 
         new SimComponents(m_pivotSubsystem);
 
-        m_beamBreakRumble = new Trigger(m_indexerSubsystem::isBeamBreakTripped);
+        m_indexerBeamBreak = new Trigger(m_indexerSubsystem::isBeamBreakTripped);
+        m_feederBeamBreak = new Trigger(m_backFeederSubsystem::isBeamBreakTripped);
 
         configureDefaultCommands();
 
@@ -275,9 +280,26 @@ public class RobotContainer {
         m_setHeadingLeft.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d(Math.PI / 2)));
         m_setHeadingRight.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d(-Math.PI / 2)));
 
-        m_seek.toggleOnTrue(
-                new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem,
-                        false).andThen(new PivotZeroCommand(m_pivotSubsystem)));
+        m_seek.and(m_feederBeamBreak).and(m_indexerBeamBreak.negate()).onTrue(
+                new SequentialCommandGroup(
+                        new ParallelDeadlineGroup(
+                                new SequentialCommandGroup(
+                                        new WaitUntilCommand(m_indexerBeamBreak),
+                                        new WaitUntilCommand(m_indexerBeamBreak.negate())),
+                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                                        m_backFeederSubsystem, PivotPresets.FEED_BACK)),
+                        new ParallelDeadlineGroup(
+                                new IndexerBackOut(m_indexerSubsystem).withTimeout(0.4),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)),
+                        new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
+                                m_indexerSubsystem, false),
+                        new PivotZeroCommand(m_pivotSubsystem)));
+
+        m_seek.and(m_indexerBeamBreak).toggleOnTrue(
+                new SequentialCommandGroup(
+                        new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem,
+                                m_shooterSubsystem, m_indexerSubsystem, false),
+                        new PivotZeroCommand(m_pivotSubsystem)));
 
         m_pivotZero.onTrue(new PivotZeroCommand(m_pivotSubsystem));
 
@@ -286,11 +308,18 @@ public class RobotContainer {
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
 
         m_fullFeedRear.and(m_autoFeed).whileTrue(
-                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, m_indexerSubsystem));
+                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, m_backFeederSubsystem));
 
         m_fullFeedRear.onFalse(new IndexerBackOut(m_indexerSubsystem).withTimeout(0.4)
                 .deadlineWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)
                         .andThen(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO))));
+
+        m_partialFeedRear.whileTrue(new PartialFeedCommand(m_backFeederSubsystem));
+
+        m_partialFeedRear.and(m_autoFeed).whileTrue(
+                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, m_backFeederSubsystem));
+
+        m_partialFeedRear.onFalse(new FeederPowerCommand(m_backFeederSubsystem, () -> 0.2).withTimeout(0.2));
 
         m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
 
@@ -336,7 +365,7 @@ public class RobotContainer {
         new JoystickButton(m_operatorController, 9)
                 .whileTrue(new PivotVelocityCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(0)));
 
-        m_beamBreakRumble.onTrue(
+        m_indexerBeamBreak.or(m_feederBeamBreak).onTrue(
                 new SequentialCommandGroup(
                         new InstantCommand(() -> m_driverController.setRumble(RumbleType.kBothRumble, 1)),
                         new WaitCommand(0.25),

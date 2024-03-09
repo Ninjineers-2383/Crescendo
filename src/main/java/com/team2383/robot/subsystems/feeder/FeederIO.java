@@ -9,6 +9,8 @@ public interface FeederIO {
 
         public double power = 0.0;
         public double current = 0.0;
+
+        public boolean beamBreakTripped = false;
     }
 
     public default void updateInputs(FeederIOInputs inputs) {

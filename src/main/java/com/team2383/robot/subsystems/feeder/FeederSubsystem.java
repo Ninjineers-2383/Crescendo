@@ -34,4 +34,8 @@ public class FeederSubsystem extends SubsystemBase {
     public double getPower() {
         return inputs.power;
     }
+
+    public boolean isBeamBreakTripped() {
+        return inputs.beamBreakTripped;
+    }
 }
