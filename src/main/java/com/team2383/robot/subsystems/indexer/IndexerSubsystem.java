@@ -38,4 +38,8 @@ public class IndexerSubsystem extends SubsystemBase {
         indexer.setPower(power);
     }
 
+    public boolean isBeamBreakTripped() {
+        return inputs.beamBreakTripped;
+    }
+
 }

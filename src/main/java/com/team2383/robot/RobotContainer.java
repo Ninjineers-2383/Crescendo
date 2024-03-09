@@ -14,6 +14,7 @@ import com.team2383.lib.util.mechanical_advantage.Alert.AlertType;
 import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
 import com.team2383.robot.commands.feeding.FullFeedCommand;
+import com.team2383.robot.commands.feeding.IndexerBackOut;
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
 import com.team2383.robot.commands.speaker.SeekCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
@@ -47,6 +48,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID;
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
@@ -58,6 +60,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
@@ -102,6 +105,8 @@ public class RobotContainer {
             Constants.OI.HeadingToAprilTag);
 
     private final JoystickButton m_autoAmp = new JoystickButton(m_driverController, 3);
+
+    private final Trigger m_beamBreakRumble;
 
     private final POVButton m_hooksDown = new POVButton(m_operatorController, 270);
     private final POVButton m_hooksUp = new POVButton(m_operatorController, 90);
@@ -217,6 +222,8 @@ public class RobotContainer {
 
         new SimComponents(m_pivotSubsystem);
 
+        m_beamBreakRumble = new Trigger(m_indexerSubsystem::isBeamBreakTripped);
+
         configureDefaultCommands();
 
         registerAutoNamedCommands();
@@ -322,6 +329,11 @@ public class RobotContainer {
         new JoystickButton(m_operatorController, 9)
                 .whileTrue(new PivotVelocityCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(0)));
 
+        m_beamBreakRumble.onTrue(
+                new SequentialCommandGroup(
+                        new InstantCommand(() -> m_driverController.setRumble(RumbleType.kBothRumble, 1)),
+                        new WaitCommand(0.25),
+                        new InstantCommand(() -> m_driverController.setRumble(RumbleType.kBothRumble, 0))));
     }
 
     private void configureDefaultCommands() {

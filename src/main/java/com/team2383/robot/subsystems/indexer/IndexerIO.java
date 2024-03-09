@@ -10,6 +10,8 @@ public interface IndexerIO {
         public double power = 0.0;
         public double supplyVoltage = 0.0;
         public double supplyCurrent = 0.0;
+
+        public boolean beamBreakTripped = false;
     }
 
     public default void updateInputs(IndexerIOInputs inputs) {
