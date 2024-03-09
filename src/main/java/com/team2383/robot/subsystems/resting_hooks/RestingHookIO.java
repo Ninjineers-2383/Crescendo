@@ -17,4 +17,7 @@ public interface RestingHookIO {
 
     public default void setPower(double power) {
     }
+
+    public default void setPowerSingle(double power) {
+    }
 }

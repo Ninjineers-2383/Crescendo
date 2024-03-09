@@ -13,8 +13,6 @@ public class RestingHookIOTalonSRX implements RestingHookIO {
         rightHook = new TalonSRX(RestingHookConstants.kRightHookID);
 
         leftHook.setInverted(true);
-
-        rightHook.follow(leftHook);
     }
 
     @Override
@@ -28,6 +26,12 @@ public class RestingHookIOTalonSRX implements RestingHookIO {
 
     @Override
     public void setPower(double power) {
+        leftHook.set(ControlMode.PercentOutput, power);
+        rightHook.set(ControlMode.PercentOutput, power);
+    }
+
+    @Override
+    public void setPowerSingle(double power) {
         leftHook.set(ControlMode.PercentOutput, power);
     }
 }

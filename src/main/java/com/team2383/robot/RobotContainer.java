@@ -335,10 +335,13 @@ public class RobotContainer {
 
         m_hooksDown.whileTrue(
                 new RestingHooksPowerCommand(m_restingHookSubsystem,
-                        () -> Math.abs(m_operatorController.getRawAxis(0))));
+                        () -> Math.abs(m_operatorController.getRawAxis(0)),
+                        () -> MathUtil.applyDeadband(Math.abs(m_operatorController.getRawAxis(4)), 0.15)));
+
         m_hooksUp.whileTrue(
                 new RestingHooksPowerCommand(m_restingHookSubsystem,
-                        () -> -Math.abs(m_operatorController.getRawAxis(0))));
+                        () -> -Math.abs(m_operatorController.getRawAxis(0)),
+                        () -> -MathUtil.applyDeadband(Math.abs(m_operatorController.getRawAxis(4)), 0.15)));
 
         new JoystickButton(m_operatorController, 9)
                 .whileTrue(new PivotVelocityCommand(m_pivotSubsystem, () -> m_operatorController.getRawAxis(0)));

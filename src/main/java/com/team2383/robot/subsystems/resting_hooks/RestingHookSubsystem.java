@@ -35,8 +35,12 @@ public class RestingHookSubsystem extends SubsystemBase {
      * @param power
      *            the power to set the hooks to [0, 1]
      */
-    public void setPower(double power) {
+    public void setPowerBoth(double power) {
         io.setPower(power);
+    }
+
+    public void setPowerOne(double power) {
+        io.setPowerSingle(power);
     }
 
     /**

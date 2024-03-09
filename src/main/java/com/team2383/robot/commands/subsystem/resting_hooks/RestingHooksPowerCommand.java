@@ -8,23 +8,27 @@ import edu.wpi.first.wpilibj2.command.Command;
 
 public class RestingHooksPowerCommand extends Command {
     private final RestingHookSubsystem restingHooks;
-    private final DoubleSupplier power;
+    private final DoubleSupplier powerBoth;
+    private final DoubleSupplier powerOne;
 
-    public RestingHooksPowerCommand(RestingHookSubsystem restingHooks, DoubleSupplier power) {
+    public RestingHooksPowerCommand(RestingHookSubsystem restingHooks, DoubleSupplier powerBoth,
+            DoubleSupplier powerOne) {
         this.restingHooks = restingHooks;
-        this.power = power;
+        this.powerBoth = powerBoth;
+        this.powerOne = powerOne;
 
         addRequirements(restingHooks);
     }
 
     @Override
     public void execute() {
-        restingHooks.setPower(power.getAsDouble());
+        restingHooks.setPowerBoth(powerBoth.getAsDouble());
+        restingHooks.setPowerOne(powerBoth.getAsDouble() + powerOne.getAsDouble());
     }
 
     @Override
     public void end(boolean interrupted) {
-        restingHooks.setPower(0);
+        restingHooks.setPowerBoth(0);
     }
 
     @Override
