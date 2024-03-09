@@ -25,8 +25,9 @@ public interface ShooterIO {
         public double bottomVelocity = 0.0;
         public double sideVelocity = 0.0;
 
-        public double topBottomSetpointRPM = 0.0;
-        public double sideSetpointRPM = 0.0;
+        public double topSetpoint = 0.0;
+        public double bottomSetpoint = 0.0;
+        public double sideSetpoint = 0.0;
 
     }
 

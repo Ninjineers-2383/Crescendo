@@ -6,7 +6,6 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.wpilibj.DriverStation;
 
 public class SLAMClient {
     private final SLAMIO slamio;
@@ -25,7 +24,7 @@ public class SLAMClient {
 
         slamio.updateInputs(inputs);
 
-        slamio.saveAndExit(DriverStation.getStickButton(0, 1));
+        // slamio.saveAndExit(DriverStation.getStickButton(0, 1));
 
         return new SLAMUpdate(inputs.pose, inputs.landmarks, inputs.seenLandmarks, inputs.newValue);
     }

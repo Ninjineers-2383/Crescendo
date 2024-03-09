@@ -9,7 +9,6 @@ import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
@@ -29,7 +28,7 @@ public class SeekAndShootCommand extends ParallelDeadlineGroup {
                                     && Math.abs(speeds.vxMetersPerSecond) < 0.001
                                     && Math.abs(speeds.vyMetersPerSecond) < 0.001;
                             return pivot.isFinished() && isStopped && drivetrain.headingIsFinished()
-                                    && (Math.abs(shooter.getTopBottomRPM() - shooter.getVelocities()[0]) < 2);
+                                    && (Math.abs(shooter.getTopSetpoint() - shooter.getVelocities()[0]) < 2);
                         }),
                         new ShootCommand(indexer)),
                 new FaceToSpeakerCommand(drivetrain, finish),

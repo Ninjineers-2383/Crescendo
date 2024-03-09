@@ -51,7 +51,6 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.livewindow.LiveWindow;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.ConditionalCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -278,15 +277,9 @@ public class RobotContainer {
 
         m_seek.toggleOnTrue(
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, m_indexerSubsystem,
-                        false));
+                        false).andThen(new PivotZeroCommand(m_pivotSubsystem)));
 
-        m_pivotZero.onTrue(
-                new ConditionalCommand(
-                        new PivotPositionCommand(m_pivotSubsystem,
-                                PivotPresets.ZERO),
-                        new PivotPositionCommand(m_pivotSubsystem,
-                                PivotPresets.ZERO_BACK),
-                        () -> m_pivotSubsystem.getAngle().getDegrees() < 90));
+        m_pivotZero.onTrue(new PivotZeroCommand(m_pivotSubsystem));
 
         m_fullFeedRear.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
@@ -320,18 +313,15 @@ public class RobotContainer {
                                 PivotPresets.SCORE_AMP),
                         // new IndexerCommand(m_indexerSubsystem, () -> -0.5).withTimeout(0.4),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> -750, () -> 500, () -> -200)
-                                .withTimeout(0.5),
-                        new DrivetrainHeadingCommand(m_drivetrainSubsystem,
-                                Rotation2d.fromDegrees(-90))));
+                                .withTimeout(0.5)));
 
         m_manualAmp.onFalse(
                 // new ParallelDeadlineGroup(
                 // new SequentialCommandGroup(
                 // new WaitCommand(0.5),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> -750, () -> 500, () -> -300)
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -700, () -> 500, () -> 500)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5))
-        // .withTimeout(1)),
-        );
+                        .withTimeout(1));
 
         m_hooksDown.whileTrue(
                 new RestingHooksPowerCommand(m_restingHookSubsystem,

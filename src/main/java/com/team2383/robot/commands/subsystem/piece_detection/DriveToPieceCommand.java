@@ -27,7 +27,7 @@ public class DriveToPieceCommand extends Command {
 
     @Override
     public void initialize() {
-        m_driveRateLimiter = new SlewRateLimiter(2.5, -2.5,
+        m_driveRateLimiter = new SlewRateLimiter(3.0, -3.0,
                 drivetrainSubsystem.getRobotRelativeSpeeds().vxMetersPerSecond);
     }
 

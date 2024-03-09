@@ -43,6 +43,7 @@ public class SLAMIOServer implements SLAMIO {
     private final DoublePublisher varianceStaticPub;
     private final IntegerPublisher poseFilterSizePub;
     private final DoublePublisher poseOutlierRejectionDistanceSub;
+    private final StructPublisher<Pose2d> resetPose;
 
     private long latestTimestamp = 0;
 
@@ -72,6 +73,8 @@ public class SLAMIOServer implements SLAMIO {
         pose = table.getStructTopic("pose", TimedPose3d.struct).subscribe(new TimedPose3d());
 
         saveAndExit = table.getBooleanTopic("saveAndExit").publish();
+
+        resetPose = table.getStructTopic("PoseReset", Pose2d.struct).publish();
 
         camTransformsPub = table.getStructArrayTopic("camTransforms", Transform3d.struct).publish();
         varianceScalePub = table.getDoubleTopic("varianceScale").publish();
@@ -135,12 +138,12 @@ public class SLAMIOServer implements SLAMIO {
     @Override
     public void forcePose(Pose2d pose, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
         odometry.resetPosition(gyroAngle, positions, pose);
+        resetPose.set(pose);
     }
 
     @Override
     public void forceHeading(Rotation2d heading, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
-        odometry.resetPosition(gyroAngle, positions,
-                new Pose2d(odometry.getEstimatedPosition().getTranslation(), heading));
+        forcePose(new Pose2d(odometry.getEstimatedPosition().getTranslation(), heading), gyroAngle, positions);
     }
 
     @Override

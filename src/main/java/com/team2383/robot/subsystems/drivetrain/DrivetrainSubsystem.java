@@ -18,10 +18,13 @@ import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 
+import java.util.Optional;
+
 import static edu.wpi.first.units.Units.Volts;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -94,6 +97,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     new SwerveModuleState()
             });
 
+    private Optional<Alliance> previousAlliance = Optional.empty();
+
     private Alert gyroConnected;
 
     private Alert frontLeftDriveConnected;
@@ -142,9 +147,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
         m_headingController.enableContinuousInput(-Math.PI, Math.PI);
         m_headingController.reset(0);
 
-        forceHeading(new Rotation2d());
-
         reinitializeSLAM();
+
+        forceHeading(new Rotation2d());
 
         AutoBuilder.configureHolonomic(
                 this::getPose,
@@ -225,6 +230,15 @@ public class DrivetrainSubsystem extends SubsystemBase {
             m_lastStates[i] = m_modules[i].getState();
         }
 
+        if (DriverStation.getAlliance().isPresent() && previousAlliance.isEmpty()) {
+            reinitializeSLAM();
+        } else if (DriverStation.getAlliance().isPresent()
+                && DriverStation.getAlliance().get() != previousAlliance.get()) {
+            reinitializeSLAM();
+        }
+
+        previousAlliance = DriverStation.getAlliance();
+
         // Heading PID Controller
         double headingEffort;
         if (headingControllerEnabled) {
@@ -294,12 +308,27 @@ public class DrivetrainSubsystem extends SubsystemBase {
                 SLAMConstantsConfig.camTransforms,
                 SLAMConstantsConfig.POSE_VARIANCE_SCALE,
                 SLAMConstantsConfig.POSE_VARIANCE_STATIC);
+
+        setSLAMHeading();
     }
 
     public void resetHeading() {
         headingOffset = Rotation2d.fromDegrees(m_gyroInputs.headingDeg).unaryMinus();
         m_headingController.reset(0);
         desiredHeading = new Rotation2d();
+        setSLAMHeading();
+    }
+
+    private void setSLAMHeading() {
+        Rotation2d SLAMHeading = desiredHeading;
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+            SLAMHeading = SLAMHeading.plus(new Rotation2d(Math.PI));
+        }
+        m_SLAMClient.forceHeading(SLAMHeading,
+                Rotation2d.fromDegrees(m_gyroInputs.headingDeg),
+                getModulePositions());
+        System.out.println("SLAM Heading reset");
+
     }
 
     /**
@@ -402,6 +431,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
         headingOffset = Rotation2d.fromDegrees(m_gyroInputs.headingDeg).unaryMinus().plus(currentHeading);
         m_headingController.reset(currentHeading.getRadians());
         desiredHeading = currentHeading;
+        setSLAMHeading();
     }
 
     /**

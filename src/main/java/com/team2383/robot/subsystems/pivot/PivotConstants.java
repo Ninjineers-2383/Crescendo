@@ -21,7 +21,7 @@ public class PivotConstants {
 
     // Pivot Bounds
     public static double kMaxAngleDegrees = 180;
-    public static double kMinAngleDegrees = -50;
+    public static double kMinAngleDegrees = -55;
 
     // Current Limits
     public static double kCurrentLimit = 40;

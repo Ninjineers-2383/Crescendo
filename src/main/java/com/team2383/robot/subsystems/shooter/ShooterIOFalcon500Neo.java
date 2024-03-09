@@ -23,7 +23,8 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
 
     private final VelocityVoltage voltageOut = new VelocityVoltage(0);
 
-    private double topBottomSetpoint = 0.0;
+    private double topSetpoint = 0.0;
+    private double bottomSetpoint = 0.0;
     private double sideSetpoint = 0.0;
 
     private final List<StatusSignal<Double>> topBottomSupplyCurrent;
@@ -36,8 +37,10 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
         OrchestraContainer.getInstance().addMotor(bottomMotor);
 
         topMotor.getConfigurator().apply(ShooterConstants.kTopConfigs);
+        topMotor.getConfigurator().apply(ShooterConstants.kTopConfigsHigh);
 
         bottomMotor.getConfigurator().apply(ShooterConstants.kBottomConfigs);
+        bottomMotor.getConfigurator().apply(ShooterConstants.kBottomConfigsHigh);
 
         sideMotor.getPIDController().setP(ShooterConstants.kSideP, 0);
         sideMotor.getPIDController().setI(ShooterConstants.kSideI, 0);
@@ -100,16 +103,18 @@ public class ShooterIOFalcon500Neo implements ShooterIO {
         inputs.bottomVelocity = topBottomVelocityRPM.get(1).getValueAsDouble();
         inputs.sideVelocity = sideMotor.getEncoder().getVelocity();
 
-        inputs.topBottomSetpointRPM = topBottomSetpoint;
-        inputs.sideSetpointRPM = sideSetpoint;
+        inputs.topSetpoint = topSetpoint;
+        inputs.bottomSetpoint = bottomSetpoint;
+        inputs.sideSetpoint = sideSetpoint;
     }
 
     @Override
     public void setTopBottomRPM(double RPM, double differential) {
-        topMotor.setControl(voltageOut.withVelocity((RPM - differential) / 60.0));
-        bottomMotor.setControl(voltageOut.withVelocity((RPM + differential) / 60.0));
+        topMotor.setControl(voltageOut.withVelocity((RPM - differential) / 60.0).withSlot(RPM > 2000 ? 1 : 0));
+        bottomMotor.setControl(voltageOut.withVelocity((RPM + differential) / 60.0).withSlot(RPM > 2000 ? 1 : 0));
 
-        topBottomSetpoint = RPM / 60.0;
+        topSetpoint = (RPM - differential) / 60.0;
+        bottomSetpoint = (RPM + differential) / 60.0;
     }
 
     @Override
