@@ -7,20 +7,20 @@ public class ShooterConstants {
     public static int kBottomMotorID = 10;
 
     public static Slot0Configs kBottomConfigs = new Slot0Configs()
-            .withKP(0.08)
+            .withKP(0.5)
             .withKI(0)
             .withKD(0)
-            .withKA(0.0055439)
-            .withKV(0.11381)
-            .withKS(0.21147);
+            .withKA(0)
+            .withKV(0.1455)
+            .withKS(0);
 
     public static Slot0Configs kTopConfigs = new Slot0Configs()
-            .withKP(0.086154)
+            .withKP(0.5)
             .withKI(0)
             .withKD(0)
-            .withKA(0.021305)
-            .withKV(0.11179)
-            .withKS(0.03017);
+            .withKA(0)
+            .withKV(0.1455)
+            .withKS(0);
 
     public static int kSideMotorID = 11;
 
