@@ -423,7 +423,7 @@ public class RobotContainer {
 
         autoChooser.addOption("Two Note", new PathPlannerAuto("TwoPieceTop"));
 
-        autoChooser.addOption("Three Note", new PathPlannerAuto("ThreePieceTop"));
+        autoChooser.addOption("Three Note", new PathPlannerAuto("ThreePieceCenter2"));
 
         autoChooser.addOption("Four Note", new PathPlannerAuto("FourPieceTop"));
     }
@@ -542,6 +542,23 @@ public class RobotContainer {
 
                         ),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)));
+
+        NamedCommands.registerCommand("DriveToPiece",
+                new SequentialCommandGroup(
+                        new ParallelDeadlineGroup(
+                                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem,
+                                        m_backFeederSubsystem),
+                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                                        m_backFeederSubsystem, PivotPresets.FEED_BACK)),
+                        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(), false, false),
+                                m_drivetrainSubsystem),
+                        new ParallelDeadlineGroup(
+                                new SequentialCommandGroup(
+                                        new WaitUntilCommand(m_indexerBeamBreak),
+                                        new WaitUntilCommand(m_indexerBeamBreak.negate())),
+                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
+                                        m_backFeederSubsystem, PivotPresets.FEED_BACK)),
+                        new IndexerBackOut(m_indexerSubsystem)));
 
     }
 }

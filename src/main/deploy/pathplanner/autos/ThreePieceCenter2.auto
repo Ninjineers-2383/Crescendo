@@ -2,15 +2,27 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.8807186801249481,
-      "y": 6.715747579077855
+      "x": 0.4708394010225951,
+      "y": 6.897682725465309
     },
-    "rotation": 36.929228122381375
+    "rotation": 180.0
   },
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveToPreload2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
+          }
+        },
         {
           "type": "named",
           "data": {
@@ -20,25 +32,25 @@
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "DriveToPiece"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "StopShooter"
+            "name": "SeekAndShoot"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "1DriveTo4"
+            "pathName": "DriveToCenterTop"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "Shoot"
+            "name": "DriveToPiece"
           }
         }
       ]
