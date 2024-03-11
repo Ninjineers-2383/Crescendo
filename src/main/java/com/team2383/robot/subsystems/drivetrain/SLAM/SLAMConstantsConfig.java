@@ -7,10 +7,10 @@ import edu.wpi.first.math.util.Units;
 
 public final class SLAMConstantsConfig {
     // Description of the camera's relative position
-    private static final Rotation3d CAM_ROTATION_FL = new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-20));
-    private static final Rotation3d CAM_ROTATION_FR = new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-110));
-    private static final Rotation3d CAM_ROTATION_BL = new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-290));
-    private static final Rotation3d CAM_ROTATION_BR = new Rotation3d(0, Math.toRadians(-10), Math.toRadians(-200));
+    private static final Rotation3d CAM_ROTATION_FL = new Rotation3d(0, Math.toRadians(-20), Math.toRadians(-20));
+    private static final Rotation3d CAM_ROTATION_FR = new Rotation3d(0, Math.toRadians(-40), Math.toRadians(-110));
+    private static final Rotation3d CAM_ROTATION_BL = new Rotation3d(0, Math.toRadians(-20), Math.toRadians(-290));
+    private static final Rotation3d CAM_ROTATION_BR = new Rotation3d(0, Math.toRadians(-40), Math.toRadians(-200));
 
     public static final double POSE_VARIANCE_SCALE = 0.87;
     public static final double POSE_VARIANCE_STATIC = 0.1;

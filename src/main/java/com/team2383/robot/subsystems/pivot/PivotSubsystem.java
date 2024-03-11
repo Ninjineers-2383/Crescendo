@@ -68,6 +68,10 @@ public class PivotSubsystem extends SubsystemBase {
         inputs.desiredPositionRot = goal.position;
         Logger.processInputs("Pivot", inputs);
 
+        if (setpoint == goal && !isFinished()) {
+            setpoint = new TrapezoidProfile.State(inputs.absoluteEncoderPositionRot, 0);
+        }
+
         setpoint = profile.calculate(0.02, setpoint,
                 new TrapezoidProfile.State(
                         MathUtil.clamp(

@@ -321,7 +321,7 @@ public class RobotContainer {
 
         m_partialFeedRear.onFalse(new FeederPowerCommand(m_backFeederSubsystem, () -> 0.2).withTimeout(0.2));
 
-        m_shoot.onTrue(new ShootCommand(m_indexerSubsystem).withTimeout(0.5));
+        m_shoot.onTrue(new ShootCommand(m_indexerSubsystem, m_shooterSubsystem).withTimeout(0.5));
 
         m_resetHeading.onTrue(new InstantCommand(() -> m_drivetrainSubsystem.resetHeading()));
 
@@ -516,7 +516,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("StopShooter",
                 new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0));
 
-        NamedCommands.registerCommand("Shoot", new ShootCommand(m_indexerSubsystem));
+        NamedCommands.registerCommand("Shoot", new ShootCommand(m_indexerSubsystem, m_shooterSubsystem));
 
         NamedCommands.registerCommand("PivotSeek",
                 new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d, true));
@@ -531,7 +531,7 @@ public class RobotContainer {
                                 new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d,
                                         true),
                                 new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
-                        new ShootCommand(m_indexerSubsystem),
+                        new ShootCommand(m_indexerSubsystem, m_shooterSubsystem),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0)));
 
         NamedCommands.registerCommand("StoreRing",
