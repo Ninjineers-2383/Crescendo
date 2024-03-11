@@ -155,8 +155,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         forceHeading(new Rotation2d());
 
-        PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
-
         AutoBuilder.configureHolonomic(
                 this::getPose,
                 this::forceOdometry,
@@ -178,6 +176,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
                     return false;
                 },
                 this);
+
+        PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
         setpointGenerator = new SwerveSetpointGenerator(m_kinematics, DriveConstants.frontLeftConstants.translation,
                 DriveConstants.frontRightConstants.translation,
