@@ -37,8 +37,20 @@ public class DriveToPieceCommand extends Command {
             drivetrainSubsystem.setHeading(
                     drivetrainSubsystem.getHeading()
                             .minus(Rotation2d.fromDegrees(pieceDetectionSubsystem.inputs.frontYaw)));
-            drivetrainSubsystem.drive(new ChassisSpeeds(m_driveRateLimiter.calculate(-4), 0, 0), false, true);
+            drivetrainSubsystem.drive(
+                    new ChassisSpeeds(
+                            m_driveRateLimiter.calculate(
+                                    -4 * getRobotSpeedMultiplier(pieceDetectionSubsystem.inputs.frontPitch)),
+                            0, 0),
+                    false, true);
+        }
+    }
 
+    public double getRobotSpeedMultiplier(double pitch) {
+        if (pitch > 0) {
+            return 1;
+        } else {
+            return (pitch + 25.0) * (1.0 / 25.0);
         }
     }
 

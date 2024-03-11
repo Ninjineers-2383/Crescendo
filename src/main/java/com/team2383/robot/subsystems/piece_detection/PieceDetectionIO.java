@@ -8,6 +8,7 @@ public interface PieceDetectionIO {
         public boolean connected = false;
 
         public double frontYaw = 0.0;
+        public double frontPitch = 0.0;
         public boolean frontSeesTarget = false;
     }
 

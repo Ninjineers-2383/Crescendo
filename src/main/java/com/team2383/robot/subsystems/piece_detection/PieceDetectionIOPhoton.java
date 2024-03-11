@@ -19,9 +19,11 @@ public class PieceDetectionIOPhoton implements PieceDetectionIO {
         if (frontResult.hasTargets()) {
             inputs.frontSeesTarget = true;
             inputs.frontYaw = frontResult.getBestTarget().getYaw();
+            inputs.frontPitch = frontResult.getBestTarget().getPitch();
         } else {
             inputs.frontSeesTarget = false;
             inputs.frontYaw = 0.0;
+            inputs.frontPitch = 0.0;
         }
     }
 }
