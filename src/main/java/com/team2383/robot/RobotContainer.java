@@ -504,8 +504,10 @@ public class RobotContainer {
                         new FeederPowerCommand(m_backFeederSubsystem, () -> -0.8)));
 
         NamedCommands.registerCommand("SeekAndShoot",
-                new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
-                        m_indexerSubsystem, true));
+                new SequentialCommandGroup(
+                        new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
+                                m_indexerSubsystem, true),
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
         NamedCommands.registerCommand("Seek",
                 new SeekAutoCommand(m_drivetrainSubsystem));

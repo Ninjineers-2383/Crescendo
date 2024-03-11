@@ -109,7 +109,7 @@ public class PivotSubsystem extends SubsystemBase {
     }
 
     public boolean isFinished() {
-        return Math.abs(inputs.absoluteEncoderPositionRot - inputs.desiredPositionRot) < ((0.75) / 360.0);
+        return Math.abs(inputs.absoluteEncoderPositionRot - inputs.desiredPositionRot) < ((1) / 360.0);
     }
 
     public Rotation2d getAngle() {

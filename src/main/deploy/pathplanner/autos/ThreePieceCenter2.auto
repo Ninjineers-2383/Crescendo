@@ -38,6 +38,12 @@
         {
           "type": "named",
           "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "SeekAndShoot"
           }
         },
@@ -62,7 +68,25 @@
         {
           "type": "named",
           "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "SeekAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveToCenterMid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
           }
         }
       ]
