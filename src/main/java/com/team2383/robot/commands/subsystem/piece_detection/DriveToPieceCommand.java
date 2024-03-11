@@ -50,7 +50,7 @@ public class DriveToPieceCommand extends Command {
         if (pitch > 0) {
             return 1;
         } else {
-            return (pitch + 25.0) * (1.0 / 25.0);
+            return (pitch + 30.0) * (1.0 / 30.0);
         }
     }
 
