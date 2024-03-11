@@ -505,7 +505,7 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("SeekAndShoot",
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
-                        m_indexerSubsystem, true).withTimeout(1));
+                        m_indexerSubsystem, true));
 
         NamedCommands.registerCommand("Seek",
                 new SeekAutoCommand(m_drivetrainSubsystem));
@@ -558,7 +558,7 @@ public class RobotContainer {
                                         new WaitUntilCommand(m_indexerBeamBreak.negate())),
                                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                                         m_backFeederSubsystem, PivotPresets.FEED_BACK)),
-                        new IndexerBackOut(m_indexerSubsystem)).withTimeout(1));
+                        new IndexerBackOut(m_indexerSubsystem)));
 
     }
 }
