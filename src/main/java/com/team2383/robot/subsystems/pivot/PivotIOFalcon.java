@@ -154,12 +154,15 @@ public class PivotIOFalcon implements PivotIO {
         inputs.torqueCurrentAmps = torqueCurrent.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
         inputs.tempCelcius = tempCelsius.stream().mapToDouble(StatusSignal::getValueAsDouble).toArray();
 
-        if (leftMotorLeader.getPosition().getValueAsDouble() > 1.4 && offset == 0 && !offsetSet) {
-            offset = Math.ceil(leftMotorLeader.getPosition().getValueAsDouble());
+        double position = leftMotorLeader.getPosition().getValueAsDouble();
+
+        while (position - offset > 1.4) {
+            offset += 1;
         }
-        if (leftMotorLeader.getPosition().getValueAsDouble() < -0.6 && offset == 0 && !offsetSet) {
-            offset = Math.floor(leftMotorLeader.getPosition().getValueAsDouble());
+        while (position - offset < -0.6) {
+            offset -= 1;
         }
+
         offsetSet = true;
     }
 

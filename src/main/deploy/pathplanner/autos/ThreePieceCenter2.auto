@@ -52,6 +52,18 @@
           "data": {
             "name": "DriveToPiece"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveFromCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
+          }
         }
       ]
     }

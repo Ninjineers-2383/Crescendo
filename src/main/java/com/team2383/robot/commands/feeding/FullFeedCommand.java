@@ -19,7 +19,7 @@ public class FullFeedCommand extends ParallelCommandGroup {
         addCommands(
                 new FeederPowerCommand(feeder, () -> -0.8),
                 new IndexerCommand(indexer, () -> -0.5),
-                new ShooterRPMCommand(shooter, () -> 0, () -> -400, () -> 0),
+                new ShooterRPMCommand(shooter, () -> 0, () -> -1000, () -> 0),
                 new PivotPositionCommand(pivot, angle));
     }
 
