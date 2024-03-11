@@ -17,7 +17,7 @@ import com.team2383.robot.commands.feeding.FullFeedCommand;
 import com.team2383.robot.commands.feeding.IndexerBackOut;
 import com.team2383.robot.commands.feeding.PartialFeedCommand;
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
-import com.team2383.robot.commands.speaker.SeekCommand;
+import com.team2383.robot.commands.speaker.SeekAutoCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
 import com.team2383.robot.commands.subsystem.drivetrain.*;
 import com.team2383.robot.commands.subsystem.drivetrain.sysid.*;
@@ -505,10 +505,10 @@ public class RobotContainer {
 
         NamedCommands.registerCommand("SeekAndShoot",
                 new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
-                        m_indexerSubsystem, true));
+                        m_indexerSubsystem, true).withTimeout(1));
 
         NamedCommands.registerCommand("Seek",
-                new SeekCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem, false));
+                new SeekAutoCommand(m_drivetrainSubsystem));
 
         NamedCommands.registerCommand("StartShooter",
                 new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0));
@@ -558,7 +558,7 @@ public class RobotContainer {
                                         new WaitUntilCommand(m_indexerBeamBreak.negate())),
                                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                                         m_backFeederSubsystem, PivotPresets.FEED_BACK)),
-                        new IndexerBackOut(m_indexerSubsystem)));
+                        new IndexerBackOut(m_indexerSubsystem)).withTimeout(1));
 
     }
 }

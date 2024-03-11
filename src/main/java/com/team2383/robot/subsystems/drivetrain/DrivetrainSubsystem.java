@@ -32,6 +32,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import java.nio.file.Path;
 
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 import com.team2383.lib.swerve.ModuleLimits;
 import com.team2383.lib.swerve.SwerveSetpoint;
 import com.team2383.lib.swerve.SwerveSetpointGenerator;
@@ -85,6 +86,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private Rotation2d desiredHeading = new Rotation2d();
     private boolean headingControllerEnabled = true;
     private boolean useManualHeadingTarget = false;
+
+    private Rotation2d overrideHeading = new Rotation2d();
+    private boolean overrideHeadingEnabled = false;
 
     private final SwerveSetpointGenerator setpointGenerator;
     private final ModuleLimits currentModuleLimits = DriveConstants.kModuleLimits;
@@ -150,6 +154,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         reinitializeSLAM();
 
         forceHeading(new Rotation2d());
+
+        PPHolonomicDriveController.setRotationTargetOverride(this::getRotationTargetOverride);
 
         AutoBuilder.configureHolonomic(
                 this::getPose,
@@ -504,6 +510,23 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void setHeadingPID(ProfiledPIDController controller) {
         m_headingController = controller;
+    }
+
+    public void setRotationTargetOverride(Rotation2d desiredHeading) {
+        overrideHeadingEnabled = true;
+        overrideHeading = desiredHeading;
+    }
+
+    public void disableRotationTargetOverride() {
+        overrideHeadingEnabled = false;
+    }
+
+    public Optional<Rotation2d> getRotationTargetOverride() {
+        if (overrideHeadingEnabled) {
+            return Optional.of(overrideHeading);
+        } else {
+            return Optional.empty();
+        }
     }
 
     private void initializeWarnings() {
