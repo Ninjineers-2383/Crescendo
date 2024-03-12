@@ -156,10 +156,10 @@ public class PivotIOFalcon implements PivotIO {
 
         double position = leftMotorLeader.getPosition().getValueAsDouble();
 
-        while (position - offset > 1.4) {
+        while (position - offset > 1.4 && !offsetSet) {
             offset += 1;
         }
-        while (position - offset < -0.6) {
+        while (position - offset < -0.6 && !offsetSet) {
             offset -= 1;
         }
 
