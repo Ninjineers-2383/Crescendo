@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.919204747500404,
-      "y": 2.070981596508648
+      "x": 0.490082434710324,
+      "y": 4.132634447087077
     },
     "rotation": 180.0
   },
@@ -14,7 +14,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PreloadSourceTape"
+            "pathName": "PreloadSourceSW"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveTo2Center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
           }
         },
         {
@@ -32,49 +68,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DriveToCenterSource1"
+            "pathName": "DriveTo3Center"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "DriveToPiece"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DriveFromCenterSource1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "InitializeHeading"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DriveToCenterSource2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DriveToPiece"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DriveFromCenterSource2"
           }
         },
         {
@@ -92,6 +92,6 @@
       ]
     }
   },
-  "folder": "Source",
+  "folder": "Center",
   "choreoAuto": false
 }

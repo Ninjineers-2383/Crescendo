@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PreloadSourceSW"
+            "pathName": "PreloadSourceTape"
           }
         },
         {
@@ -92,6 +92,6 @@
       ]
     }
   },
-  "folder": null,
+  "folder": "Source",
   "choreoAuto": false
 }
