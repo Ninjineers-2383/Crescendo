@@ -420,11 +420,13 @@ public class RobotContainer {
     private void registerAutoCommands() {
         autoChooser.addDefaultOption("None", (Command) null);
 
-        autoChooser.addOption("Two Note", new PathPlannerAuto("TwoPieceTop"));
+        autoChooser.addOption("3.5Amp", new PathPlannerAuto("3.5Amp"));
 
-        autoChooser.addOption("Three Note", new PathPlannerAuto("ThreePieceCenter2"));
+        autoChooser.addOption("3Amp", new PathPlannerAuto("3Amp"));
 
-        autoChooser.addOption("Four Note", new PathPlannerAuto("FourPieceTop"));
+        autoChooser.addOption("3SourceTapeBottomTop", new PathPlannerAuto("3SourceTapeBottomTop"));
+
+        autoChooser.addOption("3SourceTapeTopBottom", new PathPlannerAuto("3SourceTapeTopBottom"));
     }
 
     private void registerTestCommands() {
