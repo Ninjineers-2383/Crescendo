@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.490082434710324,
-      "y": 4.132634447087077
+      "x": 1.3140618588929502,
+      "y": 5.535354916863679
     },
     "rotation": 180.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PreloadSourceSW"
+            "pathName": "PreloadCenter"
           }
         },
         {
