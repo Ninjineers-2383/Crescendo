@@ -28,7 +28,7 @@ public class ShooterRPMCommand extends Command {
 
     public ShooterRPMCommand(ShooterSubsystem shooter, DoubleSupplier topBottomRPM, DoubleSupplier sideRPM,
             DoubleSupplier differentialRPM) {
-        this(shooter, topBottomRPM, sideRPM, differentialRPM, true);
+        this(shooter, topBottomRPM, sideRPM, differentialRPM, false);
     }
 
     @Override
@@ -39,6 +39,6 @@ public class ShooterRPMCommand extends Command {
 
     @Override
     public boolean isFinished() {
-        return finish;
+        return finish && shooter.isFinished();
     }
 }

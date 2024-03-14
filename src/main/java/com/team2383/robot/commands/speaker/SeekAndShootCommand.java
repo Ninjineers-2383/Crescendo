@@ -28,7 +28,7 @@ public class SeekAndShootCommand extends ParallelDeadlineGroup {
                                     && Math.abs(speeds.vxMetersPerSecond) < 0.001
                                     && Math.abs(speeds.vyMetersPerSecond) < 0.001;
                             return pivot.isFinished() && isStopped && drivetrain.headingIsFinished()
-                                    && (Math.abs(shooter.getTopSetpoint() - shooter.getVelocities()[0]) < 2);
+                                    && shooter.isFinished();
                         }),
                         new ShootCommand(indexer, shooter)),
                 new FaceToSpeakerCommand(drivetrain, finish),

@@ -68,6 +68,10 @@ public class ShooterSubsystem extends SubsystemBase {
         shooter.setSideVoltage(voltage);
     }
 
+    public boolean isFinished() {
+        return Math.abs(getTopSetpoint() - getVelocities()[0]) < 2;
+    }
+
     public double[] getVoltages() {
         return new double[] { inputs.topVoltage, inputs.bottomVoltage, inputs.sideVoltage };
     }

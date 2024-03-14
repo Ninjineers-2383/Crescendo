@@ -102,6 +102,9 @@ public class RobotContainer {
 
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
+    private final JoystickButton m_subwoofer = new JoystickButton(m_operatorController, 7);
+    private final JoystickButton m_mythicalTrap = new JoystickButton(m_operatorController, 8);
+
     private final JoystickButton m_autoFeed = new JoystickButton(m_driverController, 1);
 
     private final JoystickButton m_resetHeading = new JoystickButton(m_driverController, Constants.OI.ResetHeading);
@@ -369,6 +372,19 @@ public class RobotContainer {
                         new InstantCommand(() -> m_driverController.setRumble(RumbleType.kBothRumble, 1)),
                         new WaitCommand(0.25),
                         new InstantCommand(() -> m_driverController.setRumble(RumbleType.kBothRumble, 0))));
+
+        m_subwoofer.onTrue(
+                new SequentialCommandGroup(
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0, true),
+                        new IndexerCommand(m_indexerSubsystem, () -> -1.0)));
+
+        m_mythicalTrap.onTrue(
+                new SequentialCommandGroup(
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0, true),
+                        new IndexerCommand(m_indexerSubsystem, () -> -1.0)));
+
     }
 
     private void configureDefaultCommands() {
@@ -397,7 +413,6 @@ public class RobotContainer {
         m_shooterSubsystem.setDefaultCommand(
                 new ShooterRPMCommand(m_shooterSubsystem, shooterTopBottomRPM::get, shooterSideRPM::get,
                         shooterDifferentialRPM::get));
-
     }
 
     public void disable() {
