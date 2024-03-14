@@ -26,7 +26,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public final class DriveConstants {
-    public static final double kMaxSpeed = 3.8; // meters per second
+    public static final double kMaxSpeed = 4.3; // meters per second
 
     public final static double kTrackWidthMeters = Constants.getRobot() == RobotType.ROBOT_COMP
             ? Units.inchesToMeters(27)
@@ -65,8 +65,8 @@ public final class DriveConstants {
     public final static Pose2d SPEAKER_POSE = new Pose2d(new Translation2d(1.84, 7.71), Rotation2d.fromDegrees(270));
 
     public static final ModuleLimits kModuleLimits = new ModuleLimits(
-            3.98,
-            3.98 * 5,
+            5,
+            5 * 5,
             Units.degreesToRadians(1080));
 
     public static final class ModuleConstants {
