@@ -36,14 +36,14 @@
       "rotations": [
         {
           "axis": "y",
-          "degrees": -10
+          "degrees": -20
         },
         {
           "axis": "z",
           "degrees": -20
         }
       ],
-      "position": [0.29, 0.267, 0.152],
+      "position": [0.27, 0.272, 0.217],
       "resolution": [1280, 720],
       "fov": 70
     },
@@ -52,14 +52,14 @@
       "rotations": [
         {
           "axis": "y",
-          "degrees": -10
+          "degrees": -40
         },
         {
           "axis": "z",
-          "degrees": -110
+          "degrees": -0
         }
       ],
-      "position": [0.267, -0.29, 0.152],
+      "position": [0.274, -0.27, 0.221],
       "resolution": [1280, 720],
       "fov": 70
     },
@@ -68,14 +68,14 @@
       "rotations": [
         {
           "axis": "y",
-          "degrees": -10
+          "degrees": -40
         },
         {
           "axis": "z",
-          "degrees": -290
+          "degrees": -180
         }
       ],
-      "position": [-0.267, 0.29, 0.152],
+      "position": [-0.274, 0.27, 0.221],
       "resolution": [1280, 720],
       "fov": 70
     },
@@ -84,17 +84,17 @@
       "rotations": [
         {
           "axis": "y",
-          "degrees": -10
+          "degrees": -20
         },
         {
           "axis": "z",
           "degrees": -200
         }
       ],
-      "position": [-0.267, -0.29, 0.152],
+      "position": [-0.27, -0.272, 0.217],
       "resolution": [1280, 720],
       "fov": 70
     }
   ],
-  "name": "Robot Proto 2024"
+  "name": "MIDNIGHT"
 }
