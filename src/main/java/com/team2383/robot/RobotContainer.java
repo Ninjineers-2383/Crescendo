@@ -538,7 +538,8 @@ public class RobotContainer {
                                         new WaitUntilCommand(m_indexerBeamBreak.negate())),
                                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                                         m_backFeederSubsystem, PivotPresets.FEED_BACK)),
-                        new IndexerBackOut(m_indexerSubsystem)));
+                        new IndexerBackOut(m_indexerSubsystem),
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
     }
 }
