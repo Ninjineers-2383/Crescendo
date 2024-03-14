@@ -102,8 +102,8 @@ public class RobotContainer {
 
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
-    private final JoystickButton m_subwoofer = new JoystickButton(m_operatorController, 7);
-    private final JoystickButton m_mythicalTrap = new JoystickButton(m_operatorController, 8);
+    private final JoystickButton m_subwoofer = new JoystickButton(m_operatorController, 8);
+    private final JoystickButton m_mythicalTrap = new JoystickButton(m_operatorController, 7);
 
     private final JoystickButton m_autoFeed = new JoystickButton(m_driverController, 1);
 
@@ -313,7 +313,7 @@ public class RobotContainer {
                 new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem, m_backFeederSubsystem));
 
         m_fullFeedRear.onFalse(new IndexerBackOut(m_indexerSubsystem).withTimeout(0.4)
-                .deadlineWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)
+                .deadlineWith(new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0, true)
                         .andThen(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO))));
 
         m_partialFeedRear.whileTrue(new PartialFeedCommand(m_backFeederSubsystem));
@@ -376,8 +376,15 @@ public class RobotContainer {
         m_subwoofer.onTrue(
                 new SequentialCommandGroup(
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER),
-                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0, true),
-                        new IndexerCommand(m_indexerSubsystem, () -> -1.0)));
+                        new ParallelDeadlineGroup(
+                                new SequentialCommandGroup(
+                                        new WaitCommand(0.04),
+                                        new WaitUntilCommand(() -> m_shooterSubsystem.isFinished()
+                                                && m_pivotSubsystem.isFinished())),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
+                        new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
 
         m_mythicalTrap.onTrue(
                 new SequentialCommandGroup(
