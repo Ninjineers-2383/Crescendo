@@ -64,6 +64,30 @@
           "data": {
             "name": "SeekAndShoot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveTo3Center"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
+          }
         }
       ]
     }

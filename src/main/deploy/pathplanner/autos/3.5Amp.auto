@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3140618588929502,
-      "y": 5.535354916863679
+      "x": 0.4708394010225951,
+      "y": 6.897682725465309
     },
     "rotation": 180.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PreloadCenter"
+            "pathName": "PreloadAmp"
           }
         },
         {
@@ -33,6 +33,12 @@
           "type": "named",
           "data": {
             "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
           }
         },
         {
@@ -44,13 +50,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DriveTo2Center"
+            "pathName": "DriveToCenterTop"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveFromCenterTop"
           }
         },
         {
@@ -64,10 +76,22 @@
           "data": {
             "name": "SeekAndShoot"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveToCenterMid"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
+          }
         }
       ]
     }
   },
-  "folder": "Center",
+  "folder": "Amp",
   "choreoAuto": false
 }

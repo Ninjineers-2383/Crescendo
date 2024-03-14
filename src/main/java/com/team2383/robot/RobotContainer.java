@@ -17,7 +17,6 @@ import com.team2383.robot.commands.feeding.FullFeedCommand;
 import com.team2383.robot.commands.feeding.IndexerBackOut;
 import com.team2383.robot.commands.feeding.PartialFeedCommand;
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
-import com.team2383.robot.commands.speaker.SeekAutoCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
 import com.team2383.robot.commands.subsystem.drivetrain.*;
 import com.team2383.robot.commands.subsystem.drivetrain.sysid.*;
@@ -421,11 +420,13 @@ public class RobotContainer {
     private void registerAutoCommands() {
         autoChooser.addDefaultOption("None", (Command) null);
 
-        autoChooser.addOption("Two Note", new PathPlannerAuto("TwoPieceTop"));
+        autoChooser.addOption("3.5Amp", new PathPlannerAuto("3.5Amp"));
 
-        autoChooser.addOption("Three Note", new PathPlannerAuto("ThreePieceCenter2"));
+        autoChooser.addOption("3Amp", new PathPlannerAuto("3Amp"));
 
-        autoChooser.addOption("Four Note", new PathPlannerAuto("FourPieceTop"));
+        autoChooser.addOption("3SourceTapeBottomTop", new PathPlannerAuto("3SourceTapeBottomTop"));
+
+        autoChooser.addOption("3SourceTapeTopBottom", new PathPlannerAuto("3SourceTapeTopBottom"));
     }
 
     private void registerTestCommands() {
@@ -494,56 +495,11 @@ public class RobotContainer {
                                                 .plus(new Rotation2d(Math.PI))),
                         m_drivetrainSubsystem).withTimeout(0.02));
 
-        NamedCommands.registerCommand("FeedBack",
-                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                        m_backFeederSubsystem, PivotPresets.FEED_BACK));
-
-        NamedCommands.registerCommand("PartialFeedBack",
-                new ParallelCommandGroup(
-                        new IndexerCommand(m_indexerSubsystem, () -> -0.5),
-                        new FeederPowerCommand(m_backFeederSubsystem, () -> -0.8)));
-
         NamedCommands.registerCommand("SeekAndShoot",
                 new SequentialCommandGroup(
                         new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
                                 m_indexerSubsystem, true),
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
-
-        NamedCommands.registerCommand("Seek",
-                new SeekAutoCommand(m_drivetrainSubsystem));
-
-        NamedCommands.registerCommand("StartShooter",
-                new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0));
-
-        NamedCommands.registerCommand("StopShooter",
-                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0));
-
-        NamedCommands.registerCommand("Shoot", new ShootCommand(m_indexerSubsystem, m_shooterSubsystem));
-
-        NamedCommands.registerCommand("PivotSeek",
-                new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d, true));
-
-        NamedCommands.registerCommand("PivotSeekContinuous",
-                new PivotSeekCommand(m_pivotSubsystem,
-                        m_drivetrainSubsystem::getEstimatorPose3d, false));
-
-        NamedCommands.registerCommand("PivotSeekAndShoot",
-                new SequentialCommandGroup(
-                        new ParallelCommandGroup(
-                                new PivotSeekCommand(m_pivotSubsystem, m_drivetrainSubsystem::getEstimatorPose3d,
-                                        true),
-                                new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
-                        new ShootCommand(m_indexerSubsystem, m_shooterSubsystem),
-                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0)));
-
-        NamedCommands.registerCommand("StoreRing",
-                new ParallelDeadlineGroup(
-                        new SequentialCommandGroup(
-                                new IndexerCommand(m_indexerSubsystem, () -> 0.1).withTimeout(0.2),
-                                new IndexerCommand(m_indexerSubsystem, () -> 0).withTimeout(0.03)
-
-                        ),
-                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> -800, () -> 0)));
 
         NamedCommands.registerCommand("DriveToPiece",
                 new SequentialCommandGroup(

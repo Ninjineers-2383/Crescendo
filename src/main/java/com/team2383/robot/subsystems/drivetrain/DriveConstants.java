@@ -62,7 +62,7 @@ public final class DriveConstants {
     public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(10.0, 0, 0,
             new Constraints(4 * Math.PI, 4 * Math.PI));
 
-    public final static Pose2d SPEAKER_POSE = new Pose2d(new Translation2d(1.84, 7.71), Rotation2d.fromDegrees(270));
+    public final static Pose2d SPEAKER_POSE = new Pose2d(new Translation2d(1.84, 6.25), Rotation2d.fromDegrees(270));
 
     public static final ModuleLimits kModuleLimits = new ModuleLimits(
             5,

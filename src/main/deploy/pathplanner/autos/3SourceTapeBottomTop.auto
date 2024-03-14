@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.3140618588929502,
-      "y": 5.535354916863679
+      "x": 0.919204747500404,
+      "y": 2.070981596508648
     },
     "rotation": 180.0
   },
@@ -14,7 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PreloadCenter"
+            "pathName": "PreloadSourceTape"
           }
         },
         {
@@ -30,9 +30,27 @@
           }
         },
         {
+          "type": "path",
+          "data": {
+            "pathName": "DriveToCenterSource2"
+          }
+        },
+        {
           "type": "named",
           "data": {
             "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveFromCenterSource2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
           }
         },
         {
@@ -44,13 +62,19 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DriveTo2Center"
+            "pathName": "DriveToCenterSource1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveFromCenterSource1"
           }
         },
         {
@@ -68,6 +92,6 @@
       ]
     }
   },
-  "folder": "Center",
+  "folder": "Source",
   "choreoAuto": false
 }

@@ -3,12 +3,18 @@
   "robotLength": 0.84,
   "holonomicMode": true,
   "pathFolders": [
-    "DriveToPiece",
+    "AmpSide",
+    "Center",
+    "Source",
     "TeleOp"
   ],
-  "autoFolders": [],
-  "defaultMaxVel": 0.5,
-  "defaultMaxAccel": 0.5,
+  "autoFolders": [
+    "Amp",
+    "Source",
+    "Center"
+  ],
+  "defaultMaxVel": 3.0,
+  "defaultMaxAccel": 3.0,
   "defaultMaxAngVel": 540.0,
   "defaultMaxAngAccel": 720.0,
   "maxModuleSpeed": 4.5

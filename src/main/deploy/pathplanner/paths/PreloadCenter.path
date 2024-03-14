@@ -3,56 +3,50 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.871560892900758,
-        "y": 6.253586715449656
+        "x": 1.3140618588929502,
+        "y": 5.535354916863679
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0946267347080147,
-        "y": 6.334218486618792
+        "x": 1.6396709716496372,
+        "y": 5.042007776323246
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 1.82409310273166,
-        "y": 7.686886646500566
+        "x": 1.8666106562982372,
+        "y": 4.519059807350385
       },
       "prevControl": {
-        "x": 1.82409310273166,
-        "y": 6.1368866465005665
+        "x": 1.5508684863523587,
+        "y": 5.022273890701629
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [
-    {
-      "waypointRelativePos": 1,
-      "rotationDegrees": 0,
-      "rotateFast": false
-    }
-  ],
+  "rotationTargets": [],
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 2.75,
-    "maxAcceleration": 1.5,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": 90.0,
-    "rotateFast": true
+    "rotation": 180.0,
+    "rotateFast": false
   },
   "reversed": false,
-  "folder": "TeleOp",
+  "folder": "Center",
   "previewStartingState": {
-    "rotation": 90.0,
+    "rotation": 180.0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

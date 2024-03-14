@@ -2,8 +2,8 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.4708394010225951,
-      "y": 6.897682725465309
+      "x": 0.919204747500404,
+      "y": 2.070981596508648
     },
     "rotation": 180.0
   },
@@ -14,25 +14,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DriveToPreload2"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "InitializeHeading"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DriveToPiece"
+            "pathName": "PreloadSourceTape"
           }
         },
         {
@@ -50,7 +32,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DriveToCenterTop"
+            "pathName": "DriveToCenterSource1"
           }
         },
         {
@@ -62,7 +44,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DriveFromCenter"
+            "pathName": "DriveFromCenterSource1"
           }
         },
         {
@@ -80,18 +62,36 @@
         {
           "type": "path",
           "data": {
-            "pathName": "DriveToCenterMid"
+            "pathName": "DriveToCenterSource2"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveFromCenterSource2"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
           }
         }
       ]
     }
   },
-  "folder": null,
+  "folder": "Source",
   "choreoAuto": false
 }
