@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.util.sendable.Sendable;
@@ -39,6 +40,7 @@ import com.team2383.lib.swerve.SwerveSetpointGenerator;
 import com.team2383.lib.util.mechanical_advantage.Alert;
 import com.team2383.lib.util.mechanical_advantage.Alert.AlertType;
 import com.team2383.robot.Constants;
+import com.team2383.robot.FieldConstants;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMIOServer;
@@ -292,6 +294,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("SLAM/newValue", update.newValue());
 
         Logger.recordOutput("Swerve/Dead Reckoning", m_deadReckoning.getPoseMeters());
+
+        Logger.recordOutput("Swerve/hasCrossedCenterLine", hasCrossedCenterLine());
     }
 
     private void reinitializeSLAM() {
@@ -600,5 +604,13 @@ public class DrivetrainSubsystem extends SubsystemBase {
         rearRightDriveConnected.set(!m_rearRightModule.m_inputs.driveMotorConnected);
         rearRightEncoderConnected.set(!m_rearRightModule.m_inputs.angleEncoderConnected);
         rearRightAzimuthConnected.set(!m_rearRightModule.m_inputs.angleMotorConnected);
+    }
+
+    public boolean hasCrossedCenterLine() {
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+            return getPose().getTranslation().getX() < (FieldConstants.fieldLength / 2) - Units.inchesToMeters(15);
+        } else {
+            return getPose().getTranslation().getX() > (FieldConstants.fieldLength / 2) + Units.inchesToMeters(15);
+        }
     }
 }
