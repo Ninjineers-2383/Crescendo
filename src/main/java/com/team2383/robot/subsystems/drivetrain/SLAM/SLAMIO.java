@@ -16,6 +16,7 @@ public interface SLAMIO {
         public Pose3d pose = new Pose3d();
         public Pose3d[] landmarks = new Pose3d[0];
         public boolean[] seenLandmarks = new boolean[0];
+        public double latestTimestamp = 0;
     }
 
     /** Updates the set of loggable inputs. */

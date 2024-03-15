@@ -91,9 +91,10 @@ public class SLAMIOServer implements SLAMIO {
     public void updateInputs(SLAMIOInputs inputs) {
         TimestampedObject<TimedPose3d> latestPose = pose.getAtomic();
 
-        if (latestPose.timestamp == latestTimestamp) {
+        inputs.latestTimestamp = latestPose.timestamp;
+        if (latestPose.timestamp <= latestTimestamp) {
             inputs.newValue = false;
-        } else if (latestPose.timestamp > latestTimestamp) {
+        } else {
             odometry.addVisionMeasurement(latestPose.value.pose.toPose2d(), latestPose.value.timestamp,
                     VecBuilder.fill(0.01, 0.01, 0.01));
 
@@ -136,7 +137,7 @@ public class SLAMIOServer implements SLAMIO {
 
     @Override
     public void forcePose(Pose2d pose, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
-        latestTimestamp = MathSharedStore.getTimestamp();
+        latestTimestamp = MathSharedStore.getTimestamp() + 1;
         odometry.resetPosition(gyroAngle, positions, pose);
         resetPose.set(pose);
     }
