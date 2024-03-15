@@ -608,9 +608,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public boolean hasCrossedCenterLine() {
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-            return getPose().getTranslation().getX() < (FieldConstants.fieldLength / 2) - Units.inchesToMeters(6);
+            return getPose().getTranslation().getX() < (FieldConstants.fieldLength / 2) - Units.inchesToMeters(15);
         } else {
-            return getPose().getTranslation().getX() > (FieldConstants.fieldLength / 2) + Units.inchesToMeters(6);
+            return getPose().getTranslation().getX() > (FieldConstants.fieldLength / 2) + Units.inchesToMeters(15);
         }
     }
 }
