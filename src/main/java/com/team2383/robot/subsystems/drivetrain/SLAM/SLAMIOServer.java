@@ -91,10 +91,10 @@ public class SLAMIOServer implements SLAMIO {
     public void updateInputs(SLAMIOInputs inputs) {
         TimestampedObject<TimedPose3d> latestPose = pose.getAtomic();
 
-        inputs.latestTimestamp = latestPose.timestamp;
-        if (latestPose.timestamp <= latestTimestamp) {
+        if (latestPose.value.timestamp <= latestTimestamp) {
             inputs.newValue = false;
         } else {
+            inputs.latestTimestamp = latestPose.value.timestamp;
             odometry.addVisionMeasurement(latestPose.value.pose.toPose2d(), latestPose.value.timestamp,
                     VecBuilder.fill(0.01, 0.01, 0.01));
 
@@ -104,7 +104,7 @@ public class SLAMIOServer implements SLAMIO {
             if (MathSharedStore.getTimestamp() - latestPose.value.timestamp > 1) {
                 inputs.connected = false;
             }
-            latestTimestamp = latestPose.timestamp;
+            latestTimestamp = latestPose.value.timestamp;
         }
 
         Pose2d ref = odometry.getEstimatedPosition();
