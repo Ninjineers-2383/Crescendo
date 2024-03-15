@@ -1,6 +1,6 @@
 package com.team2383.robot.subsystems.drivetrain.SLAM;
 
-import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMIO.SLAMIOInputs;
+import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -9,7 +9,7 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 public class SLAMClient {
     private final SLAMIO slamio;
-    private final SLAMIOInputs inputs = new SLAMIOInputs();
+    private final SLAMIOInputsAutoLogged inputs = new SLAMIOInputsAutoLogged();
 
     public SLAMClient(SLAMIO io) {
         slamio = io;
@@ -23,6 +23,8 @@ public class SLAMClient {
         slamio.updateModulePositions(positions, gyroAngle);
 
         slamio.updateInputs(inputs);
+
+        Logger.processInputs("SLAM", inputs);
 
         // slamio.saveAndExit(DriverStation.getStickButton(0, 1));
 

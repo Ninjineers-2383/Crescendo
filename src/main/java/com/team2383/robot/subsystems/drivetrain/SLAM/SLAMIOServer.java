@@ -45,7 +45,6 @@ public class SLAMIOServer implements SLAMIO {
     private final IntegerPublisher poseFilterSizePub;
     private final DoublePublisher poseOutlierRejectionDistanceSub;
     private final StructPublisher<Pose2d> resetPose;
-    private final BooleanArraySubscriber seenLandmarks;
 
     private long latestTimestamp = 0;
 
@@ -85,8 +84,6 @@ public class SLAMIOServer implements SLAMIO {
         poseFilterSizePub = table.getIntegerTopic("poseFilterSize").publish();
         poseOutlierRejectionDistanceSub = table.getDoubleTopic("PoseOutlierDistance").publish();
 
-        seenLandmarks = table.getBooleanArrayTopic("seenLandmarks").subscribe(new boolean[0]);
-
         moduleLocationsPub.set(moduleLocations);
         landmarksPub.set(landmarks);
     }
@@ -117,8 +114,6 @@ public class SLAMIOServer implements SLAMIO {
                 new Rotation3d(inputs.pose.getRotation().getX(),
                         inputs.pose.getRotation().getY(),
                         ref.getRotation().getRadians()));
-
-        inputs.seenLandmarks = seenLandmarks.get();
 
     }
 
