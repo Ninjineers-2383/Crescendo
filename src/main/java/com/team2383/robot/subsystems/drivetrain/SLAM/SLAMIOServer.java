@@ -14,7 +14,6 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
-import edu.wpi.first.networktables.BooleanArraySubscriber;
 import edu.wpi.first.networktables.BooleanPublisher;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.IntegerPublisher;
@@ -46,7 +45,7 @@ public class SLAMIOServer implements SLAMIO {
     private final DoublePublisher poseOutlierRejectionDistanceSub;
     private final StructPublisher<Pose2d> resetPose;
 
-    private long latestTimestamp = 0;
+    private double latestTimestamp = 0;
 
     public SLAMIOServer(Translation2d[] moduleLocations, Pose3d[] landmarks) {
         inst = NetworkTableInstance.create();
@@ -101,11 +100,10 @@ public class SLAMIOServer implements SLAMIO {
             inputs.connected = true;
             inputs.newValue = true;
 
-            latestTimestamp = latestPose.timestamp;
-
             if (MathSharedStore.getTimestamp() - latestPose.value.timestamp > 1) {
                 inputs.connected = false;
             }
+            latestTimestamp = latestPose.timestamp;
         }
 
         Pose2d ref = odometry.getEstimatedPosition();
@@ -138,6 +136,7 @@ public class SLAMIOServer implements SLAMIO {
 
     @Override
     public void forcePose(Pose2d pose, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
+        latestTimestamp = MathSharedStore.getTimestamp();
         odometry.resetPosition(gyroAngle, positions, pose);
         resetPose.set(pose);
     }
