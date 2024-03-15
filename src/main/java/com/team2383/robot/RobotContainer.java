@@ -23,6 +23,7 @@ import com.team2383.robot.commands.subsystem.drivetrain.sysid.*;
 import com.team2383.robot.commands.subsystem.feeder.*;
 import com.team2383.robot.commands.subsystem.indexer.*;
 import com.team2383.robot.commands.subsystem.orchestra.*;
+import com.team2383.robot.commands.subsystem.piece_detection.DriveToPieceAuto;
 import com.team2383.robot.commands.subsystem.piece_detection.DriveToPieceCommand;
 import com.team2383.robot.commands.subsystem.pivot.*;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotSysIDCommand;
@@ -526,7 +527,7 @@ public class RobotContainer {
         NamedCommands.registerCommand("DriveToPiece",
                 new SequentialCommandGroup(
                         new ParallelDeadlineGroup(
-                                new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem,
+                                new DriveToPieceAuto(m_pieceDetectionSubsystem, m_drivetrainSubsystem,
                                         m_backFeederSubsystem),
                                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                                         m_backFeederSubsystem, PivotPresets.FEED_BACK)),
