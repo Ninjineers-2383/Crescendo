@@ -273,7 +273,7 @@ public class RobotContainer {
         driverWrongController.set(DriverStation.isJoystickConnected(m_driverController.getPort())
                 && !DriverStation.getJoystickIsXbox(m_driverController.getPort()));
 
-        operatorWrongController.set(!DriverStation.isJoystickConnected(m_operatorController.getPort())
+        operatorWrongController.set(DriverStation.isJoystickConnected(m_operatorController.getPort())
                 && DriverStation.getJoystickIsXbox(m_operatorController.getPort()));
     }
 
