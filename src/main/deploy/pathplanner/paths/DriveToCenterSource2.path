@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4659523864502275,
-        "y": 1.8750779319740465
+        "x": 3.5933256481897597,
+        "y": 2.9896836716750355
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.492114438774332,
-        "y": 1.5019280947652809
+        "x": 4.619487700513865,
+        "y": 2.61653383446627
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "EndPreloadTapeSource"
     },
     {
       "anchor": {
@@ -45,7 +45,7 @@
   "reversed": false,
   "folder": "Source",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 150.0,
     "velocity": 0
   },
   "useDefaultConstraints": false
