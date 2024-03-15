@@ -353,7 +353,7 @@ public class RobotContainer {
                 // new WaitCommand(0.5),
                 new ShooterRPMCommand(m_shooterSubsystem, () -> -700, () -> 500, () -> 500)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5))
-                        .withTimeout(1));
+                        .withTimeout(1).andThen(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
         m_hooksDown.whileTrue(
                 new RestingHooksPowerCommand(m_restingHookSubsystem,
@@ -390,8 +390,15 @@ public class RobotContainer {
         m_mythicalTrap.onTrue(
                 new SequentialCommandGroup(
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
-                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0, true),
-                        new IndexerCommand(m_indexerSubsystem, () -> -1.0)));
+                        new ParallelDeadlineGroup(
+                                new SequentialCommandGroup(
+                                        new WaitCommand(0.04),
+                                        new WaitUntilCommand(() -> m_shooterSubsystem.isFinished()
+                                                && m_pivotSubsystem.isFinished())),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> -1000, () -> 500, () -> 0)),
+                        new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
 
     }
 
