@@ -3,16 +3,16 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4659523864502275,
-        "y": 1.8750779319740465
+        "x": 3.5933256481897597,
+        "y": 2.9896836716750355
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.331977790234666,
-        "y": 1.3750779319740465
+        "x": 4.2642777593247505,
+        "y": 1.963521619350932
       },
       "isLocked": false,
-      "linkedName": "EndCenterSource"
+      "linkedName": "EndPreloadTapeSource"
     },
     {
       "anchor": {
@@ -25,7 +25,7 @@
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "StartCenterSource"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
