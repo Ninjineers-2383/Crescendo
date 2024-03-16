@@ -157,7 +157,7 @@ public class RobotContainer {
                 case ROBOT_COMP:
                 case ROBOT_PROTO:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
-                            new GyroIOPigeon(0, Constants.kCANivoreBus),
+                            new GyroIONavX(),
                             new SwerveModuleIOFalcon500(DriveConstants.frontLeftConstants,
                                     Constants.kCANivoreBus),
                             new SwerveModuleIOFalcon500(DriveConstants.frontRightConstants,
@@ -342,18 +342,19 @@ public class RobotContainer {
         m_manualAmp.whileTrue(
                 new ParallelCommandGroup(
                         new PivotPositionCommand(m_pivotSubsystem,
-                                PivotPresets.SCORE_AMP),
-                        // new IndexerCommand(m_indexerSubsystem, () -> -0.5).withTimeout(0.4),
-                        new ShooterRPMCommand(m_shooterSubsystem, () -> -750, () -> 500, () -> -200)
-                                .withTimeout(0.5)));
+                                PivotPresets.SCORE_AMP)));
 
         m_manualAmp.onFalse(
                 // new ParallelDeadlineGroup(
                 // new SequentialCommandGroup(
                 // new WaitCommand(0.5),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> -700, () -> 500, () -> 500)
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -750, () -> 750, () -> 400)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5))
-                        .withTimeout(1).andThen(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
+                        .withTimeout(1).andThen(new SequentialCommandGroup(
+                                // new PivotPositionCommand(m_pivotSubsystem,
+                                // PivotPresets.ZERO).withTimeout(0.5),
+                                new PivotPositionCommand(m_pivotSubsystem, Math.toRadians(90)).withTimeout(0.5),
+                                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO).withTimeout(0.25))));
 
         m_hooksDown.whileTrue(
                 new RestingHooksPowerCommand(m_restingHookSubsystem,
@@ -395,7 +396,7 @@ public class RobotContainer {
                                         new WaitCommand(0.04),
                                         new WaitUntilCommand(() -> m_shooterSubsystem.isFinished()
                                                 && m_pivotSubsystem.isFinished())),
-                                new ShooterRPMCommand(m_shooterSubsystem, () -> -1000, () -> 500, () -> 0)),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> -2000, () -> 500, () -> 0)),
                         new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
@@ -457,6 +458,13 @@ public class RobotContainer {
         autoChooser.addOption("3SourceTapeBottomTop", new PathPlannerAuto("3SourceTapeBottomTop"));
 
         autoChooser.addOption("3SourceTapeTopBottom", new PathPlannerAuto("3SourceTapeTopBottom"));
+
+        autoChooser.addOption("TwoPieceCenter", new PathPlannerAuto("TwoPieceCenter"));
+
+        autoChooser.addOption("ThreePieceCenter", new PathPlannerAuto("ThreePieceCenter"));
+
+        autoChooser.addOption("FourPieceCenter", new PathPlannerAuto("FourPieceCenter"));
+
     }
 
     private void registerTestCommands() {
