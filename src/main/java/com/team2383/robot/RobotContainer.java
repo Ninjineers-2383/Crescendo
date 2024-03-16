@@ -348,7 +348,7 @@ public class RobotContainer {
                 // new ParallelDeadlineGroup(
                 // new SequentialCommandGroup(
                 // new WaitCommand(0.5),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> -750, () -> 750, () -> 400)
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -750, () -> 750, () -> 500)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5))
                         .withTimeout(1).andThen(new SequentialCommandGroup(
                                 // new PivotPositionCommand(m_pivotSubsystem,
