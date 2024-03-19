@@ -18,20 +18,21 @@
     "components": [
         {
             "zeroedRotations": [
-		{
-            	   "axis": "x",
-            	   "degrees": 90
-        	},
-        	{
-                   "axis": "z",
-                   "degrees": 90
-        	}],
+                {
+                    "axis": "x",
+                    "degrees": 90
+                },
+                {
+                    "axis": "z",
+                    "degrees": 270
+                }
+            ],
             "zeroedPosition": [
                 0,
-        	0,
-        	0
+                0,
+                0
             ]
-	}
+        }
     ],
     "cameras": [
         {
@@ -126,7 +127,7 @@
             ],
             "fov": 70
         },
- 	{
+        {
             "name": "Limelight",
             "rotations": [
                 {
@@ -149,7 +150,6 @@
             ],
             "fov": 59.6
         }
-
     ],
     "name": "Midnight"
 }
