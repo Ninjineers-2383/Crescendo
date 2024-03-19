@@ -33,6 +33,7 @@ import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
 import com.team2383.robot.subsystems.drivetrain.SLAM.*;
 import com.team2383.robot.subsystems.feeder.*;
+import com.team2383.robot.subsystems.gamePieceSim.GamePieceSimSubsystem;
 import com.team2383.robot.subsystems.indexer.*;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionIO;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionIOPhoton;
@@ -229,6 +230,10 @@ public class RobotContainer {
         m_restingHookSubsystem = m_restingHookSubsystem == null
                 ? new RestingHookSubsystem(new RestingHookIO() {})
                 : m_restingHookSubsystem;
+
+        new GamePieceSimSubsystem(m_drivetrainSubsystem::getEstimatorPose3d,
+                m_drivetrainSubsystem::getFieldRelativeSpeeds, m_shoot::getAsBoolean, m_autoFeed::getAsBoolean,
+                m_autoAmp::getAsBoolean, m_pivotSubsystem::getAngle, m_shooterSubsystem::getTopBottomRPM);
 
         new SimComponents(m_pivotSubsystem);
 
