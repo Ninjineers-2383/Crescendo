@@ -65,7 +65,6 @@ public class PivotSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         io.updateInputs(inputs);
-        inputs.desiredPositionRot = goal.position;
         Logger.processInputs("Pivot", inputs);
 
         if (setpoint == goal && !isFinished()) {
@@ -81,6 +80,11 @@ public class PivotSubsystem extends SubsystemBase {
                         0.0));
 
         io.setAngleRot(setpoint.position, setpoint.velocity);
+
+        Logger.recordOutput("Pivot/Goal/Position", goal.position);
+        Logger.recordOutput("Pivot/Goal/Velocity", goal.velocity);
+        Logger.recordOutput("Pivot/Setpoint/Position", setpoint.position);
+        Logger.recordOutput("Pivot/Setpoint/Velocity", setpoint.velocity);
 
         leftMotorDisconnected.set(!inputs.leftMotorConnected);
         rightMotorDisconnected.set(!inputs.rightMotorConnected);
