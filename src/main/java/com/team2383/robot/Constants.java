@@ -21,12 +21,12 @@ public final class Constants {
 
     public static final boolean tuningMode = true;
 
-    private static final RobotType robot = RobotType.ROBOT_SIM;
+    private static final RobotType robot = RobotType.ROBOT_COMP;
 
     public static RobotType getRobot() {
         if (RobotBase.isReal()) {
             if (robot == RobotType.ROBOT_SIM) { // Invalid robot selected
-                return RobotType.ROBOT_PROTO;
+                return RobotType.ROBOT_COMP;
             } else {
                 return robot;
             }
@@ -38,6 +38,7 @@ public final class Constants {
     public static Mode getMode() {
         switch (getRobot()) {
             case ROBOT_COMP:
+            case ROBOT_PROTO:
                 return RobotBase.isReal() ? Mode.REAL : Mode.REPLAY;
 
             case ROBOT_SIM:
