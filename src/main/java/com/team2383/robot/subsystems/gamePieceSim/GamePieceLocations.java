@@ -8,7 +8,7 @@ public class GamePieceLocations {
     public static double fieldLength = 16.54175;
     public static double fieldWidth = 8.21055;
 
-    public static double shooterRadiusMeters = Units.inchesToMeters(3);
+    public static double shooterRadiusMeters = Units.inchesToMeters(2.965079 / 2.0);
 
     public static double coefficientOfDrag = 0.1;
 

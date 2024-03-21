@@ -33,7 +33,7 @@ import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
 import com.team2383.robot.subsystems.drivetrain.SLAM.*;
 import com.team2383.robot.subsystems.feeder.*;
-import com.team2383.robot.subsystems.gamePieceSim.GamePieceSimSubsystem;
+import com.team2383.robot.subsystems.gamePieceSim.GamePieceSim;
 import com.team2383.robot.subsystems.indexer.*;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionIO;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionIOPhoton;
@@ -116,8 +116,8 @@ public class RobotContainer {
 
     private final JoystickButton m_autoAmp = new JoystickButton(m_driverController, 3);
 
-    private final Trigger m_indexerBeamBreak;
-    private final Trigger m_feederBeamBreak;
+    private Trigger m_indexerBeamBreak;
+    private Trigger m_feederBeamBreak;
 
     private final POVButton m_hooksDown = new POVButton(m_operatorController, 270);
     private final POVButton m_hooksUp = new POVButton(m_operatorController, 90);
@@ -135,6 +135,8 @@ public class RobotContainer {
     private PieceDetectionSubsystem m_pieceDetectionSubsystem;
 
     private RestingHookSubsystem m_restingHookSubsystem;
+
+    private GamePieceSim m_gamePieceSimSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -180,6 +182,9 @@ public class RobotContainer {
 
                     m_restingHookSubsystem = new RestingHookSubsystem(new RestingHookIOTalonSRX());
 
+                    m_indexerBeamBreak = new Trigger(m_indexerSubsystem::isBeamBreakTripped);
+                    m_feederBeamBreak = new Trigger(m_backFeederSubsystem::isBeamBreakTripped);
+
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -203,6 +208,14 @@ public class RobotContainer {
 
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
 
+                    m_gamePieceSimSubsystem = new GamePieceSim(m_drivetrainSubsystem::getEstimatorPose3d,
+                            m_drivetrainSubsystem::getRobotRelativeSpeeds,
+                            m_pivotSubsystem::getAngle,
+                            m_shooterSubsystem::getTopBottomRPM,
+                            m_fullFeedRear, m_partialFeedRear, m_indexerSubsystem::getPower);
+
+                    m_indexerBeamBreak = new Trigger(m_gamePieceSimSubsystem::getIndexerBeamBreakTripped);
+                    m_feederBeamBreak = new Trigger(m_gamePieceSimSubsystem::getFeederBeamBreakTripped);
                     break;
                 default:
                     break;
@@ -231,14 +244,21 @@ public class RobotContainer {
                 ? new RestingHookSubsystem(new RestingHookIO() {})
                 : m_restingHookSubsystem;
 
-        new GamePieceSimSubsystem(m_drivetrainSubsystem::getEstimatorPose3d,
-                m_drivetrainSubsystem::getFieldRelativeSpeeds, m_shoot::getAsBoolean, m_autoFeed::getAsBoolean,
-                m_autoAmp::getAsBoolean, m_pivotSubsystem::getAngle, m_shooterSubsystem::getTopBottomRPM);
+        m_gamePieceSimSubsystem = m_gamePieceSimSubsystem == null
+                ? new GamePieceSim(m_drivetrainSubsystem::getEstimatorPose3d,
+                        m_drivetrainSubsystem::getRobotRelativeSpeeds,
+                        m_pivotSubsystem::getAngle, m_shooterSubsystem::getTopBottomRPM, m_fullFeedRear,
+                        m_partialFeedRear,
+                        m_indexerSubsystem::getPower)
+                : m_gamePieceSimSubsystem;
+
+        m_indexerBeamBreak = m_indexerBeamBreak == null ? new Trigger(m_indexerSubsystem::isBeamBreakTripped)
+                : m_indexerBeamBreak;
+
+        m_feederBeamBreak = m_feederBeamBreak == null ? new Trigger(m_backFeederSubsystem::isBeamBreakTripped)
+                : m_feederBeamBreak;
 
         new SimComponents(m_pivotSubsystem);
-
-        m_indexerBeamBreak = new Trigger(m_indexerSubsystem::isBeamBreakTripped);
-        m_feederBeamBreak = new Trigger(m_backFeederSubsystem::isBeamBreakTripped);
 
         configureDefaultCommands();
 

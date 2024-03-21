@@ -16,10 +16,13 @@ public class IndexerIOSim implements IndexerIO {
     @Override
     public void updateInputs(IndexerIOInputs inputs) {
         inputs.power = m_power;
+        m_sim.setInputVoltage(m_power * 12);
+
+        m_sim.update(0.02);
     }
 
     @Override
     public void setPower(double power) {
-        m_sim.setInputVoltage(power * 12);
+        m_power = power;
     }
 }

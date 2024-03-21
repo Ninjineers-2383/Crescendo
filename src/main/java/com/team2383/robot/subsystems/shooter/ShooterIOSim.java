@@ -35,10 +35,19 @@ public class ShooterIOSim implements ShooterIO {
         inputs.topCurrent = m_topFlywheelSim.getCurrentDrawAmps();
         inputs.bottomCurrent = m_bottomFlywheelSim.getCurrentDrawAmps();
 
+        inputs.topVelocity = m_setTopBottomRPM;
+        inputs.bottomVelocity = m_setTopBottomRPM;
+
+        inputs.topSetpoint = m_setTopBottomRPM;
+        inputs.bottomSetpoint = m_setTopBottomRPM;
+
         setTopBottomVoltage(
                 m_topBottomPIDController.calculate(m_topFlywheelSim.getAngularVelocityRPM(), m_setTopBottomRPM));
 
         setSideVoltage(m_sidePIDController.calculate(m_sideFlywheelSim.getAngularVelocityRPM(), m_setSideRPM));
+
+        m_topFlywheelSim.update(0.02);
+        m_bottomFlywheelSim.update(0.02);
     }
 
     @Override
