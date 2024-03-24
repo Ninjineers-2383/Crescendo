@@ -1,0 +1,67 @@
+{
+  "version": 1.0,
+  "startingPose": null,
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "path",
+          "data": {
+            "pathName": "PreloadSourceTape"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Stage2BotSteal"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "MidBotTopSteal"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
+          }
+        }
+      ]
+    }
+  },
+  "folder": "Source",
+  "choreoAuto": false
+}

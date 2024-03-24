@@ -17,6 +17,7 @@ import com.ctre.phoenix6.signals.AbsoluteSensorRangeValue;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.GravityTypeValue;
 import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.team2383.robot.Constants;
 import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
@@ -50,6 +51,9 @@ public class PivotIOFalcon implements PivotIO {
     public PivotIOFalcon() {
         leftMotorLeader = new TalonFX(PivotConstants.kLeftMotorID, Constants.kCANivoreBus);
         rightMotorFollower = new TalonFX(PivotConstants.kRightMotorID, Constants.kCANivoreBus);
+
+        leftMotorLeader.setNeutralMode(NeutralModeValue.Coast);
+        rightMotorFollower.setNeutralMode(NeutralModeValue.Coast);
 
         encoder = new CANcoder(PivotConstants.kEncoderID, Constants.kCANivoreBus);
 

@@ -1,0 +1,52 @@
+{
+  "version": 1.0,
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 6.99604004805974,
+        "y": 0.8146630033718082
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.442486981666077,
+        "y": 1.3264384798489695
+      },
+      "isLocked": false,
+      "linkedName": "MidStealBot1"
+    },
+    {
+      "anchor": {
+        "x": 7.184039202684003,
+        "y": 2.412655817678048
+      },
+      "prevControl": {
+        "x": 6.003822287542794,
+        "y": 2.23510106053291
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 180.0,
+    "rotateFast": false
+  },
+  "reversed": false,
+  "folder": "MidField",
+  "previewStartingState": {
+    "rotation": 0,
+    "velocity": 0
+  },
+  "useDefaultConstraints": true
+}

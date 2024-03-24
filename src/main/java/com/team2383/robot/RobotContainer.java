@@ -104,7 +104,7 @@ public class RobotContainer {
     private final JoystickButton m_shoot = new JoystickButton(m_operatorController, 4);
 
     private final JoystickButton m_subwoofer = new JoystickButton(m_operatorController, 8);
-    private final JoystickButton m_mythicalTrap = new JoystickButton(m_operatorController, 7);
+    private final JoystickButton m_mythicalTrap = new JoystickButton(m_operatorController, 6);
 
     private final JoystickButton m_autoFeed = new JoystickButton(m_driverController, 1);
 
@@ -118,7 +118,8 @@ public class RobotContainer {
     private final Trigger m_indexerBeamBreak;
     private final Trigger m_feederBeamBreak;
 
-    private final POVButton m_hooksDown = new POVButton(m_operatorController, 270);
+    private final POVButton 
+    m_hooksDown = new POVButton(m_operatorController, 270);
     private final POVButton m_hooksUp = new POVButton(m_operatorController, 90);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
@@ -306,6 +307,8 @@ public class RobotContainer {
 
         m_pivotZero.onTrue(new PivotZeroCommand(m_pivotSubsystem));
 
+        new JoystickButton(m_operatorController, 1).onTrue(new PivotZeroCommand(m_pivotSubsystem));
+
         m_fullFeedRear.whileTrue(
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                         m_backFeederSubsystem, PivotPresets.FEED_BACK));
@@ -348,13 +351,17 @@ public class RobotContainer {
                 // new ParallelDeadlineGroup(
                 // new SequentialCommandGroup(
                 // new WaitCommand(0.5),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> -750, () -> 750, () -> 500)
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -850, () -> 750, () -> 250)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5))
-                        .withTimeout(1).andThen(new SequentialCommandGroup(
-                                // new PivotPositionCommand(m_pivotSubsystem,
-                                // PivotPresets.ZERO).withTimeout(0.5),
-                                new PivotPositionCommand(m_pivotSubsystem, Math.toRadians(90)).withTimeout(0.5),
-                                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO).withTimeout(0.25))));
+                        .withTimeout(1.5)
+                        // .andThen(new SequentialCommandGroup(
+                        //         // new PivotPositionCommand(m_pivotSubsystem,
+                        //         // PivotPresets.ZERO).withTimeout(0.5),
+                        //         new PivotPositionCommand(m_pivotSubsystem, Math.toRadians(90)).withTimeout(0.5),
+                        //         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO).withTimeout(0.25)))
+                        );
+
+
 
         m_hooksDown.whileTrue(
                 new RestingHooksPowerCommand(m_restingHookSubsystem,
@@ -398,8 +405,9 @@ public class RobotContainer {
                                                 && m_pivotSubsystem.isFinished())),
                                 new ShooterRPMCommand(m_shooterSubsystem, () -> -2000, () -> 500, () -> 0)),
                         new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
-                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
-                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02)
+                        // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)
+                        ));
 
     }
 
@@ -556,6 +564,19 @@ public class RobotContainer {
                                         m_backFeederSubsystem, PivotPresets.FEED_BACK)),
                         new IndexerBackOut(m_indexerSubsystem),
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
+
+        NamedCommands.registerCommand("StealShoot",
+                new SequentialCommandGroup(
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.STEAL_MID),
+                        new ParallelDeadlineGroup(
+                                new SequentialCommandGroup(
+                                        new WaitCommand(0.04),
+                                        new WaitUntilCommand(() -> m_shooterSubsystem.isFinished()
+                                                && m_pivotSubsystem.isFinished())),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> -3500, () -> 2000, () -> 0)),
+                        new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
 
     }
 }
