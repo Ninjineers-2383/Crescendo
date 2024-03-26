@@ -183,7 +183,10 @@ public class PivotIOFalcon implements PivotIO {
     @Override
     public void disable() {
         leftMotorLeader.disable();
-        rightMotorFollower.disable();
+
+        // ! Don't disable the follower, it will never turn back on unless you re-enable
+        // ! it
+        // rightMotorFollower.disable();
     }
 
     @Override

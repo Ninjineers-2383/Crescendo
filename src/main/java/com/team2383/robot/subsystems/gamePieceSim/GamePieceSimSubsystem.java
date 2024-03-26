@@ -21,7 +21,7 @@ public class GamePieceSimSubsystem extends SubsystemBase {
     private BooleanSupplier shootingSupplier;
     private BooleanSupplier intakeFrontSupplier;
     private BooleanSupplier intakeRearSupplier;
-    private DoubleSupplier shooterAngle;
+    private Supplier<Rotation2d> shooterAngle;
     private DoubleSupplier shooterRPM;
 
     private int shooterCounter = 0;
@@ -33,7 +33,7 @@ public class GamePieceSimSubsystem extends SubsystemBase {
 
     public GamePieceSimSubsystem(Supplier<Pose3d> poseSupplier, Supplier<ChassisSpeeds> speedsSupplier,
             BooleanSupplier shootingSupplier, BooleanSupplier intakeFrontSupplier, BooleanSupplier intakeRearSupplier,
-            DoubleSupplier shooterAngle,
+            Supplier<Rotation2d> shooterAngle,
             DoubleSupplier shooterRPM) {
         this.poseSupplier = poseSupplier;
         this.speedsSupplier = speedsSupplier;
@@ -53,7 +53,7 @@ public class GamePieceSimSubsystem extends SubsystemBase {
 
         boolean shooting = shootingSupplier.getAsBoolean();
         ChassisSpeeds speeds = speedsSupplier.get();
-        Rotation2d angle = Rotation2d.fromDegrees(shooterAngle.getAsDouble());
+        Rotation2d angle = shooterAngle.get();
         double RPM = shooterRPM.getAsDouble();
 
         for (int i = 0; i < notes.length; i++) {

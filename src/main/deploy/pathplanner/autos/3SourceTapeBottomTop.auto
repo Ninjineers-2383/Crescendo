@@ -2,7 +2,7 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 0.919204747500404,
+      "x": 0.4807536887801049,
       "y": 2.070981596508648
     },
     "rotation": 180.0
@@ -15,12 +15,6 @@
           "type": "path",
           "data": {
             "pathName": "PreloadSourceTape"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "InitializeHeading"
           }
         },
         {
@@ -50,12 +44,6 @@
         {
           "type": "named",
           "data": {
-            "name": "InitializeHeading"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
             "name": "SeekAndShoot"
           }
         },
@@ -75,12 +63,6 @@
           "type": "path",
           "data": {
             "pathName": "DriveFromCenterSource1"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "InitializeHeading"
           }
         },
         {

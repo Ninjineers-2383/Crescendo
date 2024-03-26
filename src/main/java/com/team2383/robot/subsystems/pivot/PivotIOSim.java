@@ -9,6 +9,7 @@ public class PivotIOSim implements PivotIO {
     private DCMotorSim motor = new DCMotorSim(DCMotor.getFalcon500(2), PivotConstants.kPivotMotorGearRatio, 0.01);
 
     private double desiredAngle = 0;
+    private double volts = 0;
     private PIDController controller = new PIDController(PivotConstants.kGains.kP(), PivotConstants.kGains.kI(),
             PivotConstants.kGains.kD());
 
@@ -20,8 +21,22 @@ public class PivotIOSim implements PivotIO {
     }
 
     public void updateInputs(PivotIOInputs inputs) {
-        motor.setInputVoltage(controller.calculate(motor.getAngularPositionRotations(), desiredAngle)
-                + feedforward.calculate(desiredAngle, 3));
+        volts = controller.calculate(motor.getAngularPositionRotations(), desiredAngle)
+                + feedforward.calculate(desiredAngle, 3);
+
+        motor.setInputVoltage(volts);
+
+        motor.update(0.02);
+
+        inputs.leftMotorConnected = true;
+        inputs.rightMotorConnected = true;
+
+        inputs.encoderConnected = true;
+
+        inputs.absoluteEncoderPositionRot = desiredAngle;
+        inputs.desiredPositionRot = desiredAngle;
+
+        inputs.velocityRotPerSec = motor.getAngularVelocityRPM() / 60.0;
 
     }
 

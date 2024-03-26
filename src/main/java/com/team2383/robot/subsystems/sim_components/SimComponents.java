@@ -21,10 +21,10 @@ public class SimComponents extends SubsystemBase {
     public void periodic() {
         Pose3d[] pose = new Pose3d[1];
 
-        Pose3d robotPose = new Pose3d(new Translation3d(0.0, 0.0, 0.055), new Rotation3d(0.0, 0.0, 0.0));
+        Pose3d robotPose = new Pose3d(new Translation3d(0.0, 0.0, 0.055), new Rotation3d());
         Rotation3d pivotRotation = new Rotation3d(0, -pivot.getAngle().getRadians(), 0);
 
-        Transform3d pivotPose = new Transform3d(new Translation3d(8.890e-5, 0.0, 0.463550), pivotRotation);
+        Transform3d pivotPose = new Transform3d(new Translation3d(0, 0, 0.471488), pivotRotation);
 
         pose[0] = robotPose.transformBy(pivotPose);
 

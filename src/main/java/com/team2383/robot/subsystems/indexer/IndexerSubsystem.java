@@ -42,4 +42,8 @@ public class IndexerSubsystem extends SubsystemBase {
         return inputs.beamBreakTripped;
     }
 
+    public double getPower() {
+        return inputs.power;
+    }
+
 }

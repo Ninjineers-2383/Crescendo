@@ -83,4 +83,8 @@ public class ShooterSubsystem extends SubsystemBase {
     public double[] getVelocities() {
         return new double[] { inputs.topVelocity, inputs.bottomVelocity, inputs.sideVelocity };
     }
+
+    public double getTopBottomRPM() {
+        return (getVelocities()[0] + getVelocities()[1]) / 2;
+    }
 }

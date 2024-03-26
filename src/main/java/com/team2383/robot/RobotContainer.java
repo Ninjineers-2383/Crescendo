@@ -33,6 +33,7 @@ import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
 import com.team2383.robot.subsystems.drivetrain.SLAM.*;
 import com.team2383.robot.subsystems.feeder.*;
+import com.team2383.robot.subsystems.gamePieceSim.GamePieceSim;
 import com.team2383.robot.subsystems.indexer.*;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionIO;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionIOPhoton;
@@ -115,11 +116,10 @@ public class RobotContainer {
 
     private final JoystickButton m_autoAmp = new JoystickButton(m_driverController, 3);
 
-    private final Trigger m_indexerBeamBreak;
-    private final Trigger m_feederBeamBreak;
+    private Trigger m_indexerBeamBreak;
+    private Trigger m_feederBeamBreak;
 
-    private final POVButton 
-    m_hooksDown = new POVButton(m_operatorController, 270);
+    private final POVButton m_hooksDown = new POVButton(m_operatorController, 270);
     private final POVButton m_hooksUp = new POVButton(m_operatorController, 90);
 
     private DrivetrainSubsystem m_drivetrainSubsystem;
@@ -135,6 +135,8 @@ public class RobotContainer {
     private PieceDetectionSubsystem m_pieceDetectionSubsystem;
 
     private RestingHookSubsystem m_restingHookSubsystem;
+
+    private GamePieceSim m_gamePieceSimSubsystem;
 
     LoggedDashboardChooser<Boolean> enableLW = new LoggedDashboardChooser<Boolean>("Enable LW");
 
@@ -180,6 +182,9 @@ public class RobotContainer {
 
                     m_restingHookSubsystem = new RestingHookSubsystem(new RestingHookIOTalonSRX());
 
+                    m_indexerBeamBreak = new Trigger(m_indexerSubsystem::isBeamBreakTripped);
+                    m_feederBeamBreak = new Trigger(m_backFeederSubsystem::isBeamBreakTripped);
+
                     break;
                 case ROBOT_SIM:
                     m_drivetrainSubsystem = new DrivetrainSubsystem(
@@ -203,6 +208,14 @@ public class RobotContainer {
 
                     m_shooterSubsystem = new ShooterSubsystem(new ShooterIOSim());
 
+                    m_gamePieceSimSubsystem = new GamePieceSim(m_drivetrainSubsystem::getEstimatorPose3d,
+                            m_drivetrainSubsystem::getRobotRelativeSpeeds,
+                            m_pivotSubsystem::getAngle,
+                            m_shooterSubsystem::getTopBottomRPM,
+                            m_fullFeedRear, m_partialFeedRear, m_indexerSubsystem::getPower);
+
+                    m_indexerBeamBreak = new Trigger(m_gamePieceSimSubsystem::getIndexerBeamBreakTripped);
+                    m_feederBeamBreak = new Trigger(m_gamePieceSimSubsystem::getFeederBeamBreakTripped);
                     break;
                 default:
                     break;
@@ -231,10 +244,21 @@ public class RobotContainer {
                 ? new RestingHookSubsystem(new RestingHookIO() {})
                 : m_restingHookSubsystem;
 
-        new SimComponents(m_pivotSubsystem);
+        m_gamePieceSimSubsystem = m_gamePieceSimSubsystem == null
+                ? new GamePieceSim(m_drivetrainSubsystem::getEstimatorPose3d,
+                        m_drivetrainSubsystem::getRobotRelativeSpeeds,
+                        m_pivotSubsystem::getAngle, m_shooterSubsystem::getTopBottomRPM, m_fullFeedRear,
+                        m_partialFeedRear,
+                        m_indexerSubsystem::getPower)
+                : m_gamePieceSimSubsystem;
 
-        m_indexerBeamBreak = new Trigger(m_indexerSubsystem::isBeamBreakTripped);
-        m_feederBeamBreak = new Trigger(m_backFeederSubsystem::isBeamBreakTripped);
+        m_indexerBeamBreak = m_indexerBeamBreak == null ? new Trigger(m_indexerSubsystem::isBeamBreakTripped)
+                : m_indexerBeamBreak;
+
+        m_feederBeamBreak = m_feederBeamBreak == null ? new Trigger(m_backFeederSubsystem::isBeamBreakTripped)
+                : m_feederBeamBreak;
+
+        new SimComponents(m_pivotSubsystem);
 
         configureDefaultCommands();
 
@@ -354,14 +378,14 @@ public class RobotContainer {
                 new ShooterRPMCommand(m_shooterSubsystem, () -> -850, () -> 750, () -> 250)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5))
                         .withTimeout(1.5)
-                        // .andThen(new SequentialCommandGroup(
-                        //         // new PivotPositionCommand(m_pivotSubsystem,
-                        //         // PivotPresets.ZERO).withTimeout(0.5),
-                        //         new PivotPositionCommand(m_pivotSubsystem, Math.toRadians(90)).withTimeout(0.5),
-                        //         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO).withTimeout(0.25)))
-                        );
-
-
+        // .andThen(new SequentialCommandGroup(
+        // // new PivotPositionCommand(m_pivotSubsystem,
+        // // PivotPresets.ZERO).withTimeout(0.5),
+        // new PivotPositionCommand(m_pivotSubsystem,
+        // Math.toRadians(90)).withTimeout(0.5),
+        // new PivotPositionCommand(m_pivotSubsystem,
+        // PivotPresets.ZERO).withTimeout(0.25)))
+        );
 
         m_hooksDown.whileTrue(
                 new RestingHooksPowerCommand(m_restingHookSubsystem,
@@ -406,8 +430,8 @@ public class RobotContainer {
                                 new ShooterRPMCommand(m_shooterSubsystem, () -> -2000, () -> 500, () -> 0)),
                         new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02)
-                        // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)
-                        ));
+                // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)
+                ));
 
     }
 
@@ -466,6 +490,10 @@ public class RobotContainer {
         autoChooser.addOption("3SourceTapeBottomTop", new PathPlannerAuto("3SourceTapeBottomTop"));
 
         autoChooser.addOption("3SourceTapeTopBottom", new PathPlannerAuto("3SourceTapeTopBottom"));
+
+        autoChooser.addOption("3SourceSWBottomTop", new PathPlannerAuto("3SourceSWBottomTop"));
+
+        autoChooser.addOption("3SourceSWTopBottom", new PathPlannerAuto("3SourceSWTopBottom"));
 
         autoChooser.addOption("TwoPieceCenter", new PathPlannerAuto("TwoPieceCenter"));
 
@@ -532,17 +560,15 @@ public class RobotContainer {
     }
 
     public void registerAutoNamedCommands() {
-        NamedCommands.registerCommand("InitializeHeading",
-                new RunCommand(
-                        () -> m_drivetrainSubsystem
-                                .forceHeading(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue
-                                        ? m_drivetrainSubsystem.getPose().getRotation()
-                                        : m_drivetrainSubsystem.getPose().getRotation()
-                                                .plus(new Rotation2d(Math.PI))),
-                        m_drivetrainSubsystem).withTimeout(0.02));
-
         NamedCommands.registerCommand("SeekAndShoot",
                 new SequentialCommandGroup(
+                        new RunCommand(
+                                () -> m_drivetrainSubsystem
+                                        .forceHeading(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue
+                                                ? m_drivetrainSubsystem.getPose().getRotation()
+                                                : m_drivetrainSubsystem.getPose().getRotation()
+                                                        .plus(new Rotation2d(Math.PI))),
+                                m_drivetrainSubsystem).withTimeout(0.02),
                         new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
                                 m_indexerSubsystem, true),
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
@@ -577,6 +603,18 @@ public class RobotContainer {
                         new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
+
+        NamedCommands.registerCommand("ShootSubwoofer", new SequentialCommandGroup(
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK),
+                new ParallelDeadlineGroup(
+                        new SequentialCommandGroup(
+                                new WaitCommand(0.04),
+                                new WaitUntilCommand(() -> m_shooterSubsystem.isFinished()
+                                        && m_pivotSubsystem.isFinished())),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
+                new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
+                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
 
     }
 }

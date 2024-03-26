@@ -15,24 +15,24 @@ public final class SLAMConstantsConfig {
     public static final double POSE_VARIANCE_STATIC = 0.1;
 
     private static final Translation3d CAM_FRONT_LEFT = new Translation3d(
-            0.270,
-            0.272,
-            0.217);
+            0.267,
+            0.281,
+            0.211);
 
     private static final Translation3d CAM_FRONT_RIGHT = new Translation3d(
             0.274,
-            -0.270,
-            0.221);
+            -0.277,
+            0.219);
 
     private static final Translation3d CAM_BACK_LEFT = new Translation3d(
             -0.274,
-            0.270,
-            0.221);
+            0.277,
+            0.219);
 
     private static final Translation3d CAM_BACK_RIGHT = new Translation3d(
-            -0.270,
-            -0.272,
-            0.217);
+            -0.267,
+            -0.281,
+            0.211);
 
     public static final Transform3d[] camTransforms = new Transform3d[] {
             new Transform3d(CAM_FRONT_LEFT, CAM_ROTATION_FL),
