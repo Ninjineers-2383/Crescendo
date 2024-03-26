@@ -492,7 +492,7 @@ public class RobotContainer {
 
         autoChooser.addOption("3SourceTapeTopBottom", new PathPlannerAuto("3SourceTapeTopBottom"));
 
-        autoChooser.addOption("3SourceSWBottomTop", new PathPlannerAuto("3SourceSWWBottomTop"));
+        autoChooser.addOption("3SourceSWBottomTop", new PathPlannerAuto("3SourceSWBottomTop"));
 
         autoChooser.addOption("3SourceSWTopBottom", new PathPlannerAuto("3SourceSWTopBottom"));
 
