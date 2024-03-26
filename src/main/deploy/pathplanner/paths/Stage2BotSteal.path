@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.4354545632168203,
-        "y": 2.7923448154588617
+        "x": 3.6446150235123724,
+        "y": 2.629312020189877
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.10640667435181,
-        "y": 1.7661827631347582
+        "x": 4.644615023512372,
+        "y": 2.629312020189877
       },
       "isLocked": false,
       "linkedName": "EndPreloadTapeSource"
     },
     {
       "anchor": {
-        "x": 6.861615905049991,
-        "y": 2.3042002447641265
+        "x": 6.99604004805974,
+        "y": 0.8146630033718082
       },
       "prevControl": {
-        "x": 5.972043071013782,
-        "y": 1.1101539640801705
+        "x": 5.99604004805974,
+        "y": 0.8146630033718082
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "MidStealBot1"
     }
   ],
   "rotationTargets": [],
@@ -38,15 +38,15 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 3.0,
+    "velocity": 0,
     "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Source",
+  "folder": "MidField",
   "previewStartingState": {
-    "rotation": 180.0,
+    "rotation": 0,
     "velocity": 0
   },
-  "useDefaultConstraints": false
+  "useDefaultConstraints": true
 }

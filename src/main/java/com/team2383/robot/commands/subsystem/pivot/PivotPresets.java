@@ -7,8 +7,9 @@ public class PivotPresets {
     public static double FEED_FRONT = Math.toRadians(180 - 33);
 
     public static double SCORE_AMP = Math.toRadians(40);
+    public static double STEAL_MID = Math.toRadians(45);
 
-    public static double SCORE_TRAP = Math.toRadians(30);
+    public static double SCORE_TRAP = Math.toRadians(-23);
 
     public static double SUBWOOFER = Math.toRadians(119);
     public static double SUBWOOFER_BACK = Math.toRadians(180 - 119);

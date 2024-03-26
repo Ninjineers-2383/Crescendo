@@ -45,7 +45,7 @@ public class SLAMIOServer implements SLAMIO {
     private final DoublePublisher poseOutlierRejectionDistanceSub;
     private final StructPublisher<Pose2d> resetPose;
 
-    private long latestTimestamp = 0;
+    private double latestTimestamp = 0;
 
     public SLAMIOServer(Translation2d[] moduleLocations, Pose3d[] landmarks) {
         inst = NetworkTableInstance.create();
@@ -91,20 +91,20 @@ public class SLAMIOServer implements SLAMIO {
     public void updateInputs(SLAMIOInputs inputs) {
         TimestampedObject<TimedPose3d> latestPose = pose.getAtomic();
 
-        if (latestPose.timestamp == latestTimestamp) {
+        if (latestPose.value.timestamp <= latestTimestamp) {
             inputs.newValue = false;
-        } else if (latestPose.timestamp > latestTimestamp) {
+        } else {
+            inputs.latestTimestamp = latestPose.value.timestamp;
             odometry.addVisionMeasurement(latestPose.value.pose.toPose2d(), latestPose.value.timestamp,
                     VecBuilder.fill(0.01, 0.01, 0.01));
 
             inputs.connected = true;
             inputs.newValue = true;
 
-            latestTimestamp = latestPose.timestamp;
-
             if (MathSharedStore.getTimestamp() - latestPose.value.timestamp > 1) {
                 inputs.connected = false;
             }
+            latestTimestamp = latestPose.value.timestamp;
         }
 
         Pose2d ref = odometry.getEstimatedPosition();
@@ -131,12 +131,13 @@ public class SLAMIOServer implements SLAMIO {
         varianceScalePub.set(varianceScale);
         varianceStaticPub.set(varianceStatic);
 
-        poseFilterSizePub.set(5);
-        poseOutlierRejectionDistanceSub.set(0.15);
+        poseFilterSizePub.set(15);
+        poseOutlierRejectionDistanceSub.set(0.1);
     }
 
     @Override
     public void forcePose(Pose2d pose, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
+        latestTimestamp = MathSharedStore.getTimestamp() + 1;
         odometry.resetPosition(gyroAngle, positions, pose);
         resetPose.set(pose);
     }

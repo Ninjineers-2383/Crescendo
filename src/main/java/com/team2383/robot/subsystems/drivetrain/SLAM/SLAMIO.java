@@ -1,5 +1,7 @@
 package com.team2383.robot.subsystems.drivetrain.SLAM;
 
+import org.littletonrobotics.junction.AutoLog;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -7,12 +9,14 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 
 public interface SLAMIO {
+    @AutoLog
     public static class SLAMIOInputs {
         public boolean connected = false;
         public boolean newValue = false;
         public Pose3d pose = new Pose3d();
         public Pose3d[] landmarks = new Pose3d[0];
-        public Pose3d[] seenLandmarks = new Pose3d[0];
+        public boolean[] seenLandmarks = new boolean[0];
+        public double latestTimestamp = 0;
     }
 
     /** Updates the set of loggable inputs. */
