@@ -12,21 +12,15 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwoofer"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "PreloadCenter"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "InitializeHeading"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
           }
         },
         {
@@ -51,12 +45,6 @@
           "type": "named",
           "data": {
             "name": "DriveToPiece"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "InitializeHeading"
           }
         },
         {

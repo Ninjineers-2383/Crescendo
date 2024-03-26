@@ -11,5 +11,7 @@ public class PivotPresets {
     public static double SCORE_TRAP = Math.toRadians(30);
 
     public static double SUBWOOFER = Math.toRadians(119);
+    public static double SUBWOOFER_BACK = Math.toRadians(180 - 119);
+
     public static double SAFE_ZONE = Math.toRadians(142);
 }

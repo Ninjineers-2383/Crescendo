@@ -378,7 +378,15 @@ public class RobotContainer {
                 // new WaitCommand(0.5),
                 new ShooterRPMCommand(m_shooterSubsystem, () -> -700, () -> 500, () -> 500)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5))
-                        .withTimeout(1));
+                        .withTimeout(1.5)
+        // .andThen(new SequentialCommandGroup(
+        // // new PivotPositionCommand(m_pivotSubsystem,
+        // // PivotPresets.ZERO).withTimeout(0.5),
+        // new PivotPositionCommand(m_pivotSubsystem,
+        // Math.toRadians(90)).withTimeout(0.5),
+        // new PivotPositionCommand(m_pivotSubsystem,
+        // PivotPresets.ZERO).withTimeout(0.25)))
+        );
 
         m_hooksDown.whileTrue(
                 new RestingHooksPowerCommand(m_restingHookSubsystem,
@@ -415,8 +423,16 @@ public class RobotContainer {
         m_mythicalTrap.onTrue(
                 new SequentialCommandGroup(
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
-                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0, true),
-                        new IndexerCommand(m_indexerSubsystem, () -> -1.0)));
+                        new ParallelDeadlineGroup(
+                                new SequentialCommandGroup(
+                                        new WaitCommand(0.04),
+                                        new WaitUntilCommand(() -> m_shooterSubsystem.isFinished()
+                                                && m_pivotSubsystem.isFinished())),
+                                new ShooterRPMCommand(m_shooterSubsystem, () -> -2000, () -> 500, () -> 0)),
+                        new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02)
+                // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)
+                ));
 
     }
 
@@ -475,6 +491,17 @@ public class RobotContainer {
         autoChooser.addOption("3SourceTapeBottomTop", new PathPlannerAuto("3SourceTapeBottomTop"));
 
         autoChooser.addOption("3SourceTapeTopBottom", new PathPlannerAuto("3SourceTapeTopBottom"));
+
+        autoChooser.addOption("3SourceSWBottomTop", new PathPlannerAuto("3SourceSWWBottomTop"));
+
+        autoChooser.addOption("3SourceSWTopBottom", new PathPlannerAuto("3SourceSWTopBottom"));
+
+        autoChooser.addOption("TwoPieceCenter", new PathPlannerAuto("TwoPieceCenter"));
+
+        autoChooser.addOption("ThreePieceCenter", new PathPlannerAuto("ThreePieceCenter"));
+
+        autoChooser.addOption("FourPieceCenter", new PathPlannerAuto("FourPieceCenter"));
+
     }
 
     private void registerTestCommands() {
@@ -534,17 +561,15 @@ public class RobotContainer {
     }
 
     public void registerAutoNamedCommands() {
-        NamedCommands.registerCommand("InitializeHeading",
-                new RunCommand(
-                        () -> m_drivetrainSubsystem
-                                .forceHeading(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue
-                                        ? m_drivetrainSubsystem.getPose().getRotation()
-                                        : m_drivetrainSubsystem.getPose().getRotation()
-                                                .plus(new Rotation2d(Math.PI))),
-                        m_drivetrainSubsystem).withTimeout(0.02));
-
         NamedCommands.registerCommand("SeekAndShoot",
                 new SequentialCommandGroup(
+                        new RunCommand(
+                                () -> m_drivetrainSubsystem
+                                        .forceHeading(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue
+                                                ? m_drivetrainSubsystem.getPose().getRotation()
+                                                : m_drivetrainSubsystem.getPose().getRotation()
+                                                        .plus(new Rotation2d(Math.PI))),
+                                m_drivetrainSubsystem).withTimeout(0.02),
                         new SeekAndShootCommand(m_drivetrainSubsystem, m_pivotSubsystem, m_shooterSubsystem,
                                 m_indexerSubsystem, true),
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
@@ -565,6 +590,18 @@ public class RobotContainer {
                                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
                                         m_backFeederSubsystem, PivotPresets.FEED_BACK)),
                         new IndexerBackOut(m_indexerSubsystem)));
+
+        NamedCommands.registerCommand("ShootSubwoofer", new SequentialCommandGroup(
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK),
+                new ParallelDeadlineGroup(
+                        new SequentialCommandGroup(
+                                new WaitCommand(0.04),
+                                new WaitUntilCommand(() -> m_shooterSubsystem.isFinished()
+                                        && m_pivotSubsystem.isFinished())),
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
+                new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
+                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
 
     }
 }
