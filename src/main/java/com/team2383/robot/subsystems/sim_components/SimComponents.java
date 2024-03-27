@@ -19,6 +19,11 @@ public class SimComponents extends SubsystemBase {
 
     @Override
     public void periodic() {
+        Logger.recordOutput("Components", getComponents(-pivot.getAngle().getRadians()));
+        Logger.recordOutput("DesiredComponents", getComponents(-pivot.getDesiredAngle().getRadians()));
+    }
+
+    Pose3d[] getComponents(double pivotAngleRad) {
         Pose3d[] pose = new Pose3d[1];
 
         Pose3d robotPose = new Pose3d(new Translation3d(0.0, 0.0, 0.055), new Rotation3d());
@@ -28,7 +33,7 @@ public class SimComponents extends SubsystemBase {
 
         pose[0] = robotPose.transformBy(pivotPose);
 
-        Logger.recordOutput("Components", pose);
+        return pose;
     }
 
 }

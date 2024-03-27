@@ -122,6 +122,10 @@ public class PivotSubsystem extends SubsystemBase {
         return Rotation2d.fromRotations(inputs.absoluteEncoderPositionRot);
     }
 
+    public Rotation2d getDesiredAngle() {
+        return Rotation2d.fromRotations(inputs.desiredPositionRot);
+    }
+
     public double getVelocityRadPerSec() {
         return Units.rotationsToRadians(inputs.desiredVelocityRotPerSec);
     }
