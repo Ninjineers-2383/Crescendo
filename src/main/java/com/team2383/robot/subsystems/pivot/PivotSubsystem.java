@@ -23,6 +23,8 @@ public class PivotSubsystem extends SubsystemBase {
     private static final LoggedTunableNumber kV = new LoggedTunableNumber("Pivot/Gains/kV", PivotConstants.kGains.kV());
     private static final LoggedTunableNumber kA = new LoggedTunableNumber("Pivot/Gains/kA", PivotConstants.kGains.kA());
     private static final LoggedTunableNumber kG = new LoggedTunableNumber("Pivot/Gains/kG", PivotConstants.kGains.kG());
+    private static final LoggedTunableNumber kSpring = new LoggedTunableNumber("Pivot/Gains/kSpring",
+            PivotConstants.kGains.kSpring());
 
     private final LoggedTunableNumber kMaxAngleDegrees = new LoggedTunableNumber("Pivot/Bounds/MaxAngle",
             PivotConstants.kMaxAngleDegrees);
@@ -91,8 +93,8 @@ public class PivotSubsystem extends SubsystemBase {
         encoderDisconnected.set(!inputs.encoderConnected);
 
         LoggedTunableNumber.ifChanged(hashCode(), (pid) -> io.setPIDController(pid[0], pid[1], pid[2]), kP, kI, kD);
-        LoggedTunableNumber.ifChanged(hashCode(), (ff) -> io.setFeedforward(ff[0], ff[1], ff[2], ff[3]), kS,
-                kV, kA, kG);
+        LoggedTunableNumber.ifChanged(hashCode(), (ff) -> io.setFeedforward(ff[0], ff[1], ff[2], ff[3], ff[4]), kS,
+                kV, kA, kG, kSpring);
 
         LoggedTunableNumber.ifChanged(hashCode(),
                 (constraints) -> profile = new TrapezoidProfile(

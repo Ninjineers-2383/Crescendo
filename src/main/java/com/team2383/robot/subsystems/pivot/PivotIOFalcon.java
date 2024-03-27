@@ -48,12 +48,14 @@ public class PivotIOFalcon implements PivotIO {
 
     private boolean offsetSet = false;
 
+    private double kSpring = PivotConstants.kGains.kSpring();
+
     public PivotIOFalcon() {
         leftMotorLeader = new TalonFX(PivotConstants.kLeftMotorID, Constants.kCANivoreBus);
         rightMotorFollower = new TalonFX(PivotConstants.kRightMotorID, Constants.kCANivoreBus);
 
-        leftMotorLeader.setNeutralMode(NeutralModeValue.Coast);
-        rightMotorFollower.setNeutralMode(NeutralModeValue.Coast);
+        leftMotorLeader.setNeutralMode(NeutralModeValue.Brake);
+        rightMotorFollower.setNeutralMode(NeutralModeValue.Brake);
 
         encoder = new CANcoder(PivotConstants.kEncoderID, Constants.kCANivoreBus);
 
@@ -172,7 +174,8 @@ public class PivotIOFalcon implements PivotIO {
 
     @Override
     public void setAngleRot(double angleRot, double velocityRotPerSec) {
-        leftMotorLeader.setControl(positionOut.withPosition(angleRot + offset).withVelocity(velocityRotPerSec));
+        leftMotorLeader.setControl(positionOut.withPosition(angleRot + offset).withVelocity(velocityRotPerSec)
+                .withFeedForward(kSpring));
     }
 
     @Override
@@ -199,11 +202,13 @@ public class PivotIOFalcon implements PivotIO {
     }
 
     @Override
-    public void setFeedforward(double kS, double kV, double kA, double kG) {
+    public void setFeedforward(double kS, double kV, double kA, double kG, double kSpring) {
         configs.kA = kA;
         configs.kG = kG;
         configs.kS = kS;
         configs.kV = kV;
+
+        this.kSpring = kSpring;
 
         configs.GravityType = GravityTypeValue.Arm_Cosine;
 

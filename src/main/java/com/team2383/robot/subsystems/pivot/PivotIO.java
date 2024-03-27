@@ -35,7 +35,7 @@ public interface PivotIO {
     public default void setPIDController(double kP, double kI, double kD) {
     }
 
-    public default void setFeedforward(double kS, double kV, double kA, double kG) {
+    public default void setFeedforward(double kS, double kV, double kA, double kG, double kSpring) {
     }
 
     public default void disable() {

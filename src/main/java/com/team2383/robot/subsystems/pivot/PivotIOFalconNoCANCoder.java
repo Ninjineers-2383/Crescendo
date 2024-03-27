@@ -174,17 +174,17 @@ public class PivotIOFalconNoCANCoder implements PivotIO {
         leftMotorLeader.getConfigurator().apply(configs);
     }
 
-    @Override
-    public void setFeedforward(double kS, double kV, double kA, double kG) {
-        configs.kA = kA;
-        configs.kG = kG;
-        configs.kS = kS;
-        configs.kV = kV;
+    // @Override
+    // public void setFeedforward(double kS, double kV, double kA, double kG) {
+    //     configs.kA = kA;
+    //     configs.kG = kG;
+    //     configs.kS = kS;
+    //     configs.kV = kV;
 
-        configs.GravityType = GravityTypeValue.Arm_Cosine;
+    //     configs.GravityType = GravityTypeValue.Arm_Cosine;
 
-        leftMotorLeader.getConfigurator().apply(configs);
+    //     leftMotorLeader.getConfigurator().apply(configs);
 
-        System.out.println("Pivot Feedforward changes");
-    }
+    //     System.out.println("Pivot Feedforward changes");
+    // }
 }
