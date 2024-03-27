@@ -12,7 +12,7 @@ public class PivotConstants {
     public static double kEncoderOffset = -0.452881;
 
     // Feedback and Feedforward Gains
-    public static final ArmGains kGains = new ArmGains(15, 4, 0, 0.3, 4.1, 0.7, 0.32, 0.2);
+    public static final ArmGains kGains = new ArmGains(15, 10, 1, 0.1, 7.0, 0.0, 0.3, 0.01);
 
     // Trapezoid Profile Constants (In rotations / s and rotations / s^2)
     public static double kMaxVelo = 4;
