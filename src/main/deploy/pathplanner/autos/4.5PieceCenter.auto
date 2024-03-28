@@ -70,6 +70,18 @@
           "data": {
             "name": "ShootSubwoofer"
           }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterSWToCenter"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
+          }
         }
       ]
     }

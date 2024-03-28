@@ -26,13 +26,19 @@
         {
           "type": "named",
           "data": {
-            "name": "DriveToPiece"
+            "name": "FullFeed"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveFrom1Center"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SeekAndShoot"
+            "name": "ShootSubwoofer"
           }
         }
       ]

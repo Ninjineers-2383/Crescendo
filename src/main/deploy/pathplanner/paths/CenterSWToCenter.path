@@ -8,47 +8,29 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.5015337722983153,
-        "y": 5.259080518161037
+        "x": 2.281022254352202,
+        "y": 6.531916140755359
       },
       "isLocked": false,
       "linkedName": "CenterSubwoofer"
     },
     {
       "anchor": {
-        "x": 2.537562767433229,
-        "y": 4.153982923350462
+        "x": 6.84941677575663,
+        "y": 5.890564858052794
       },
       "prevControl": {
-        "x": 1.9850139700279419,
-        "y": 4.449991207674723
+        "x": 5.803520837810908,
+        "y": 6.847658310701236
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EndCenter1"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [
-    {
-      "name": "FullFeed",
-      "waypointRelativePos": 0.1,
-      "command": {
-        "type": "parallel",
-        "data": {
-          "commands": [
-            {
-              "type": "named",
-              "data": {
-                "name": "FullFeed"
-              }
-            }
-          ]
-        }
-      }
-    }
-  ],
+  "eventMarkers": [],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -56,7 +38,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0.0,
+    "velocity": 2.0,
     "rotation": 180.0,
     "rotateFast": false
   },
@@ -64,7 +46,7 @@
   "folder": "Center",
   "previewStartingState": {
     "rotation": 180.0,
-    "velocity": 0
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }
