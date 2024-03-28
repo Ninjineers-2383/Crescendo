@@ -36,7 +36,7 @@ public class ShooterConstants {
             .withKI(0)
             .withKD(0)
             .withKA(0)
-            .withKV(0.175)
+            .withKV(0.17)
             .withKS(0.01);
 
     public static int kSideMotorID = 11;

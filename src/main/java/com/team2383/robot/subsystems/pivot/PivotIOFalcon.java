@@ -54,8 +54,8 @@ public class PivotIOFalcon implements PivotIO {
         leftMotorLeader = new TalonFX(PivotConstants.kLeftMotorID, Constants.kCANivoreBus);
         rightMotorFollower = new TalonFX(PivotConstants.kRightMotorID, Constants.kCANivoreBus);
 
-        leftMotorLeader.setNeutralMode(NeutralModeValue.Brake);
-        rightMotorFollower.setNeutralMode(NeutralModeValue.Brake);
+        leftMotorLeader.setNeutralMode(NeutralModeValue.Coast);
+        rightMotorFollower.setNeutralMode(NeutralModeValue.Coast);
 
         encoder = new CANcoder(PivotConstants.kEncoderID, Constants.kCANivoreBus);
 
