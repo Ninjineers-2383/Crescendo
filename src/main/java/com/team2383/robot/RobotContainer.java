@@ -15,6 +15,7 @@ import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
 import com.team2383.robot.commands.feeding.FullFeedCommand;
 import com.team2383.robot.commands.feeding.IndexerBackOut;
+import com.team2383.robot.commands.feeding.PPNeverEndCommand;
 import com.team2383.robot.commands.feeding.PartialFeedCommand;
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
@@ -252,9 +253,8 @@ public class RobotContainer {
 
         m_gamePieceSimSubsystem = m_gamePieceSimSubsystem == null
                 ? new GamePieceSim(m_drivetrainSubsystem::getEstimatorPose3d,
-                        m_drivetrainSubsystem::getRobotRelativeSpeeds,
-                        m_pivotSubsystem::getAngle, m_shooterSubsystem::getTopBottomRPM, m_fullFeedRear,
-                        m_partialFeedRear,
+                        m_drivetrainSubsystem::getRobotRelativeSpeeds, m_pivotSubsystem::getAngle,
+                        m_shooterSubsystem::getTopBottomRPM, m_fullFeedRear, m_partialFeedRear,
                         m_indexerSubsystem::getPower)
                 : m_gamePieceSimSubsystem;
 
@@ -279,6 +279,7 @@ public class RobotContainer {
 
         enableLW.addDefaultOption("No", false);
         enableLW.addOption("Yes", true);
+
     }
 
     public void periodic() {
@@ -426,7 +427,7 @@ public class RobotContainer {
                                 new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
                         new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
-                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
+                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
         m_subwooferPivot.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK));
         // m_mythicalTrap.onTrue(
@@ -511,6 +512,8 @@ public class RobotContainer {
         autoChooser.addOption("ThreePieceCenter", new PathPlannerAuto("ThreePieceCenter"));
 
         autoChooser.addOption("FourPieceCenter", new PathPlannerAuto("FourPieceCenter"));
+
+        autoChooser.addOption("4.5PieceCenter", new PathPlannerAuto("4.5PieceCenter"));
 
     }
 
@@ -625,7 +628,12 @@ public class RobotContainer {
                         new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
                 new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
                 new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
-                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
+        NamedCommands.registerCommand("FullFeed",
+                new PPNeverEndCommand(new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
+                        m_pivotSubsystem, m_backFeederSubsystem, PivotPresets.FEED_BACK)
+                                .until(m_indexerBeamBreak).andThen(new IndexerBackOut(m_indexerSubsystem))
+                                .alongWith(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK))));
     }
 }

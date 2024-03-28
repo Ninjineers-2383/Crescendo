@@ -24,15 +24,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "DriveToPiece"
+            "pathName": "DriveFrom1Center"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SeekAndShoot"
+            "name": "ShootSubwoofer"
           }
         },
         {
@@ -42,15 +42,15 @@
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "DriveToPiece"
+            "pathName": "DriveFrom2Center"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "SeekAndShoot"
+            "name": "ShootSubwoofer"
           }
         }
       ]

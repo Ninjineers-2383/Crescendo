@@ -22,5 +22,4 @@ public class FullFeedCommand extends ParallelCommandGroup {
                 new ShooterRPMCommand(shooter, () -> 0, () -> -1000, () -> 0),
                 new PivotPositionCommand(pivot, angle));
     }
-
 }

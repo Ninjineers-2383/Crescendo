@@ -3,34 +3,52 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.029325513196481,
-        "y": 4.468469300574965
+        "x": 1.3140618588929502,
+        "y": 5.535354916863679
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.544230724825086,
-        "y": 4.906920359295264
+        "x": 2.093550340946837,
+        "y": 5.584689630917723
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterSubwoofer"
     },
     {
       "anchor": {
-        "x": 2.178585448079987,
-        "y": 5.522617590689727
+        "x": 2.803970223325064,
+        "y": 5.535354916863679
       },
       "prevControl": {
-        "x": 1.4602720114531138,
-        "y": 5.205440229062276
+        "x": 2.0738164553252196,
+        "y": 5.525487974052871
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "EndCenter2"
     }
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "FullFeed",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "FullFeed"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
@@ -38,7 +56,7 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 2.0,
+    "velocity": 0.0,
     "rotation": 180.0,
     "rotateFast": false
   },

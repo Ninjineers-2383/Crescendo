@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 1.86,
-        "y": 7.752573793307358
+        "x": 2.6658330239737413,
+        "y": 7.13379965221469
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.8600000000000003,
-        "y": 7.752573793307358
+        "x": 1.6002032004064024,
+        "y": 6.561516969187785
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "EndCenter3"
     },
     {
       "anchor": {
-        "x": 4.0,
-        "y": 6.0
+        "x": 1.3140618588929502,
+        "y": 5.535354916863679
       },
       "prevControl": {
-        "x": 3.0,
-        "y": 6.0
+        "x": 1.679138742892872,
+        "y": 6.433246712647272
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterSubwoofer"
     }
   ],
   "rotationTargets": [],
@@ -38,15 +38,15 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": 90.0,
+    "velocity": 0.0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": null,
+  "folder": "Center",
   "previewStartingState": {
-    "rotation": 90.0,
-    "velocity": 0
+    "rotation": 180.0,
+    "velocity": 2.0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }
