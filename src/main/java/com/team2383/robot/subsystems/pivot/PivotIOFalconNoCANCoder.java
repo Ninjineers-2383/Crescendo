@@ -150,7 +150,7 @@ public class PivotIOFalconNoCANCoder implements PivotIO {
     }
 
     @Override
-    public void setAngleRot(double angleRot, double velocityRotPerSec) {
+    public void setAngleRot(double angleRot, double velocityRotPerSec, PivotSubsystem.LashState lashState) {
         leftMotorLeader.setControl(positionOut.withPosition(angleRot + offset).withVelocity(velocityRotPerSec));
     }
 
@@ -176,15 +176,15 @@ public class PivotIOFalconNoCANCoder implements PivotIO {
 
     // @Override
     // public void setFeedforward(double kS, double kV, double kA, double kG) {
-    //     configs.kA = kA;
-    //     configs.kG = kG;
-    //     configs.kS = kS;
-    //     configs.kV = kV;
+    // configs.kA = kA;
+    // configs.kG = kG;
+    // configs.kS = kS;
+    // configs.kV = kV;
 
-    //     configs.GravityType = GravityTypeValue.Arm_Cosine;
+    // configs.GravityType = GravityTypeValue.Arm_Cosine;
 
-    //     leftMotorLeader.getConfigurator().apply(configs);
+    // leftMotorLeader.getConfigurator().apply(configs);
 
-    //     System.out.println("Pivot Feedforward changes");
+    // System.out.println("Pivot Feedforward changes");
     // }
 }

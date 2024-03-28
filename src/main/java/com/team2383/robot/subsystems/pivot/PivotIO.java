@@ -26,7 +26,7 @@ public interface PivotIO {
     public default void updateInputs(PivotIOInputs inputs) {
     }
 
-    public default void setAngleRot(double angle, double velocity) {
+    public default void setAngleRot(double angle, double velocity, PivotSubsystem.LashState lashState) {
     }
 
     public default void forceAngle(double angle) {

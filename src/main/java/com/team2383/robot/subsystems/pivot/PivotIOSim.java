@@ -41,7 +41,7 @@ public class PivotIOSim implements PivotIO {
     }
 
     @Override
-    public void setAngleRot(double angle, double velocity) {
+    public void setAngleRot(double angle, double velocity, PivotSubsystem.LashState lashState) {
         desiredAngle = angle;
     }
 }

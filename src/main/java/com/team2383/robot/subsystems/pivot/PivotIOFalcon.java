@@ -6,6 +6,8 @@ import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MagnetSensorConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.Slot1Configs;
+import com.ctre.phoenix6.configs.SlotConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.controls.Follower;
@@ -21,6 +23,7 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import com.team2383.robot.Constants;
 import com.team2383.robot.subsystems.orchestra.OrchestraContainer;
+import com.team2383.robot.subsystems.pivot.PivotSubsystem.LashState;
 
 import java.util.List;
 
@@ -42,13 +45,16 @@ public class PivotIOFalcon implements PivotIO {
 
     private final VoltageOut voltage = new VoltageOut(0.0).withUpdateFreqHz(0.0);
 
-    private Slot0Configs configs;
+    private SlotConfigs forwardConfigs;
+    private SlotConfigs backConfigs;
 
     private double offset = 0;
 
     private boolean offsetSet = false;
 
     private double kSpring = PivotConstants.kGains.kSpring();
+
+    private LashState lastStatePrev;
 
     public PivotIOFalcon() {
         leftMotorLeader = new TalonFX(PivotConstants.kLeftMotorID, Constants.kCANivoreBus);
@@ -70,17 +76,21 @@ public class PivotIOFalcon implements PivotIO {
                 .withPeakForwardTorqueCurrent(80)
                 .withPeakReverseTorqueCurrent(-80);
 
-        configs = new Slot0Configs()
-                .withKP(PivotConstants.kGains.kP())
-                .withKI(PivotConstants.kGains.kI())
-                .withKD(PivotConstants.kGains.kD())
+        forwardConfigs = new SlotConfigs()
                 .withKS(PivotConstants.kGains.kS())
                 .withKV(PivotConstants.kGains.kV())
                 .withKA(PivotConstants.kGains.kA())
                 .withKG(PivotConstants.kGains.kG())
                 .withGravityType(GravityTypeValue.Arm_Cosine);
+        backConfigs = new SlotConfigs()
+                .withKP(PivotConstants.kGains.kP())
+                .withKI(PivotConstants.kGains.kI())
+                .withKD(PivotConstants.kGains.kD())
+                .withKG(PivotConstants.kGains.kG())
+                .withGravityType(GravityTypeValue.Arm_Cosine);
 
-        motorConfig.Slot0 = configs;
+        motorConfig.Slot0 = Slot0Configs.from(forwardConfigs);
+        motorConfig.Slot1 = Slot1Configs.from(backConfigs);
 
         FeedbackConfigs feedback = new FeedbackConfigs()
                 .withFeedbackRemoteSensorID(encoder.getDeviceID())
@@ -173,9 +183,16 @@ public class PivotIOFalcon implements PivotIO {
     }
 
     @Override
-    public void setAngleRot(double angleRot, double velocityRotPerSec) {
+    public void setAngleRot(double angleRot, double velocityRotPerSec, PivotSubsystem.LashState lashState) {
+        if (lashState == LashState.Forward && lashState != lastStatePrev) {
+            leftMotorLeader.getConfigurator().apply(Slot1Configs.from(backConfigs));
+        }
+
         leftMotorLeader.setControl(positionOut.withPosition(angleRot + offset).withVelocity(velocityRotPerSec)
-                .withFeedForward(kSpring));
+                .withFeedForward(kSpring).withSlot(lashState == LashState.Forward ? 0 : 1));
+
+        lastStatePrev = lashState;
+
     }
 
     @Override
@@ -194,25 +211,28 @@ public class PivotIOFalcon implements PivotIO {
 
     @Override
     public void setPIDController(double kP, double kI, double kD) {
-        configs.kP = kP;
-        configs.kI = kI;
-        configs.kD = kD;
+        backConfigs.kP = kP;
+        backConfigs.kI = kI;
+        backConfigs.kD = kD;
 
-        leftMotorLeader.getConfigurator().apply(configs);
+        leftMotorLeader.getConfigurator().apply(Slot1Configs.from(backConfigs));
     }
 
     @Override
     public void setFeedforward(double kS, double kV, double kA, double kG, double kSpring) {
-        configs.kA = kA;
-        configs.kG = kG;
-        configs.kS = kS;
-        configs.kV = kV;
+        forwardConfigs.kA = kA;
+        forwardConfigs.kG = kG;
+        backConfigs.kG = kG;
+        forwardConfigs.kS = kS;
+        forwardConfigs.kV = kV;
 
         this.kSpring = kSpring;
 
-        configs.GravityType = GravityTypeValue.Arm_Cosine;
+        forwardConfigs.GravityType = GravityTypeValue.Arm_Cosine;
+        backConfigs.GravityType = GravityTypeValue.Arm_Cosine;
 
-        leftMotorLeader.getConfigurator().apply(configs);
+        leftMotorLeader.getConfigurator().apply(Slot0Configs.from(forwardConfigs));
+        leftMotorLeader.getConfigurator().apply(Slot1Configs.from(backConfigs));
 
         System.out.println("Pivot Feedforward changes");
     }

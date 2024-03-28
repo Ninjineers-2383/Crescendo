@@ -51,16 +51,24 @@ public class PivotSubsystem extends SubsystemBase {
     private TrapezoidProfile profile = new TrapezoidProfile(constraints);
 
     private TrapezoidProfile.State goal = new TrapezoidProfile.State();
+    private TrapezoidProfile.State forwardGoal = new TrapezoidProfile.State();
 
     private TrapezoidProfile.State setpoint = new TrapezoidProfile.State();
 
     private final PivotIO io;
     private final PivotIOInputsAutoLogged inputs = new PivotIOInputsAutoLogged();
 
+    private LashState lashState = LashState.Reverse;
+
+    public enum LashState {
+        Forward, Reverse
+    }
+
     public PivotSubsystem(PivotIO io) {
         this.io = io;
 
         goal = new TrapezoidProfile.State(getAngle().getRotations(), 0);
+        forwardGoal = goal;
         setpoint = goal;
     }
 
@@ -69,24 +77,35 @@ public class PivotSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Pivot", inputs);
 
-        if (setpoint == goal && !isFinished()) {
-            setpoint = new TrapezoidProfile.State(inputs.absoluteEncoderPositionRot, 0);
+        if (Math.abs(inputs.absoluteEncoderPositionRot - setpoint.position) > (10 / 360.0)) {
+            lashState = LashState.Forward;
+            setpoint = new TrapezoidProfile.State(inputs.absoluteEncoderPositionRot, 0.0);
         }
 
-        setpoint = profile.calculate(0.02, setpoint,
-                new TrapezoidProfile.State(
-                        MathUtil.clamp(
-                                goal.position,
-                                Units.degreesToRotations(kMinAngleDegrees.get()),
-                                Units.degreesToRotations(kMaxAngleDegrees.get())),
-                        0.0));
+        if (lashState == LashState.Forward) {
+            setpoint = profile.calculate(0.02, setpoint, forwardGoal);
+            if (setpoint.equals(forwardGoal)) {
+                lashState = LashState.Reverse;
+                setpoint = new TrapezoidProfile.State(inputs.absoluteEncoderPositionRot, 0);
+            }
+        }
+        if (lashState == LashState.Reverse) {
+            setpoint = profile.calculate(0.02, setpoint,
+                    new TrapezoidProfile.State(
+                            MathUtil.clamp(
+                                    goal.position,
+                                    Units.degreesToRotations(kMinAngleDegrees.get()),
+                                    Units.degreesToRotations(kMaxAngleDegrees.get())),
+                            0.0));
+        }
 
-        io.setAngleRot(setpoint.position, setpoint.velocity);
+        io.setAngleRot(setpoint.position, setpoint.velocity, lashState);
 
         Logger.recordOutput("Pivot/Goal/Position", goal.position);
         Logger.recordOutput("Pivot/Goal/Velocity", goal.velocity);
         Logger.recordOutput("Pivot/Setpoint/Position", setpoint.position);
         Logger.recordOutput("Pivot/Setpoint/Velocity", setpoint.velocity);
+        Logger.recordOutput("Pivot/State", lashState.toString());
 
         leftMotorDisconnected.set(!inputs.leftMotorConnected);
         rightMotorDisconnected.set(!inputs.rightMotorConnected);
@@ -108,14 +127,35 @@ public class PivotSubsystem extends SubsystemBase {
 
     public void incrementPosition(double deltaAngle) {
         goal.position += deltaAngle;
+        lashState = LashState.Forward;
+        forwardGoal = new TrapezoidProfile.State(
+                MathUtil.clamp(
+                        goal.position > inputs.absoluteEncoderPositionRot
+                                ? goal.position + (10.0 / 360.0)
+                                : goal.position,
+                        Units.degreesToRotations(kMinAngleDegrees.get()),
+                        Units.degreesToRotations(kMaxAngleDegrees.get())),
+                0.0);
     }
 
     public void setPosition(double angleRads) {
+        if (Units.radiansToRotations(angleRads) == goal.position)
+            return;
         goal = new TrapezoidProfile.State(Units.radiansToRotations(angleRads), 0);
+        lashState = LashState.Forward;
+        forwardGoal = new TrapezoidProfile.State(
+                MathUtil.clamp(
+                        goal.position > inputs.absoluteEncoderPositionRot
+                                ? goal.position + (10.0 / 360.0)
+                                : goal.position,
+                        Units.degreesToRotations(kMinAngleDegrees.get()),
+                        Units.degreesToRotations(kMaxAngleDegrees.get())),
+                0.0);
+
     }
 
     public boolean isFinished() {
-        return Math.abs(inputs.absoluteEncoderPositionRot - inputs.desiredPositionRot) < ((1) / 200.0);
+        return Math.abs(inputs.absoluteEncoderPositionRot - goal.position) < ((1) / 200.0);
     }
 
     public Rotation2d getAngle() {
