@@ -633,7 +633,8 @@ public class RobotContainer {
         NamedCommands.registerCommand("FullFeed",
                 new PPNeverEndCommand(new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
                         m_pivotSubsystem, m_backFeederSubsystem, PivotPresets.FEED_BACK)
-                                .until(m_indexerBeamBreak).andThen(new IndexerBackOut(m_indexerSubsystem))
-                                .alongWith(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK))));
+                                .until(m_indexerBeamBreak).andThen(new IndexerBackOut(m_indexerSubsystem)
+                                        .alongWith(new PivotPositionCommand(m_pivotSubsystem,
+                                                PivotPresets.SUBWOOFER_BACK)))));
     }
 }
