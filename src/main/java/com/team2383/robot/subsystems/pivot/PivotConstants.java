@@ -16,14 +16,14 @@ public class PivotConstants {
 
     // Trapezoid Profile Constants (In rotations / s and rotations / s^2)
     public static double kMaxVelo = 4;
-    public static double kMaxAccel = 2;
+    public static double kMaxAccel = 1;
 
     // Gear Ratio
     public static double kPivotMotorGearRatio = 60.0;
 
     // Pivot Bounds
-    public static double kMaxAngleDegrees = 180;
-    public static double kMinAngleDegrees = -55;
+    public static double kMaxAngleDegrees = 190;
+    public static double kMinAngleDegrees = -30;
 
     // Current Limits
     public static double kCurrentLimit = 40;

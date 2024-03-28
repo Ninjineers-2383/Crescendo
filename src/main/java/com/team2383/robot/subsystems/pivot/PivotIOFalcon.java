@@ -184,7 +184,7 @@ public class PivotIOFalcon implements PivotIO {
 
     @Override
     public void setAngleRot(double angleRot, double velocityRotPerSec, PivotSubsystem.LashState lashState) {
-        if (lashState == LashState.Forward && lashState != lastStatePrev) {
+        if (lashState != lastStatePrev) {
             leftMotorLeader.getConfigurator().apply(Slot1Configs.from(backConfigs));
         }
 

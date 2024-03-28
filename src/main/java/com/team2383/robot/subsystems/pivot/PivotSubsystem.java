@@ -13,6 +13,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSubsystem extends SubsystemBase {
@@ -77,7 +78,8 @@ public class PivotSubsystem extends SubsystemBase {
         io.updateInputs(inputs);
         Logger.processInputs("Pivot", inputs);
 
-        if (Math.abs(inputs.absoluteEncoderPositionRot - setpoint.position) > (10 / 360.0)) {
+        if (Math.abs(inputs.absoluteEncoderPositionRot - setpoint.position) > (10 / 360.0)
+                && lashState == LashState.Reverse && DriverStation.isEnabled()) {
             lashState = LashState.Forward;
             setpoint = new TrapezoidProfile.State(inputs.absoluteEncoderPositionRot, 0.0);
         }
