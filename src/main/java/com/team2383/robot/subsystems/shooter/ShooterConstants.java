@@ -47,4 +47,6 @@ public class ShooterConstants {
     public static double kSideV = 0.0;
     public static double kSideS = 0.0;
 
+    public static record ShooterGains(double kP, double kI, double kD, double kA, double kV, double kS) {
+    }
 }

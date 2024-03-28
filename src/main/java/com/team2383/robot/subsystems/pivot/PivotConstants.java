@@ -9,7 +9,7 @@ public class PivotConstants {
     // Encoder Offset
     // 0.452881
     // 0.455811
-    public static double kEncoderOffset = -0.452881;
+    public static double kEncoderOffset = -0.448730;
 
     // Feedback and Feedforward Gains
     public static final ArmGains kGains = new ArmGains(15, 4, 0, 0.3, 4.1, 0.7, 0.32, 0.2);
