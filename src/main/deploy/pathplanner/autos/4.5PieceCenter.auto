@@ -1,16 +1,16 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 1.3140618588929502,
-      "y": 5.535354916863679
-    },
-    "rotation": 180.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
+        {
+          "type": "named",
+          "data": {
+            "name": "InitializeHeading"
+          }
+        },
         {
           "type": "named",
           "data": {

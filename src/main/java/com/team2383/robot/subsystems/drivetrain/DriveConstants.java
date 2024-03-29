@@ -180,7 +180,7 @@ public final class DriveConstants {
                     DriveConstants.kTrackWidthMeters / 2),
             Rotation2d.fromRotations(
                     0.523193),
-            true, false);
+            false, false);
 
     public final static ModuleConstants frontRightConstants = new ModuleConstants(
             0.16674,
@@ -194,7 +194,7 @@ public final class DriveConstants {
                     DriveConstants.kWheelBaseMeters / 2,
                     -DriveConstants.kTrackWidthMeters / 2),
             Rotation2d.fromRotations(0.118408),
-            false, true);
+            false, false);
 
     public final static ModuleConstants rearLeftConstants = new ModuleConstants(
             0.11763,

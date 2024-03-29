@@ -8,9 +8,13 @@ import com.team2383.robot.subsystems.indexer.IndexerSubsystem;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
@@ -33,7 +37,13 @@ public class SeekAndShootCommand extends ParallelDeadlineGroup {
                         new ShootCommand(indexer, shooter)),
                 new FaceToSpeakerCommand(drivetrain, finish),
                 new PivotSeekCommand(pivot, drivetrain::getEstimatorPose3d, finish),
-                new ShooterRPMCommand(shooter, () -> -4000, () -> 2000, () -> 0));
+                new ShooterRPMCommand(shooter, () -> -4000, () -> 2000, () -> 0),
+                new RunCommand(() -> drivetrain
+                        .forceHeading(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue
+                                ? drivetrain.getPose().getRotation()
+                                : drivetrain.getPose().getRotation()
+                                        .plus(new Rotation2d(Math.PI))),
+                        new Subsystem[0]));
     }
 
 }

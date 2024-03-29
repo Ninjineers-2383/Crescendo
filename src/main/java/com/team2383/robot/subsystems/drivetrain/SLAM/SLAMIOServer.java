@@ -109,9 +109,8 @@ public class SLAMIOServer implements SLAMIO {
 
         Pose2d ref = odometry.getEstimatedPosition();
         inputs.pose = new Pose3d(
-                ref.getX(), ref.getY(), inputs.pose.getZ(),
-                new Rotation3d(inputs.pose.getRotation().getX(),
-                        inputs.pose.getRotation().getY(),
+                ref.getX(), ref.getY(), 0,
+                new Rotation3d(0, 0,
                         ref.getRotation().getRadians()));
 
     }

@@ -382,7 +382,7 @@ public class RobotContainer {
                 // new ParallelDeadlineGroup(
                 // new SequentialCommandGroup(
                 // new WaitCommand(0.5),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> -850, () -> 750, () -> 250)
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -700, () -> 750, () -> 250)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5)));
 
         m_manualAmpShoot.onFalse(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
@@ -429,7 +429,8 @@ public class RobotContainer {
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
-        m_subwooferPivot.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK));
+        m_subwooferPivot.onTrue(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK).alongWith(
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)));
         // m_mythicalTrap.onTrue(
         // new SequentialCommandGroup(
         // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
@@ -574,6 +575,15 @@ public class RobotContainer {
     }
 
     public void registerAutoNamedCommands() {
+        NamedCommands.registerCommand("InitializeHeading",
+                new RunCommand(
+                        () -> m_drivetrainSubsystem
+                                .forceHeading(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue
+                                        ? m_drivetrainSubsystem.getPose().getRotation()
+                                        : m_drivetrainSubsystem.getPose().getRotation()
+                                                .plus(new Rotation2d(Math.PI))),
+                        m_drivetrainSubsystem).withTimeout(0.02));
+
         NamedCommands.registerCommand("SeekAndShoot",
                 new SequentialCommandGroup(
                         new RunCommand(
@@ -627,8 +637,7 @@ public class RobotContainer {
                                         && m_pivotSubsystem.isFinished())),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
                 new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
-                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
+                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02)));
 
         NamedCommands.registerCommand("FullFeed",
                 new PPNeverEndCommand(new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,

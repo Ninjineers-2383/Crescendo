@@ -14,6 +14,12 @@
         {
           "type": "named",
           "data": {
+            "name": "InitializeHeading"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
             "name": "ShootSubwoofer"
           }
         },

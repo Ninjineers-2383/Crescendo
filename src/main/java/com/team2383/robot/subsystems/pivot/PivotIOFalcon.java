@@ -65,7 +65,7 @@ public class PivotIOFalcon implements PivotIO {
 
         encoder = new CANcoder(PivotConstants.kEncoderID, Constants.kCANivoreBus);
 
-        rightMotorFollower.setControl(new Follower(PivotConstants.kLeftMotorID, true));
+        rightMotorFollower.setControl(new Follower(PivotConstants.kLeftMotorID, false));
 
         OrchestraContainer.getInstance().addMotor(leftMotorLeader);
         OrchestraContainer.getInstance().addMotor(rightMotorFollower);
