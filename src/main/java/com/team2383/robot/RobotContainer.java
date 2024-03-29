@@ -15,7 +15,6 @@ import com.team2383.robot.Constants.*;
 import com.team2383.robot.commands.amp.ScoreAmpCommand;
 import com.team2383.robot.commands.feeding.FullFeedCommand;
 import com.team2383.robot.commands.feeding.IndexerBackOut;
-import com.team2383.robot.commands.feeding.PPNeverEndCommand;
 import com.team2383.robot.commands.feeding.PartialFeedCommand;
 import com.team2383.robot.commands.speaker.SeekAndShootCommand;
 import com.team2383.robot.commands.speaker.ShootCommand;
@@ -631,10 +630,10 @@ public class RobotContainer {
                 new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
         NamedCommands.registerCommand("FullFeed",
-                new PPNeverEndCommand(new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
+                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
                         m_pivotSubsystem, m_backFeederSubsystem, PivotPresets.FEED_BACK)
                                 .until(m_indexerBeamBreak).andThen(new IndexerBackOut(m_indexerSubsystem)
                                         .alongWith(new PivotPositionCommand(m_pivotSubsystem,
-                                                PivotPresets.SUBWOOFER_BACK)))));
+                                                PivotPresets.SUBWOOFER_BACK))));
     }
 }
