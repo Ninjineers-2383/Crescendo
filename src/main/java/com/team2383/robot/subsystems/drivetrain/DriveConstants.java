@@ -26,7 +26,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 
 public final class DriveConstants {
-    public static final double kMaxSpeed = 4.3; // meters per second
+    public static final double kMaxSpeed = 5.0; // meters per second
 
     public final static double kTrackWidthMeters = Constants.getRobot() == RobotType.ROBOT_COMP
             ? Units.inchesToMeters(27)

@@ -1,26 +1,20 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.48523866278501937,
-      "y": 6.9660616244309415
-    },
-    "rotation": 180.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
       "commands": [
         {
-          "type": "path",
+          "type": "named",
           "data": {
-            "pathName": "PreloadAmp"
+            "name": "ShootSubwoofer"
           }
         },
         {
-          "type": "named",
+          "type": "path",
           "data": {
-            "name": "SeekAndShoot"
+            "pathName": "PreloadAmp"
           }
         },
         {
