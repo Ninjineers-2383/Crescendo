@@ -2,6 +2,8 @@ package com.team2383.robot.subsystems.drivetrain.SLAM;
 
 import org.littletonrobotics.junction.AutoLog;
 
+import com.team2383.lib.CameraParameters;
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -27,7 +29,8 @@ public interface SLAMIO {
             Rotation2d gyroAngle) {
     }
 
-    public default void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic) {
+    public default void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic,
+            CameraParameters camParams) {
     }
 
     public default void forceHeading(Rotation2d heading, Rotation2d gyroAngle, SwerveModulePosition[] positions) {

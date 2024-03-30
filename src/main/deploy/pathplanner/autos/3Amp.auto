@@ -1,12 +1,6 @@
 {
   "version": 1.0,
-  "startingPose": {
-    "position": {
-      "x": 0.48523866278501937,
-      "y": 6.9660616244309415
-    },
-    "rotation": 180.0
-  },
+  "startingPose": null,
   "command": {
     "type": "sequential",
     "data": {
@@ -18,45 +12,9 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DriveToPiece"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
-          }
-        },
-        {
           "type": "path",
           "data": {
-            "pathName": "DriveToCenterTop"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DriveToPiece"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DriveFromCenterTop"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
+            "pathName": "DriveFrom1Amp"
           }
         }
       ]

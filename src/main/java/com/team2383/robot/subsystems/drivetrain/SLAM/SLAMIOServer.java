@@ -1,5 +1,6 @@
 package com.team2383.robot.subsystems.drivetrain.SLAM;
 
+import com.team2383.lib.CameraParameters;
 import com.team2383.lib.util.TimedPose3d;
 import com.team2383.lib.util.TimedRobotUpdate;
 
@@ -44,6 +45,7 @@ public class SLAMIOServer implements SLAMIO {
     private final IntegerPublisher poseFilterSizePub;
     private final DoublePublisher poseOutlierRejectionDistanceSub;
     private final StructPublisher<Pose2d> resetPose;
+    private final StructPublisher<CameraParameters> cameraParameters;
 
     private double latestTimestamp = 0;
 
@@ -82,6 +84,8 @@ public class SLAMIOServer implements SLAMIO {
 
         poseFilterSizePub = table.getIntegerTopic("poseFilterSize").publish();
         poseOutlierRejectionDistanceSub = table.getDoubleTopic("PoseOutlierDistance").publish();
+
+        cameraParameters = table.getStructTopic("camParameters", CameraParameters.struct).publish();
 
         moduleLocationsPub.set(moduleLocations);
         landmarksPub.set(landmarks);
@@ -125,13 +129,15 @@ public class SLAMIOServer implements SLAMIO {
     }
 
     @Override
-    public void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic) {
+    public void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic,
+            CameraParameters camParams) {
         camTransformsPub.set(camPoses);
         varianceScalePub.set(varianceScale);
         varianceStaticPub.set(varianceStatic);
 
         poseFilterSizePub.set(15);
         poseOutlierRejectionDistanceSub.set(0.1);
+        cameraParameters.set(camParams);
     }
 
     @Override

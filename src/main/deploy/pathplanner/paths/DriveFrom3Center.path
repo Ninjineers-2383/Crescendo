@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 2.6658330239737413,
-        "y": 7.13379965221469
+        "x": 2.8752978027901492,
+        "y": 7.1380952251821475
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.6002032004064024,
-        "y": 6.561516969187785
+        "x": 1.8096679792228103,
+        "y": 6.565812542155243
       },
       "isLocked": false,
       "linkedName": "EndCenter3"
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "FullFeed",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "FullFeed"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
