@@ -59,6 +59,12 @@ public final class DriveConstants {
             1, 1,
             Units.degreesToRadians(180), Units.degreesToRadians(180));
 
+    public final static double headingkP = 5.0;
+    public final static double headingkI = 0.0;
+    public final static double headingkD = 0.0;
+    public final static double headingVelo = 4 * Math.PI;
+    public final static double headingAccel = 4 * Math.PI;
+
     public final static ProfiledPIDController HEADING_CONTROLLER = new ProfiledPIDController(5.0, 0, 0,
             new Constraints(4 * Math.PI, 4 * Math.PI));
 

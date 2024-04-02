@@ -13,6 +13,7 @@ import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.Voltage;
@@ -38,6 +39,7 @@ import com.team2383.lib.swerve.ModuleLimits;
 import com.team2383.lib.swerve.SwerveSetpoint;
 import com.team2383.lib.swerve.SwerveSetpointGenerator;
 import com.team2383.lib.util.mechanical_advantage.Alert;
+import com.team2383.lib.util.mechanical_advantage.LoggedTunableNumber;
 import com.team2383.lib.util.mechanical_advantage.Alert.AlertType;
 import com.team2383.robot.Constants;
 import com.team2383.robot.FieldConstants;
@@ -84,7 +86,20 @@ public class DrivetrainSubsystem extends SubsystemBase {
     private ChassisSpeeds m_robotRelativeChassisSpeeds = new ChassisSpeeds();
 
     // Heading Controller Initialization
-    private ProfiledPIDController m_headingController = DriveConstants.HEADING_CONTROLLER;
+    private LoggedTunableNumber headingkP = new LoggedTunableNumber("Drive/Heading/Gains/kP", DriveConstants.headingkP);
+    private LoggedTunableNumber headingkI = new LoggedTunableNumber("Drive/Heading/Gains/kI", DriveConstants.headingkI);
+    private LoggedTunableNumber headingkD = new LoggedTunableNumber("Drive/Heading/Gains/kD", DriveConstants.headingkD);
+    private LoggedTunableNumber headingVelo = new LoggedTunableNumber("Drive/Heading/Gains/maxVelo",
+            DriveConstants.headingVelo);
+    private LoggedTunableNumber headingAccel = new LoggedTunableNumber("Drive/Heading/Gains/maxAccel",
+            DriveConstants.headingAccel);
+
+    private LoggedTunableNumber headingSetpoint = new LoggedTunableNumber("Drive/Heading/Gains/headingSetpoint", 0);
+
+    private ProfiledPIDController m_headingController = new ProfiledPIDController(DriveConstants.headingkP,
+            DriveConstants.headingkI, DriveConstants.headingkD,
+            new TrapezoidProfile.Constraints(DriveConstants.headingVelo, DriveConstants.headingAccel));
+
     private Rotation2d desiredHeading = new Rotation2d();
     private boolean headingControllerEnabled = true;
     private boolean useManualHeadingTarget = false;
@@ -296,6 +311,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("Swerve/Dead Reckoning", m_deadReckoning.getPoseMeters());
 
         Logger.recordOutput("Swerve/hasCrossedCenterLine", hasCrossedCenterLine());
+
+        LoggedTunableNumber.ifChanged(hashCode(),
+                (pid) -> m_headingController = new ProfiledPIDController(pid[0], pid[1], pid[2],
+                        new TrapezoidProfile.Constraints(pid[3], pid[4])),
+                headingkP, headingkI, headingkD, headingVelo, headingAccel);
+
+        LoggedTunableNumber.ifChanged(hashCode(), (setpoint) -> desiredHeading = Rotation2d.fromDegrees(setpoint[0]),
+                headingSetpoint);
     }
 
     private void reinitializeSLAM() {
