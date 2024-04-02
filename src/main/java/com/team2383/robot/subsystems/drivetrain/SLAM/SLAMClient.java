@@ -15,7 +15,7 @@ public class SLAMClient {
     private final SLAMIOInputsAutoLogged inputs = new SLAMIOInputsAutoLogged();
 
     private final LoggedTunableNumber cameraExposeAuto = new LoggedTunableNumber("SLAM/Camera/ExposeAuto", 1);
-    private final LoggedTunableNumber cameraExpose = new LoggedTunableNumber("SLAM/Camera/Expose", 100);
+    private final LoggedTunableNumber cameraExpose = new LoggedTunableNumber("SLAM/Camera/Expose", 50);
     private final LoggedTunableNumber cameraGain = new LoggedTunableNumber("SLAM/Camera/Gain", 0);
 
     private Transform3d[] camPoses;
