@@ -6,15 +6,45 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "ShootSubwooferStart"
+          }
+        },
+        {
           "type": "path",
           "data": {
             "pathName": "PreloadAmp"
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
+          }
+        },
+        {
           "type": "path",
           "data": {
-            "pathName": "DriveFrom1Amp"
+            "pathName": "DriveToCenterTop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveFromCenterTop"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
           }
         }
       ]

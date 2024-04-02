@@ -6,51 +6,33 @@
     "data": {
       "commands": [
         {
-          "type": "path",
-          "data": {
-            "pathName": "PreloadSourceTape"
-          }
-        },
-        {
           "type": "named",
           "data": {
-            "name": "InitializeHeading"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
+            "name": "ShootSubwooferStart"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "Stage2BotSteal"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "DriveToPiece"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "SeekAndShoot"
+            "pathName": "PreloadAmp"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "MidBotTopSteal"
+            "pathName": "DriveFrom1Amp"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "InitializeHeading"
+            "name": "ShootSubwoofer"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "DriveToCenterTopSW"
           }
         },
         {
@@ -62,6 +44,6 @@
       ]
     }
   },
-  "folder": "Source",
+  "folder": "Amp",
   "choreoAuto": false
 }

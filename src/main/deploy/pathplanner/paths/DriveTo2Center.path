@@ -8,20 +8,20 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 2.0951100057222396,
-        "y": 5.535354916863679
+        "x": 2.093550340946837,
+        "y": 5.584689630917723
       },
       "isLocked": false,
       "linkedName": "CenterSubwoofer"
     },
     {
       "anchor": {
-        "x": 3.2063963534807267,
+        "x": 2.8927727086223416,
         "y": 5.535354916863679
       },
       "prevControl": {
-        "x": 2.4761759199917686,
-        "y": 5.535354916863679
+        "x": 2.1626189406224974,
+        "y": 5.525487974052871
       },
       "nextControl": null,
       "isLocked": false,
@@ -50,8 +50,8 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 2.5,
-    "maxAcceleration": 2.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
   },

@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7718481866382481,
-        "y": 6.621971013811542
+        "x": 6.8649561550193,
+        "y": 5.890550782528099
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.850755678911206,
-        "y": 7.244878544906038
+        "x": 5.729005010078493,
+        "y": 6.663465994549679
       },
       "isLocked": false,
-      "linkedName": "AmpSubwoofer"
+      "linkedName": null
     },
     {
       "anchor": {
-        "x": 6.517381860387287,
-        "y": 5.94029752709213
+        "x": 3.9723795282112664,
+        "y": 5.515804013063089
       },
       "prevControl": {
-        "x": 5.14429669428813,
-        "y": 6.339563426454296
+        "x": 5.073198163514727,
+        "y": 6.323851734722014
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,14 +38,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 0.0,
     "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpSide",
+  "folder": "Amp",
   "previewStartingState": {
-    "rotation": -120.0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

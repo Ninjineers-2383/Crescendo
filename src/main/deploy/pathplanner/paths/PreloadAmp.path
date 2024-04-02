@@ -20,7 +20,7 @@
         "y": 7.011498720506339
       },
       "prevControl": {
-        "x": 2.3104826280826947,
+        "x": 2.3104826280826942,
         "y": 6.7193529404852415
       },
       "nextControl": null,
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "PivotSeek"
+                "name": "FullFeed"
               }
             }
           ]
@@ -61,7 +61,7 @@
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpSide",
+  "folder": "Amp",
   "previewStartingState": {
     "rotation": -120.0,
     "velocity": 0

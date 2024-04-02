@@ -3,25 +3,25 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.770930618784316,
-        "y": 7.222602137511967
+        "x": 3.0408470781354384,
+        "y": 7.011498720506339
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.770930618784311,
-        "y": 7.222602137511967
+        "x": 4.358837134222055,
+        "y": 6.956236908194216
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "EndPreloadAmp"
     },
     {
       "anchor": {
-        "x": 5.073198163514728,
-        "y": 7.222602137511967
+        "x": 6.517381860387287,
+        "y": 5.94029752709213
       },
       "prevControl": {
-        "x": 4.073198163514728,
-        "y": 7.222602137511967
+        "x": 5.260571548247232,
+        "y": 6.850839379282182
       },
       "nextControl": null,
       "isLocked": false,
@@ -38,14 +38,14 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 4.0,
+    "velocity": 2.0,
     "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "AmpSide",
+  "folder": "Amp",
   "previewStartingState": {
-    "rotation": -150.0,
+    "rotation": 180.0,
     "velocity": 0
   },
   "useDefaultConstraints": false

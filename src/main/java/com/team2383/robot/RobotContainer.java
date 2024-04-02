@@ -531,7 +531,7 @@ public class RobotContainer {
     private void registerAutoCommands() {
         autoChooser.addDefaultOption("None", (Command) null);
 
-        autoChooser.addOption("3.5Amp", new PathPlannerAuto("3.5Amp"));
+        autoChooser.addOption("2.5Amp", new PathPlannerAuto("2.5Amp"));
 
         autoChooser.addOption("3Amp", new PathPlannerAuto("3Amp"));
 
@@ -641,14 +641,19 @@ public class RobotContainer {
                                         m_backFeederSubsystem, PivotPresets.FEED_BACK)),
                         new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(), false, false),
                                 m_drivetrainSubsystem),
-                        new ParallelDeadlineGroup(
+                        new ConditionalCommand(
                                 new SequentialCommandGroup(
-                                        new WaitUntilCommand(m_indexerBeamBreak),
-                                        new WaitUntilCommand(m_indexerBeamBreak.negate())),
-                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                                        m_backFeederSubsystem, PivotPresets.FEED_BACK)),
-                        new IndexerBackOut(m_indexerSubsystem),
-                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
+                                        new ParallelDeadlineGroup(
+                                                new SequentialCommandGroup(
+                                                        new WaitUntilCommand(m_indexerBeamBreak),
+                                                        new WaitUntilCommand(m_indexerBeamBreak.negate())),
+                                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
+                                                        m_pivotSubsystem,
+                                                        m_backFeederSubsystem, PivotPresets.FEED_BACK)),
+                                        new IndexerBackOut(m_indexerSubsystem),
+                                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)).withTimeout(1),
+                                new InstantCommand(),
+                                m_feederBeamBreak)));
 
         NamedCommands.registerCommand("StealShoot",
                 new SequentialCommandGroup(
