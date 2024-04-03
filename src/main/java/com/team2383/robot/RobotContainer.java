@@ -23,8 +23,8 @@ import com.team2383.robot.commands.subsystem.drivetrain.sysid.*;
 import com.team2383.robot.commands.subsystem.feeder.*;
 import com.team2383.robot.commands.subsystem.indexer.*;
 import com.team2383.robot.commands.subsystem.orchestra.*;
-import com.team2383.robot.commands.subsystem.piece_detection.DriveToPieceAuto;
 import com.team2383.robot.commands.subsystem.piece_detection.DriveToPieceCommand;
+import com.team2383.robot.commands.subsystem.piece_detection.DriveToPieceFull;
 import com.team2383.robot.commands.subsystem.pivot.*;
 import com.team2383.robot.commands.subsystem.pivot.tuning.PivotSysIDCommand;
 import com.team2383.robot.commands.subsystem.resting_hooks.RestingHooksPowerCommand;
@@ -633,27 +633,8 @@ public class RobotContainer {
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
         NamedCommands.registerCommand("DriveToPiece",
-                new SequentialCommandGroup(
-                        new ParallelDeadlineGroup(
-                                new DriveToPieceAuto(m_pieceDetectionSubsystem, m_drivetrainSubsystem,
-                                        m_backFeederSubsystem),
-                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem, m_pivotSubsystem,
-                                        m_backFeederSubsystem, PivotPresets.FEED_BACK)),
-                        new InstantCommand(() -> m_drivetrainSubsystem.drive(new ChassisSpeeds(), false, false),
-                                m_drivetrainSubsystem),
-                        new ConditionalCommand(
-                                new SequentialCommandGroup(
-                                        new ParallelDeadlineGroup(
-                                                new SequentialCommandGroup(
-                                                        new WaitUntilCommand(m_indexerBeamBreak),
-                                                        new WaitUntilCommand(m_indexerBeamBreak.negate())),
-                                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
-                                                        m_pivotSubsystem,
-                                                        m_backFeederSubsystem, PivotPresets.FEED_BACK)),
-                                        new IndexerBackOut(m_indexerSubsystem),
-                                        new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)).withTimeout(1),
-                                new InstantCommand(),
-                                m_feederBeamBreak)));
+                new DriveToPieceFull(m_pieceDetectionSubsystem, m_drivetrainSubsystem, m_backFeederSubsystem,
+                        m_indexerSubsystem, m_shooterSubsystem, m_pivotSubsystem));
 
         NamedCommands.registerCommand("StealShoot",
                 new SequentialCommandGroup(

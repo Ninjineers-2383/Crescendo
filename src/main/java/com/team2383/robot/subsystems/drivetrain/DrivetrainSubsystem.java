@@ -313,8 +313,11 @@ public class DrivetrainSubsystem extends SubsystemBase {
         Logger.recordOutput("Swerve/hasCrossedCenterLine", hasCrossedCenterLine());
 
         LoggedTunableNumber.ifChanged(hashCode(),
-                (pid) -> m_headingController = new ProfiledPIDController(pid[0], pid[1], pid[2],
-                        new TrapezoidProfile.Constraints(pid[3], pid[4])),
+                (pid) -> {
+                    m_headingController = new ProfiledPIDController(pid[0], pid[1], pid[2],
+                            new TrapezoidProfile.Constraints(pid[3], pid[4]));
+                    m_headingController.enableContinuousInput(-Math.PI, Math.PI);
+                },
                 headingkP, headingkI, headingkD, headingVelo, headingAccel);
 
         LoggedTunableNumber.ifChanged(hashCode(), (setpoint) -> desiredHeading = Rotation2d.fromDegrees(setpoint[0]),
@@ -634,6 +637,14 @@ public class DrivetrainSubsystem extends SubsystemBase {
             return getPose().getTranslation().getX() < (FieldConstants.fieldLength / 2) - Units.inchesToMeters(15);
         } else {
             return getPose().getTranslation().getX() > (FieldConstants.fieldLength / 2) + Units.inchesToMeters(15);
+        }
+    }
+
+    public boolean isOnLeftSide() {
+        if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
+            return getPose().getTranslation().getY() < (FieldConstants.fieldWidth / 2);
+        } else {
+            return getPose().getTranslation().getY() > (FieldConstants.fieldWidth / 2);
         }
     }
 }
