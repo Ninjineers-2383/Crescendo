@@ -4,9 +4,12 @@ import com.team2383.robot.subsystems.drivetrain.DrivetrainSubsystem;
 import com.team2383.robot.subsystems.feeder.FeederSubsystem;
 import com.team2383.robot.subsystems.piece_detection.PieceDetectionSubsystem;
 
+import edu.wpi.first.math.filter.MedianFilter;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj2.command.Command;
 
 public class DriveToPieceCommand extends Command {
@@ -15,6 +18,8 @@ public class DriveToPieceCommand extends Command {
     private FeederSubsystem feederSubsystem;
 
     private SlewRateLimiter m_driveRateLimiter;
+
+    private MedianFilter medianFilter = new MedianFilter(5);
 
     public DriveToPieceCommand(PieceDetectionSubsystem pieceDetectionSubsystem,
             DrivetrainSubsystem drivetrainSubsystem, FeederSubsystem feederSubsystem) {
@@ -29,20 +34,23 @@ public class DriveToPieceCommand extends Command {
     public void initialize() {
         m_driveRateLimiter = new SlewRateLimiter(3.0, -3.0,
                 drivetrainSubsystem.getRobotRelativeSpeeds().vxMetersPerSecond);
+
+        medianFilter.reset();
     }
 
     @Override
     public void execute() {
         if (pieceDetectionSubsystem.inputs.frontSeesTarget) {
-            drivetrainSubsystem.setHeading(
-                    drivetrainSubsystem.getHeading()
-                            .minus(Rotation2d.fromDegrees(pieceDetectionSubsystem.inputs.frontYaw)));
+            Rotation2d desireRotation2d = Rotation2d.fromDegrees(
+                    medianFilter.calculate(drivetrainSubsystem.getHeading()
+                            .minus(Rotation2d.fromDegrees(pieceDetectionSubsystem.inputs.frontYaw)).getDegrees()));
+            drivetrainSubsystem.setHeading(desireRotation2d);
             drivetrainSubsystem.drive(
                     new ChassisSpeeds(
                             m_driveRateLimiter.calculate(
                                     -4 * getRobotSpeedMultiplier(pieceDetectionSubsystem.inputs.frontPitch)),
                             0, 0),
-                    false, true);
+                    false, true, new Translation2d(-Units.inchesToMeters(27 / 2.0), 0));
         }
     }
 
@@ -50,7 +58,7 @@ public class DriveToPieceCommand extends Command {
         if (pitch > 0) {
             return 1;
         } else {
-            return (pitch + 30.0) * (1.0 / 30.0);
+            return (pitch + 40.0) * (1.0 / 40.0);
         }
     }
 

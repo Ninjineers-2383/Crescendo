@@ -40,6 +40,7 @@ public class ShooterIOSim implements ShooterIO {
 
         inputs.topSetpoint = m_setTopBottomRPM;
         inputs.bottomSetpoint = m_setTopBottomRPM;
+        inputs.sideSetpoint = m_setSideRPM;
 
         setTopBottomVoltage(
                 m_topBottomPIDController.calculate(m_topFlywheelSim.getAngularVelocityRPM(), m_setTopBottomRPM));

@@ -15,7 +15,6 @@ import com.team2383.robot.subsystems.shooter.ShooterSubsystem;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.ConditionalCommand;
-import edu.wpi.first.wpilibj2.command.DeferredCommand;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -50,19 +49,13 @@ public class DriveToPieceFull extends SequentialCommandGroup {
                                 new SequentialCommandGroup(
                                         new DrivetrainHeadingCommand(m_drivetrainSubsystem,
                                                 Rotation2d.fromDegrees(-90)),
-                                        new DeferredCommand(
-                                                () -> new DriveToPieceFull(m_pieceDetectionSubsystem,
-                                                        m_drivetrainSubsystem, m_backFeederSubsystem,
-                                                        m_indexerSubsystem, m_shooterSubsystem, m_pivotSubsystem),
-                                                m_requirements)),
+                                        new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem,
+                                                m_backFeederSubsystem)),
                                 new SequentialCommandGroup(
                                         new DrivetrainHeadingCommand(m_drivetrainSubsystem,
                                                 Rotation2d.fromDegrees(90)),
-                                        new DeferredCommand(
-                                                () -> new DriveToPieceFull(m_pieceDetectionSubsystem,
-                                                        m_drivetrainSubsystem, m_backFeederSubsystem,
-                                                        m_indexerSubsystem, m_shooterSubsystem, m_pivotSubsystem),
-                                                m_requirements)),
+                                        new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem,
+                                                m_backFeederSubsystem)),
                                 m_drivetrainSubsystem::isOnLeftSide),
                         m_backFeederSubsystem::isBeamBreakTripped));
     }

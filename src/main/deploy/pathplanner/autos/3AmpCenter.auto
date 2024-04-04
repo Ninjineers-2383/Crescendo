@@ -14,31 +14,43 @@
         {
           "type": "path",
           "data": {
-            "pathName": "PreloadAmp"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DriveFrom1Amp"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "ShootSubwoofer"
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "DriveToCenterTopSW"
+            "pathName": "PreloadAmp1"
           }
         },
         {
           "type": "named",
           "data": {
             "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToShootAmp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "SeekAndShoot"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "ShootTo2Amp"
+          }
+        },
+        {
+          "type": "named",
+          "data": {
+            "name": "DriveToPiece"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "CenterToShootAmp"
           }
         }
       ]

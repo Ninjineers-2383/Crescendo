@@ -1,4 +1,4 @@
-package com.team2383.robot.subsystems.drivetrain;
+package com.team2383.robot.subsystems.drivetrain.gyro;
 
 import com.kauailabs.navx.frc.AHRS;
 

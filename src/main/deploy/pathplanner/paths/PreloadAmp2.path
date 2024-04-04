@@ -3,36 +3,42 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.0408470781354384,
-        "y": 7.011498720506339
-      },
-      "prevControl": null,
-      "nextControl": {
-        "x": 1.5451862210798675,
-        "y": 7.011498720506339
-      },
-      "isLocked": false,
-      "linkedName": "EndPreloadAmp"
-    },
-    {
-      "anchor": {
         "x": 0.7718481866382481,
         "y": 6.621971013811542
       },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.188780992946603,
+        "y": 5.8609640296203676
+      },
+      "isLocked": false,
+      "linkedName": "AmpSubwoofer"
+    },
+    {
+      "anchor": {
+        "x": 6.740880404837734,
+        "y": 5.841230143998749
+      },
       "prevControl": {
-        "x": 1.4729980586819211,
-        "y": 7.118618839854127
+        "x": 5.438443953810985,
+        "y": 6.867392196322854
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpSubwoofer"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
-      "name": "New Event Marker",
+      "name": "PivotSeek",
       "waypointRelativePos": 0,
       "command": {
         "type": "parallel",
@@ -50,21 +56,21 @@
     }
   ],
   "globalConstraints": {
-    "maxVelocity": 5.0,
-    "maxAcceleration": 4.0,
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 540.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -120.0,
+    "velocity": 4.0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "Amp",
   "previewStartingState": {
-    "rotation": -147.9074086715692,
+    "rotation": -120.0,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

@@ -8,37 +8,61 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7906909661212387,
-        "y": 6.235513407800754
+        "x": 3.178914050135794,
+        "y": 5.653758230593384
       },
       "isLocked": false,
       "linkedName": "AmpSubwoofer"
     },
     {
       "anchor": {
-        "x": 5.963221740994124,
-        "y": 3.9699735890199306
+        "x": 6.711279576405308,
+        "y": 7.3114046228092455
       },
       "prevControl": {
-        "x": 4.963221740994124,
-        "y": 3.9699735890199306
+        "x": 5.981125808405464,
+        "y": 6.896993024755279
       },
       "nextControl": null,
       "isLocked": false,
       "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "PivotSeek",
+      "waypointRelativePos": 0,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "FullFeed"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
-    "maxAngularAcceleration": 720.0
+    "maxAngularAcceleration": 540.0
   },
   "goalEndState": {
-    "velocity": 3.0,
+    "velocity": 4.0,
     "rotation": 180.0,
     "rotateFast": false
   },

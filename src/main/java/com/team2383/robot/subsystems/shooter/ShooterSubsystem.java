@@ -60,6 +60,10 @@ public class ShooterSubsystem extends SubsystemBase {
         return inputs.bottomSetpoint;
     }
 
+    public double getSideSetpoint() {
+        return inputs.sideSetpoint;
+    }
+
     public void setTopBottomVoltage(double voltage) {
         shooter.setTopBottomVoltage(voltage);
     }
@@ -86,5 +90,9 @@ public class ShooterSubsystem extends SubsystemBase {
 
     public double getTopBottomRPM() {
         return (getVelocities()[0] + getVelocities()[1]) / 2;
+    }
+
+    public double getSideRPM() {
+        return getVelocities()[2];
     }
 }

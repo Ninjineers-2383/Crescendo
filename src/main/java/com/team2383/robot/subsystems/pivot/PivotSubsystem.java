@@ -26,6 +26,8 @@ public class PivotSubsystem extends SubsystemBase {
     private static final LoggedTunableNumber kG = new LoggedTunableNumber("Pivot/Gains/kG", PivotConstants.kGains.kG());
     private static final LoggedTunableNumber kSpring = new LoggedTunableNumber("Pivot/Gains/kSpring",
             PivotConstants.kGains.kSpring());
+    private static final LoggedTunableNumber kBacklash = new LoggedTunableNumber("Pivot/Gains/kBacklash",
+            PivotConstants.kGains.kBacklash());
 
     private final LoggedTunableNumber kMaxAngleDegrees = new LoggedTunableNumber("Pivot/Bounds/MaxAngle",
             PivotConstants.kMaxAngleDegrees);
@@ -148,7 +150,7 @@ public class PivotSubsystem extends SubsystemBase {
         forwardGoal = new TrapezoidProfile.State(
                 MathUtil.clamp(
                         goal.position > inputs.absoluteEncoderPositionRot
-                                ? goal.position + (10.0 / 360.0)
+                                ? goal.position + (kBacklash.get() / 360.0)
                                 : goal.position,
                         Units.degreesToRotations(kMinAngleDegrees.get()),
                         Units.degreesToRotations(kMaxAngleDegrees.get())),

@@ -13,7 +13,6 @@ import edu.wpi.first.math.geometry.Twist3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 public class GamePieceSim extends SubsystemBase {
@@ -21,8 +20,8 @@ public class GamePieceSim extends SubsystemBase {
     private final Supplier<ChassisSpeeds> m_robotRelativeSpeeds;
     private final Supplier<Rotation2d> m_pivotAngle;
     private final DoubleSupplier m_shooterRPM;
-    private final BooleanSupplier m_fullFeed;
-    private final BooleanSupplier m_partialFeed;
+    private final DoubleSupplier m_sideShooterRPM;
+    private final DoubleSupplier m_feederPower;
     private final DoubleSupplier m_indexerPower;
 
     private Pose3d[] notes = GamePieceLocations.notes;
@@ -40,13 +39,13 @@ public class GamePieceSim extends SubsystemBase {
 
     public GamePieceSim(Supplier<Pose3d> robotPose, Supplier<ChassisSpeeds> robotRelativeSpeeds,
             Supplier<Rotation2d> pivotAngle, DoubleSupplier shooterRPM,
-            BooleanSupplier fullFeed, BooleanSupplier partialFeed, DoubleSupplier indexerPower) {
+            DoubleSupplier sideShooterRPM, DoubleSupplier feederPower, DoubleSupplier indexerPower) {
         m_robotPose = robotPose;
         m_robotRelativeSpeeds = robotRelativeSpeeds;
         m_pivotAngle = pivotAngle;
         m_shooterRPM = shooterRPM;
-        m_fullFeed = fullFeed;
-        m_partialFeed = partialFeed;
+        m_sideShooterRPM = sideShooterRPM;
+        m_feederPower = feederPower;
         m_indexerPower = indexerPower;
     }
 
@@ -54,10 +53,10 @@ public class GamePieceSim extends SubsystemBase {
     public void periodic() {
         Pose3d pose = m_robotPose.get();
         ChassisSpeeds speeds = m_robotRelativeSpeeds.get();
-        boolean fullFeed = m_fullFeed.getAsBoolean();
+        double sideShooterRPM = m_sideShooterRPM.getAsDouble();
         Rotation2d angle = m_pivotAngle.get();
         double shooterRPM = m_shooterRPM.getAsDouble();
-        boolean partialFeed = m_partialFeed.getAsBoolean();
+        double feederPower = m_feederPower.getAsDouble();
         double indexerPower = m_indexerPower.getAsDouble();
 
         for (int i = 0; i < notes.length; i++) {
@@ -68,12 +67,12 @@ public class GamePieceSim extends SubsystemBase {
                 String collisionSide = getCollisionSide(pose, notes[i]);
 
                 if (collisionSide == "Back") {
-                    if (partialFeed) {
+                    if (feederPower < -0.2) {
                         notesPartialFed[i] = true;
                         feederBeamBreakTripped = true;
                     }
 
-                    if (fullFeed) {
+                    if (indexerPower < -0.2 && sideShooterRPM < -500) {
                         notesFullyFed[i] = true;
                         indexerBeamBreakTripped = true;
                         feederBeamBreakTripped = false;

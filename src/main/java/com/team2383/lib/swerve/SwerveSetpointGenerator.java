@@ -225,10 +225,11 @@ public class SwerveSetpointGenerator {
             final ModuleLimits limits,
             final SwerveSetpoint prevSetpoint,
             ChassisSpeeds desiredState,
+            Translation2d centerOfRotation,
             double dt) {
         final Translation2d[] modules = moduleLocations;
 
-        SwerveModuleState[] desiredModuleState = kinematics.toSwerveModuleStates(desiredState);
+        SwerveModuleState[] desiredModuleState = kinematics.toSwerveModuleStates(desiredState, centerOfRotation);
         // Make sure desiredState respects velocity limits.
         if (limits.maxDriveVelocity() > 0.0) {
             SwerveDriveKinematics.desaturateWheelSpeeds(desiredModuleState, limits.maxDriveVelocity());
@@ -286,7 +287,7 @@ public class SwerveSetpointGenerator {
             // the complement
             // of the desired
             // angle, and accelerate again.
-            return generateSetpoint(limits, prevSetpoint, new ChassisSpeeds(), dt);
+            return generateSetpoint(limits, prevSetpoint, new ChassisSpeeds(), centerOfRotation, dt);
         }
 
         // Compute the deltas between start and goal. We can then interpolate from the
@@ -409,7 +410,7 @@ public class SwerveSetpointGenerator {
                 prevSetpoint.chassisSpeeds().vxMetersPerSecond + min_s * dx,
                 prevSetpoint.chassisSpeeds().vyMetersPerSecond + min_s * dy,
                 prevSetpoint.chassisSpeeds().omegaRadiansPerSecond + min_s * dtheta);
-        var retStates = kinematics.toSwerveModuleStates(retSpeeds);
+        var retStates = kinematics.toSwerveModuleStates(retSpeeds, centerOfRotation);
         for (int i = 0; i < modules.length; ++i) {
             final var maybeOverride = overrideSteering.get(i);
             if (maybeOverride.isPresent()) {

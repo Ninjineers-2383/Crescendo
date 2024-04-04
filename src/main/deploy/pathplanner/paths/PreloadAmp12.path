@@ -8,27 +8,33 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7718481866382492,
-        "y": 6.621971013811542
+        "x": 3.198647935757412,
+        "y": 5.939899572106838
       },
       "isLocked": false,
       "linkedName": "AmpSubwoofer"
     },
     {
       "anchor": {
-        "x": 2.8631718801899155,
-        "y": 7.005529395674177
+        "x": 5.764053066567673,
+        "y": 6.621971013811542
       },
       "prevControl": {
-        "x": 2.1328074301371713,
-        "y": 6.71338361565308
+        "x": 4.333346359000411,
+        "y": 6.482581426701315
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "EndPreloadAmp"
+      "linkedName": null
     }
   ],
-  "rotationTargets": [],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.2,
+      "rotationDegrees": 180.0,
+      "rotateFast": false
+    }
+  ],
   "constraintZones": [],
   "eventMarkers": [
     {
@@ -56,8 +62,8 @@
     "maxAngularAcceleration": 540.0
   },
   "goalEndState": {
-    "velocity": 0,
-    "rotation": -148.13402230639636,
+    "velocity": 4.0,
+    "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,

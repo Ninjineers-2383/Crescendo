@@ -1,4 +1,4 @@
-package com.team2383.robot.subsystems.drivetrain;
+package com.team2383.robot.subsystems.drivetrain.gyro;
 
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;

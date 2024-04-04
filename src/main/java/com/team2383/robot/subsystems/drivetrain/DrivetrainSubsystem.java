@@ -47,6 +47,8 @@ import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMClient;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMConstantsConfig;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMIOServer;
 import com.team2383.robot.subsystems.drivetrain.SLAM.SLAMUpdate;
+import com.team2383.robot.subsystems.drivetrain.gyro.GyroIO;
+import com.team2383.robot.subsystems.drivetrain.gyro.GyroIOInputsAutoLogged;
 
 public class DrivetrainSubsystem extends SubsystemBase {
     // Swerve Module Initialization
@@ -119,6 +121,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
             });
 
     private Optional<Alliance> previousAlliance = Optional.empty();
+
+    private Translation2d centerOfRotation = new Translation2d();
 
     private Alert gyroConnected;
 
@@ -314,9 +318,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         LoggedTunableNumber.ifChanged(hashCode(),
                 (pid) -> {
-                    m_headingController = new ProfiledPIDController(pid[0], pid[1], pid[2],
-                            new TrapezoidProfile.Constraints(pid[3], pid[4]));
-                    m_headingController.enableContinuousInput(-Math.PI, Math.PI);
+                    m_headingController.setPID(pid[0], pid[1], pid[2]);
+                    m_headingController.setConstraints(new TrapezoidProfile.Constraints(pid[3], pid[4]));
                 },
                 headingkP, headingkI, headingkD, headingVelo, headingAccel);
 
@@ -377,6 +380,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
      *            robot
      */
     public void drive(ChassisSpeeds drive, boolean fieldRelative, boolean useHeadingController) {
+        drive(drive, fieldRelative, useHeadingController, new Translation2d());
+    }
+
+    public void drive(ChassisSpeeds drive, boolean fieldRelative, boolean useHeadingController, Translation2d center) {
         if (fieldRelative) {
             m_robotRelativeChassisSpeeds = ChassisSpeeds.fromFieldRelativeSpeeds(drive, getHeading());
         } else {
@@ -390,6 +397,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
         headingControllerEnabled = useHeadingController;
 
         desiredHeading = desiredHeading.plus(new Rotation2d(m_robotRelativeChassisSpeeds.omegaRadiansPerSecond * 0.02));
+
+        centerOfRotation = center;
     }
 
     public ChassisSpeeds getRobotRelativeSpeeds() {
@@ -402,10 +411,10 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public void setChassisSpeedsSetpoint(ChassisSpeeds speeds) {
         currentSetpoint = setpointGenerator.generateSetpoint(currentModuleLimits, currentSetpoint, speeds,
-                Constants.loopPeriodSecs);
+                centerOfRotation, Constants.loopPeriodSecs);
 
         SwerveModuleState[] unoptimizedStates = m_kinematics.toSwerveModuleStates(
-                speeds);
+                speeds, centerOfRotation);
 
         SwerveModuleState[] optimizedSetpointStates = new SwerveModuleState[4];
         for (int i = 0; i < m_modules.length; i++) {
@@ -634,9 +643,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public boolean hasCrossedCenterLine() {
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-            return getPose().getTranslation().getX() < (FieldConstants.fieldLength / 2) - Units.inchesToMeters(15);
+            return getPose().getTranslation().getX() < (FieldConstants.fieldLength / 2) - Units.inchesToMeters(10);
         } else {
-            return getPose().getTranslation().getX() > (FieldConstants.fieldLength / 2) + Units.inchesToMeters(15);
+            return getPose().getTranslation().getX() > (FieldConstants.fieldLength / 2) + Units.inchesToMeters(10);
         }
     }
 

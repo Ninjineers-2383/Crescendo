@@ -32,6 +32,8 @@ import com.team2383.robot.commands.subsystem.shooter.*;
 import com.team2383.robot.subsystems.cameraSim.*;
 import com.team2383.robot.subsystems.drivetrain.*;
 import com.team2383.robot.subsystems.drivetrain.SLAM.*;
+import com.team2383.robot.subsystems.drivetrain.gyro.GyroIO;
+import com.team2383.robot.subsystems.drivetrain.gyro.GyroIONavX;
 import com.team2383.robot.subsystems.feeder.*;
 import com.team2383.robot.subsystems.gamePieceSim.GamePieceSim;
 import com.team2383.robot.subsystems.indexer.*;
@@ -218,8 +220,9 @@ public class RobotContainer {
                     m_gamePieceSimSubsystem = new GamePieceSim(m_drivetrainSubsystem::getEstimatorPose3d,
                             m_drivetrainSubsystem::getRobotRelativeSpeeds,
                             m_pivotSubsystem::getAngle,
-                            m_shooterSubsystem::getTopBottomRPM,
-                            m_fullFeedRear, m_partialFeedRear, m_indexerSubsystem::getPower);
+                            m_shooterSubsystem::getTopSetpoint,
+                            m_shooterSubsystem::getSideSetpoint, m_backFeederSubsystem::getPower,
+                            m_indexerSubsystem::getPower);
 
                     m_indexerBeamBreak = new Trigger(m_gamePieceSimSubsystem::getIndexerBeamBreakTripped);
                     m_feederBeamBreak = new Trigger(m_gamePieceSimSubsystem::getFeederBeamBreakTripped);
@@ -254,7 +257,8 @@ public class RobotContainer {
         m_gamePieceSimSubsystem = m_gamePieceSimSubsystem == null
                 ? new GamePieceSim(m_drivetrainSubsystem::getEstimatorPose3d,
                         m_drivetrainSubsystem::getRobotRelativeSpeeds, m_pivotSubsystem::getAngle,
-                        m_shooterSubsystem::getTopBottomRPM, m_fullFeedRear, m_partialFeedRear,
+                        m_shooterSubsystem::getTopSetpoint, m_shooterSubsystem::getSideSetpoint,
+                        m_backFeederSubsystem::getPower,
                         m_indexerSubsystem::getPower)
                 : m_gamePieceSimSubsystem;
 
@@ -531,9 +535,9 @@ public class RobotContainer {
     private void registerAutoCommands() {
         autoChooser.addDefaultOption("None", (Command) null);
 
-        autoChooser.addOption("2.5Amp", new PathPlannerAuto("2.5Amp"));
+        // autoChooser.addOption("2.5Amp", new PathPlannerAuto("2.5Amp"));
 
-        autoChooser.addOption("3Amp", new PathPlannerAuto("3Amp"));
+        // autoChooser.addOption("3Amp", new PathPlannerAuto("3Amp"));
 
         autoChooser.addOption("3SourceTapeBottomTop", new PathPlannerAuto("3SourceTapeBottomTop"));
 
