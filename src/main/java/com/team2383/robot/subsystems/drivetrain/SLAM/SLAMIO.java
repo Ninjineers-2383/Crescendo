@@ -17,7 +17,7 @@ public interface SLAMIO {
         public boolean newValue = false;
         public Pose3d pose = new Pose3d();
         public Pose3d[] landmarks = new Pose3d[0];
-        public boolean[] seenLandmarks = new boolean[0];
+        public long seenLandmarks = 0;
         public double latestTimestamp = 0;
     }
 

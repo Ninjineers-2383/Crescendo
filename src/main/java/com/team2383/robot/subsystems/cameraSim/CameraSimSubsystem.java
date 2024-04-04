@@ -1,6 +1,5 @@
 package com.team2383.robot.subsystems.cameraSim;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFieldLayout.OriginPosition;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -60,34 +59,32 @@ public class CameraSimSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         Pose3d cameraPose = poseSupplier.get().plus(cameraTransform);
-        ArrayList<AprilTag> tags = new ArrayList<>();
-        for (AprilTag tag : atfl.getTags()) {
-            Transform3d robotToTag = new Transform3d(cameraPose, atfl.getTagPose(tag.ID).get());
+        ArrayList<int[]> inRange = new ArrayList<>();
+        int[][] tagPairs = { { 1, 2 }, { 3, 4 }, { 7, 8 }, { 9, 10 } };
+        for (int[] tagPair : tagPairs) {
+            Transform3d robotToTag = new Transform3d(cameraPose, atfl.getTagPose(tagPair[0]).get());
             if (robotToTag.getTranslation().getNorm() < 4) {
-                tags.add(tag);
+                inRange.add(new int[] { tagPair[0], tagPair[1] });
             }
         }
-        if (tags.size() == 0)
+        if (inRange.size() == 0)
             return;
 
-        AprilTag tag = tags.get(new Random().nextInt(tags.size()));
-        Transform3d robotToTag = new Transform3d(cameraPose, atfl.getTagPose(tag.ID).get());
+        int[] pair = inRange.get(new Random().nextInt(inRange.size()));
         Transform3d noisyTransform = Noise.noisyTransform(0, 0.15);
-        robotToTag = robotToTag.plus(noisyTransform);
+        Pose3d noisyCamera = cameraPose.plus(noisyTransform);
         double[] observation = new double[] {
 
-                2, // 2 pose estimates
+                1, // 1 pose estimate
                 0, // 0 error
-                robotToTag.getTranslation().getX(),
-                robotToTag.getTranslation().getY(),
-                robotToTag.getTranslation().getZ(),
-                robotToTag.getRotation().getQuaternion().getW(),
-                robotToTag.getRotation().getQuaternion().getX(),
-                robotToTag.getRotation().getQuaternion().getY(),
-                robotToTag.getRotation().getQuaternion().getZ(),
-                1, // 1 error
-                0, 0, 0, 0, 0, 0, 0,
-                tag.ID
+                noisyCamera.getTranslation().getX(),
+                noisyCamera.getTranslation().getY(),
+                noisyCamera.getTranslation().getZ(),
+                noisyCamera.getRotation().getQuaternion().getW(),
+                noisyCamera.getRotation().getQuaternion().getX(),
+                noisyCamera.getRotation().getQuaternion().getY(),
+                noisyCamera.getRotation().getQuaternion().getZ(),
+                pair[0], pair[1]
         };
         long fps = 50;
 
