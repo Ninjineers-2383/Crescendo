@@ -116,6 +116,7 @@ public class SLAMIOServer implements SLAMIO {
                 ref.getX(), ref.getY(), 0,
                 new Rotation3d(0, 0,
                         ref.getRotation().getRadians()));
+        inputs.seenLandmarks = latestPose.value.seenTags;
 
     }
 
