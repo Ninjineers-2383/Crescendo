@@ -45,7 +45,7 @@ public class SLAMIOServer implements SLAMIO {
     private final IntegerPublisher poseFilterSizePub;
     private final DoublePublisher poseOutlierRejectionDistanceSub;
     private final StructPublisher<Pose2d> resetPose;
-    private final StructPublisher<CameraParameters> cameraParameters;
+    private final StructArrayPublisher<CameraParameters> cameraParameters;
 
     private double latestTimestamp = 0;
 
@@ -85,7 +85,7 @@ public class SLAMIOServer implements SLAMIO {
         poseFilterSizePub = table.getIntegerTopic("poseFilterSize").publish();
         poseOutlierRejectionDistanceSub = table.getDoubleTopic("PoseOutlierDistance").publish();
 
-        cameraParameters = table.getStructTopic("camParameters", CameraParameters.struct).publish();
+        cameraParameters = table.getStructArrayTopic("camParameters", CameraParameters.struct).publish();
 
         moduleLocationsPub.set(moduleLocations);
         landmarksPub.set(landmarks);
@@ -131,7 +131,7 @@ public class SLAMIOServer implements SLAMIO {
 
     @Override
     public void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic,
-            CameraParameters camParams) {
+            CameraParameters[] camParams) {
         camTransformsPub.set(camPoses);
         varianceScalePub.set(varianceScale);
         varianceStaticPub.set(varianceStatic);

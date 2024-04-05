@@ -4,6 +4,7 @@ import org.littletonrobotics.junction.Logger;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -316,6 +317,8 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         Logger.recordOutput("Swerve/hasCrossedCenterLine", hasCrossedCenterLine());
 
+        Logger.recordOutput("Swerve/headingControllerEnabled", headingControllerEnabled);
+
         LoggedTunableNumber.ifChanged(hashCode(),
                 (pid) -> {
                     m_headingController.setPID(pid[0], pid[1], pid[2]);
@@ -328,10 +331,6 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     private void reinitializeSLAM() {
-        Translation2d[] moduleLocations = new Translation2d[] { DriveConstants.frontLeftConstants.translation,
-                DriveConstants.frontRightConstants.translation, DriveConstants.rearLeftConstants.translation,
-                DriveConstants.rearRightConstants.translation };
-
         aprilTags.setOrigin(AprilTagFieldLayout.OriginPosition.kBlueAllianceWallRightSide);
 
         Pose3d[] landmarks = new Pose3d[aprilTags.getTags().size()];
@@ -341,7 +340,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
         Logger.recordOutput("SLAM/landmarks", landmarks.clone());
 
-        m_SLAMClient = new SLAMClient(new SLAMIOServer(moduleLocations, landmarks));
+        m_SLAMClient = new SLAMClient(
+                new SwerveDrivePoseEstimator(m_kinematics, getHeading(), getModulePositions(), new Pose2d()), landmarks,
+                this::getEstimatorPose3d);
 
         m_SLAMClient.setVisionConstants(
                 SLAMConstantsConfig.camTransforms,
@@ -544,7 +545,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public boolean headingIsFinished() {
-        return Math.abs(desiredHeading.minus(getHeading()).getRadians()) < 0.01;
+        return Math.abs(desiredHeading.minus(getHeading()).getDegrees()) < 1;
     }
 
     public void setHeadingPID(ProfiledPIDController controller) {
@@ -643,9 +644,9 @@ public class DrivetrainSubsystem extends SubsystemBase {
 
     public boolean hasCrossedCenterLine() {
         if (DriverStation.getAlliance().isPresent() && DriverStation.getAlliance().get() == Alliance.Red) {
-            return getPose().getTranslation().getX() < (FieldConstants.fieldLength / 2) - Units.inchesToMeters(10);
+            return getPose().getTranslation().getX() < (FieldConstants.fieldLength / 2);
         } else {
-            return getPose().getTranslation().getX() > (FieldConstants.fieldLength / 2) + Units.inchesToMeters(10);
+            return getPose().getTranslation().getX() > (FieldConstants.fieldLength / 2);
         }
     }
 

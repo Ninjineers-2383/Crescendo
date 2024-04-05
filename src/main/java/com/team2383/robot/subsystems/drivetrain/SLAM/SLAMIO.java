@@ -30,7 +30,7 @@ public interface SLAMIO {
     }
 
     public default void setVisionConstants(Transform3d[] camPoses, double varianceScale, double varianceStatic,
-            CameraParameters camParams) {
+            CameraParameters[] camParams) {
     }
 
     public default void forceHeading(Rotation2d heading, Rotation2d gyroAngle, SwerveModulePosition[] positions) {
