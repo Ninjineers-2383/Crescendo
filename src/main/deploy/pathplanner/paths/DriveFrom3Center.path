@@ -8,8 +8,8 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.8271428850550027,
-        "y": 6.650319454485063
+        "x": 2.6318429861059016,
+        "y": 6.281134270453595
       },
       "isLocked": false,
       "linkedName": "EndCenter3"
@@ -20,8 +20,8 @@
         "y": 5.535354916863679
       },
       "prevControl": {
-        "x": 1.679138742892872,
-        "y": 6.433246712647272
+        "x": 2.349435398752174,
+        "y": 6.212966921782006
       },
       "nextControl": null,
       "isLocked": false,
@@ -30,7 +30,25 @@
   ],
   "rotationTargets": [],
   "constraintZones": [],
-  "eventMarkers": [],
+  "eventMarkers": [
+    {
+      "name": "StartFlywheels",
+      "waypointRelativePos": 0.3,
+      "command": {
+        "type": "parallel",
+        "data": {
+          "commands": [
+            {
+              "type": "named",
+              "data": {
+                "name": "StartFlywheels"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
   "globalConstraints": {
     "maxVelocity": 3.0,
     "maxAcceleration": 3.0,

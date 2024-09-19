@@ -41,6 +41,8 @@ public class PivotSubsystem extends SubsystemBase {
             "Pivot/TrapezoidalConstraints/MaxAcceleration",
             PivotConstants.kMaxAccel);
 
+    private final LoggedTunableNumber kPivotTolerance = new LoggedTunableNumber("Pivot/ToleranceDegrees", 1.0);
+
     private final Alert leftMotorDisconnected = new Alert(
             "Pivot left motor disconnected! CAN ID: " + PivotConstants.kLeftMotorID, Alert.AlertType.WARNING);
     private final Alert rightMotorDisconnected = new Alert(
@@ -146,7 +148,8 @@ public class PivotSubsystem extends SubsystemBase {
         if (Units.radiansToRotations(angleRads) == goal.position)
             return;
         goal = new TrapezoidProfile.State(Units.radiansToRotations(angleRads), 0);
-        lashState = LashState.Forward;
+        if (Math.abs(angleRads - Units.rotationsToRadians(inputs.absoluteEncoderPositionRot)) > 4)
+            lashState = LashState.Forward;
         forwardGoal = new TrapezoidProfile.State(
                 MathUtil.clamp(
                         goal.position > inputs.absoluteEncoderPositionRot
@@ -158,8 +161,12 @@ public class PivotSubsystem extends SubsystemBase {
 
     }
 
+    public boolean isFinished(double toleranceDegrees) {
+        return Math.abs(inputs.absoluteEncoderPositionRot - goal.position) < ((toleranceDegrees) / 360.0);
+    }
+
     public boolean isFinished() {
-        return Math.abs(inputs.absoluteEncoderPositionRot - goal.position) < ((2.0) / 360.0);
+        return isFinished(kPivotTolerance.get());
     }
 
     public Rotation2d getAngle() {

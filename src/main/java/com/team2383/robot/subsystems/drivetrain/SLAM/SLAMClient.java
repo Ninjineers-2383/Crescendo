@@ -1,5 +1,6 @@
 package com.team2383.robot.subsystems.drivetrain.SLAM;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -33,6 +34,8 @@ public class SLAMClient {
     private double varianceStatic;
 
     private final Supplier<Pose3d> poseSupplier;
+
+    private boolean[] seenTags = new boolean[16];
 
     public SLAMClient(SwerveDrivePoseEstimator estimator, Pose3d[] landmarks, Supplier<Pose3d> poseSupplier) {
         this.estimator = estimator;
@@ -87,6 +90,28 @@ public class SLAMClient {
                 cameraExpose[0], cameraExpose[1], cameraExpose[2], cameraExpose[3],
                 cameraGain[0], cameraGain[1], cameraGain[2], cameraGain[3]);
 
+        Logger.recordOutput("SeenTags", seenTags);
+
+        ArrayList<Pose3d> seenTagPositions = new ArrayList<>();
+        for (int i = 0; i < seenTags.length; i++) {
+            if (seenTags[i]) {
+                seenTagPositions.add(landmarks[i]);
+            }
+        }
+
+        Pose3d[] seenTagPosesArray = new Pose3d[seenTagPositions.size()];
+        Pose2d[] seenTagPosesArray2d = new Pose2d[seenTagPositions.size()];
+
+        for (int i = 0; i < seenTagPositions.size(); i++) {
+            seenTagPosesArray[i] = seenTagPositions.get(i);
+            seenTagPosesArray2d[i] = seenTagPositions.get(i).toPose2d();
+        }
+
+        Logger.recordOutput("SLAM/SeenLandmarkPoses", seenTagPosesArray);
+        Logger.recordOutput("SLAM/SeenLandmarkPoses2D", seenTagPosesArray2d);
+
+        seenTags = new boolean[16];
+
         return new SLAMUpdate(new Pose3d(estimator.getEstimatedPosition()), new Pose3d[0], 0, true);
     }
 
@@ -105,7 +130,10 @@ public class SLAMClient {
                     .plus(measurement.pose().inverse())
                     .toPose2d();
             estimator.addVisionMeasurement(pose, measurement.timestamp());
-
+            seenTags[measurement.tagId1() - 1] = true;
+            if (measurement.tagId2() != 0) {
+                seenTags[measurement.tagId2() - 1] = true;
+            }
         }
     }
 

@@ -61,15 +61,15 @@ public final class Constants {
 
     public static final class OI {
         // Axis
-        public static int DriveX = Robot.isReal() ? 1 : 0;
-        public static int DriveY = Robot.isReal() ? 0 : 1;
-        public static int DriveOmega = Robot.isReal() ? 4 : 2;
-        public static int IntakeIn = Robot.isReal() ? 3 : 3;
-        public static int IntakeOut = Robot.isReal() ? 2 : 4;
+        public static int DriveX = 1;
+        public static int DriveY = 0;
+        public static int DriveOmega = 4;
+        public static int IntakeIn = 3;
+        public static int IntakeOut = 2;
 
         // Buttons
-        public static int FieldCentric = Robot.isReal() ? 6 : 1;
-        public static int ResetHeading = Robot.isReal() ? 8 : 2;
-        public static int HeadingToAprilTag = Robot.isReal() ? 7 : 3;
+        public static int FieldCentric = 6;
+        public static int ResetHeading = 8;
+        public static int HeadingToAprilTag = 7;
     }
 }

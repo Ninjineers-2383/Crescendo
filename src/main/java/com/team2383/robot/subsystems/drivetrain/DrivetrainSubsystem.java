@@ -545,7 +545,7 @@ public class DrivetrainSubsystem extends SubsystemBase {
     }
 
     public boolean headingIsFinished() {
-        return Math.abs(desiredHeading.minus(getHeading()).getDegrees()) < 1;
+        return Math.abs(desiredHeading.minus(getHeading()).getDegrees()) < 2;
     }
 
     public void setHeadingPID(ProfiledPIDController controller) {

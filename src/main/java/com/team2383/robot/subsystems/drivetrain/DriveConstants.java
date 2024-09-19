@@ -39,7 +39,7 @@ public final class DriveConstants {
     public final static double kMaxCurrent = 30.0;
 
     public final static double kAngleGearRatio = ((150.0 / 7.0) / 1.0);
-    public final static double kDriveGearRatio = 6.12 / 1.0;
+    public final static double kDriveGearRatio = 1.0 / ((16.0 / 50.0) * (28.0 / 16.0) * (15.0 / 45.0));
 
     public final static double kDriveWheelRadiusMeters = Units.inchesToMeters(2);
     public final static double kDriveWheelDiameterMeters = kDriveWheelRadiusMeters * 2;
@@ -71,7 +71,7 @@ public final class DriveConstants {
     public final static Pose2d SPEAKER_POSE = new Pose2d(new Translation2d(1.84, 6.25), Rotation2d.fromDegrees(270));
 
     public static final ModuleLimits kModuleLimits = new ModuleLimits(
-            5,
+            5.3,
             5 * 5,
             Units.degreesToRadians(1080));
 
@@ -174,9 +174,9 @@ public final class DriveConstants {
     private static final CANcoderConfiguration cancoderConfig = new CANcoderConfiguration();
 
     public final static ModuleConstants frontLeftConstants = new ModuleConstants(
-            0.3212,
-            0.11395,
-            0.014899,
+            0.023628,
+            0.12416,
+            0.05884,
             0.097969, 0, 0,
             20, 22,
             new AbsoluteCancoder(21, "Drive", cancoderConfig),
@@ -189,9 +189,9 @@ public final class DriveConstants {
             false, false);
 
     public final static ModuleConstants frontRightConstants = new ModuleConstants(
-            0.16674,
-            0.12042,
-            0.02342,
+            0.023628,
+            0.12416,
+            0.05884,
             0.1069, 0, 0,
             23, 25,
             new AbsoluteCancoder(24, "Drive", cancoderConfig),
@@ -203,9 +203,9 @@ public final class DriveConstants {
             false, false);
 
     public final static ModuleConstants rearLeftConstants = new ModuleConstants(
-            0.11763,
-            0.12168,
-            0.022463,
+            0.023628,
+            0.12416,
+            0.05884,
             0.10438, 0, 0,
             26, 28,
             new AbsoluteCancoder(27, "Drive", cancoderConfig),
@@ -217,9 +217,9 @@ public final class DriveConstants {
             false, true);
 
     public final static ModuleConstants rearRightConstants = new ModuleConstants(
-            0.2056,
-            0.12217,
-            0.015315,
+            0.023628,
+            0.12416,
+            0.05884,
             0.0070936, 0, 0,
             29, 31,
             new AbsoluteCancoder(30, "Drive", cancoderConfig),

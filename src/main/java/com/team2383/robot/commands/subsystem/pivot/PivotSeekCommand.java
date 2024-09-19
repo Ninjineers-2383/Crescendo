@@ -4,6 +4,7 @@ import java.util.function.Supplier;
 
 import org.littletonrobotics.junction.Logger;
 
+import com.team2383.lib.util.mechanical_advantage.LoggedTunableNumber;
 import com.team2383.robot.FieldConstants;
 import com.team2383.robot.subsystems.pivot.PivotSubsystem;
 
@@ -16,6 +17,10 @@ public class PivotSeekCommand extends Command {
     private final PivotSubsystem pivot;
     private final Supplier<Pose3d> poseSupplier;
     private final boolean finish;
+
+    private static LoggedTunableNumber kSpeakerHeight = new LoggedTunableNumber("Pivot/Shooting/Speaker Height", 1.583);
+    private static LoggedTunableNumber kDistance = new LoggedTunableNumber("Pivot/Shooting/Distance Gain", 0.0077);
+    private static LoggedTunableNumber kAsymmetry = new LoggedTunableNumber("Pivot/Shooting/Asymmetry Gain", 0.083);
 
     public PivotSeekCommand(PivotSubsystem pivot, Supplier<Pose3d> poseSupplier, boolean finish) {
         this.pivot = pivot;
@@ -38,17 +43,19 @@ public class PivotSeekCommand extends Command {
 
         // https://www.desmos.com/calculator/et7ibvp93g
         // 1.58175
-        double angle = Math.atan2(1.582, distanceToSpeaker) + (0.008 * distanceToSpeaker * distanceToSpeaker);
+        double angle = Math.atan2(kSpeakerHeight.get(), distanceToSpeaker)
+                + (kDistance.get() * distanceToSpeaker * distanceToSpeaker);
 
         if (drivePose2d.getRotation().minus(angleToSpeaker).getDegrees() > 90) {
-            angle = Math.PI - angle - 0.083;
+            angle = Math.PI - angle - kAsymmetry.get();
         } else if (drivePose2d.getRotation().minus(angleToSpeaker).getDegrees() < -90) {
-            angle = Math.PI - angle - 0.083;
+            angle = Math.PI - angle - kAsymmetry.get();
         }
 
         Logger.recordOutput("Pivot/DistanceToSpeaker", distanceToSpeaker);
 
         pivot.setPosition(angle);
+
     }
 
     @Override

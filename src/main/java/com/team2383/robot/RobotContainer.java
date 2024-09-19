@@ -92,9 +92,13 @@ public class RobotContainer {
             "Operator controller identified as Xbox controller, should be F310 (port 1)", AlertType.WARNING);
 
     private final POVButton m_setHeadingForward = new POVButton(m_driverController, 0);
-    private final POVButton m_setHeadingLeft = new POVButton(m_driverController, 270);
-    private final POVButton m_setHeadingBackward = new POVButton(m_driverController, 180);
+    private final POVButton m_setHeadingStageLeft = new POVButton(m_driverController, 45);
     private final POVButton m_setHeadingRight = new POVButton(m_driverController, 90);
+    private final POVButton m_setHeadingSWLeft = new POVButton(m_driverController, 135);
+    private final POVButton m_setHeadingBackward = new POVButton(m_driverController, 180);
+    private final POVButton m_setHeadingSWRight = new POVButton(m_driverController, 225);
+    private final POVButton m_setHeadingLeft = new POVButton(m_driverController, 270);
+    private final POVButton m_setHeadingStageRight = new POVButton(m_driverController, 315);
 
     private final JoystickButton m_seek = new JoystickButton(m_operatorController, 2);
 
@@ -319,6 +323,16 @@ public class RobotContainer {
         m_setHeadingLeft.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d(Math.PI / 2)));
         m_setHeadingRight.whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, new Rotation2d(-Math.PI / 2)));
 
+        m_setHeadingSWLeft
+                .whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, Rotation2d.fromDegrees(-120.0)));
+        m_setHeadingSWRight
+                .whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, Rotation2d.fromDegrees(120.0)));
+
+        m_setHeadingStageLeft
+                .whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, Rotation2d.fromDegrees(-60)));
+        m_setHeadingStageRight
+                .whileTrue(new DrivetrainHeadingCommand(m_drivetrainSubsystem, Rotation2d.fromDegrees(60)));
+
         m_seek.and(m_feederBeamBreak).and(m_indexerBeamBreak.negate()).onTrue(
                 new SequentialCommandGroup(
                         new ParallelDeadlineGroup(
@@ -386,7 +400,7 @@ public class RobotContainer {
                 // new ParallelDeadlineGroup(
                 // new SequentialCommandGroup(
                 // new WaitCommand(0.5),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> -700, () -> 750, () -> 250)
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -650, () -> 650, () -> 250)
                         .alongWith(new IndexerCommand(m_indexerSubsystem, () -> -0.5)));
 
         m_manualAmpShoot.onFalse(new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO));
@@ -436,18 +450,8 @@ public class RobotContainer {
         // .getRadians()) > -(Math.PI / 2.0));
         m_subwoofer.onTrue(
                 new SequentialCommandGroup(
-                        new ConditionalCommand(
-                                new PivotPositionCommand(m_pivotSubsystem,
-                                        PivotPresets.SUBWOOFER),
-                                new PivotPositionCommand(m_pivotSubsystem,
-                                        PivotPresets.SUBWOOFER_BACK),
-                                () -> MathUtil
-                                        .angleModulus(m_drivetrainSubsystem.getHeading().getRadians()) < (Math.PI / 2.0)
-                                        &&
-                                        MathUtil.angleModulus(m_drivetrainSubsystem
-                                                .getHeading()
-                                                .getRadians()) > -(Math.PI
-                                                        / 2.0)),
+                        new PivotPositionCommand(m_pivotSubsystem,
+                                PivotPresets.SUBWOOFER_BACK, 2.0),
                         // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK),
                         new ParallelDeadlineGroup(
                                 new SequentialCommandGroup(
@@ -459,16 +463,9 @@ public class RobotContainer {
                         new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO)));
 
-        m_subwooferPivot.onTrue(new ConditionalCommand(
-                new PivotPositionCommand(m_pivotSubsystem,
-                        PivotPresets.SUBWOOFER),
-                new PivotPositionCommand(m_pivotSubsystem,
-                        PivotPresets.SUBWOOFER_BACK),
-                () -> MathUtil.angleModulus(m_drivetrainSubsystem.getHeading().getRadians()) < (Math.PI / 2.0) &&
-                        MathUtil.angleModulus(m_drivetrainSubsystem
-                                .getHeading()
-                                .getRadians()) > -(Math.PI / 2.0)).alongWith(
-                                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)));
+        m_subwooferPivot.onTrue(new PivotPositionCommand(m_pivotSubsystem,
+                PivotPresets.SUBWOOFER_BACK, 2.0).alongWith(
+                        new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)));
         // m_mythicalTrap.onTrue(
         // new SequentialCommandGroup(
         // new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SCORE_TRAP),
@@ -537,7 +534,7 @@ public class RobotContainer {
 
         // autoChooser.addOption("2.5Amp", new PathPlannerAuto("2.5Amp"));
 
-        // autoChooser.addOption("3Amp", new PathPlannerAuto("3Amp"));
+        autoChooser.addOption("3AmpCenter", new PathPlannerAuto("3AmpCenter"));
 
         autoChooser.addOption("3SourceTapeBottomTop", new PathPlannerAuto("3SourceTapeBottomTop"));
 
@@ -554,6 +551,8 @@ public class RobotContainer {
         autoChooser.addOption("FourPieceCenter", new PathPlannerAuto("FourPieceCenter"));
 
         autoChooser.addOption("4.5PieceCenter", new PathPlannerAuto("4.5PieceCenter"));
+
+        autoChooser.addOption("Panther3PieceCenter1", new PathPlannerAuto("Panther3PieceCenter1"));
 
     }
 
@@ -654,7 +653,7 @@ public class RobotContainer {
                         new PivotPositionCommand(m_pivotSubsystem, PivotPresets.ZERO_BACK)));
 
         NamedCommands.registerCommand("ShootSubwooferStart", new SequentialCommandGroup(
-                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK),
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK, 2.0),
                 new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
                                 new WaitCommand(0.04),
@@ -662,10 +661,11 @@ public class RobotContainer {
                                         && m_pivotSubsystem.isFinished())).withTimeout(1.0),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
                 new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02)));
+                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
+                new IndexerCommand(m_indexerSubsystem, () -> 0.0).withTimeout(0.02)));
 
         NamedCommands.registerCommand("ShootSubwoofer", new SequentialCommandGroup(
-                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK),
+                new PivotPositionCommand(m_pivotSubsystem, PivotPresets.SUBWOOFER_BACK, 2.0),
                 new ParallelDeadlineGroup(
                         new SequentialCommandGroup(
                                 new WaitCommand(0.04),
@@ -673,13 +673,19 @@ public class RobotContainer {
                                         && m_pivotSubsystem.isFinished())).withTimeout(0.5),
                         new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0)),
                 new IndexerCommand(m_indexerSubsystem, () -> -1.0).withTimeout(0.4),
-                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02)));
+                new ShooterRPMCommand(m_shooterSubsystem, () -> 0, () -> 0, () -> 0).withTimeout(0.02),
+                new IndexerCommand(m_indexerSubsystem, () -> 0.0).withTimeout(0.02)));
 
         NamedCommands.registerCommand("FullFeed",
                 new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
                         m_pivotSubsystem, m_backFeederSubsystem, PivotPresets.SUBWOOFER_BACK)
                                 .until(m_indexerBeamBreak).andThen(new IndexerBackOut(m_indexerSubsystem)
                                         .alongWith(new PivotPositionCommand(m_pivotSubsystem,
-                                                PivotPresets.SUBWOOFER_BACK))));
+                                                PivotPresets.SUBWOOFER_BACK, 2.0))));
+
+        NamedCommands.registerCommand("PartialFeed", new PartialFeedCommand(m_backFeederSubsystem));
+
+        NamedCommands.registerCommand("StartFlywheels",
+                new ShooterRPMCommand(m_shooterSubsystem, () -> -4000, () -> 2000, () -> 0));
     }
 }

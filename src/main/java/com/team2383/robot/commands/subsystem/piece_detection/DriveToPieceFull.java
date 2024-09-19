@@ -49,13 +49,25 @@ public class DriveToPieceFull extends SequentialCommandGroup {
                                 new SequentialCommandGroup(
                                         new DrivetrainHeadingCommand(m_drivetrainSubsystem,
                                                 Rotation2d.fromDegrees(-90)),
-                                        new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem,
-                                                m_backFeederSubsystem)),
+                                        new ParallelDeadlineGroup(
+                                                new DriveToPieceCommand(m_pieceDetectionSubsystem,
+                                                        m_drivetrainSubsystem,
+                                                        m_backFeederSubsystem),
+                                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
+                                                        m_pivotSubsystem,
+                                                        m_backFeederSubsystem,
+                                                        PivotPresets.FEED_BACK))),
                                 new SequentialCommandGroup(
                                         new DrivetrainHeadingCommand(m_drivetrainSubsystem,
                                                 Rotation2d.fromDegrees(90)),
-                                        new DriveToPieceCommand(m_pieceDetectionSubsystem, m_drivetrainSubsystem,
-                                                m_backFeederSubsystem)),
+                                        new ParallelDeadlineGroup(
+                                                new DriveToPieceCommand(m_pieceDetectionSubsystem,
+                                                        m_drivetrainSubsystem,
+                                                        m_backFeederSubsystem),
+                                                new FullFeedCommand(m_shooterSubsystem, m_indexerSubsystem,
+                                                        m_pivotSubsystem,
+                                                        m_backFeederSubsystem,
+                                                        PivotPresets.FEED_BACK))),
                                 m_drivetrainSubsystem::isOnLeftSide),
                         m_backFeederSubsystem::isBeamBreakTripped));
     }

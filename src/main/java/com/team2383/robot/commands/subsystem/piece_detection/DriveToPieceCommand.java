@@ -50,7 +50,7 @@ public class DriveToPieceCommand extends Command {
                             m_driveRateLimiter.calculate(
                                     -4 * getRobotSpeedMultiplier(pieceDetectionSubsystem.inputs.frontPitch)),
                             0, 0),
-                    false, true, new Translation2d(-Units.inchesToMeters(27 / 2.0), 0));
+                    false, true, new Translation2d());
         }
     }
 

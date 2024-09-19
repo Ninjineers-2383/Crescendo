@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 6.556334631055977,
-        "y": 6.135061380443045
+        "x": 1.3140618588929502,
+        "y": 5.535354916863679
       },
       "prevControl": null,
       "nextControl": {
-        "x": 5.563038978984245,
-        "y": 6.709614747817872
+        "x": 1.3140618588929502,
+        "y": 8.035354916863678
       },
       "isLocked": false,
-      "linkedName": null
+      "linkedName": "CenterSubwoofer"
     },
     {
       "anchor": {
-        "x": 3.8992008753248286,
-        "y": 5.495887145620446
+        "x": 7.4165966994218175,
+        "y": 7.396360556547695
       },
       "prevControl": {
-        "x": 4.589886872081437,
-        "y": 6.166839256755436
+        "x": 5.306349572236717,
+        "y": 7.471482622568879
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "AmpCenterShot"
+      "linkedName": null
     }
   ],
   "rotationTargets": [],
@@ -38,15 +38,15 @@
     "maxAngularAcceleration": 720.0
   },
   "goalEndState": {
-    "velocity": 0,
+    "velocity": 2.0,
     "rotation": 180.0,
     "rotateFast": false
   },
   "reversed": false,
-  "folder": "Amp",
+  "folder": "Center",
   "previewStartingState": {
     "rotation": 180.0,
-    "velocity": 0
+    "velocity": 0.0
   },
   "useDefaultConstraints": true
 }

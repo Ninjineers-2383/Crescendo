@@ -8,7 +8,7 @@
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.807408999433385,
+        "x": 1.8074089994333855,
         "y": 6.44311365545808
       },
       "isLocked": false,
@@ -41,7 +41,7 @@
             {
               "type": "named",
               "data": {
-                "name": "FullFeed"
+                "name": "PartialFeed"
               }
             }
           ]

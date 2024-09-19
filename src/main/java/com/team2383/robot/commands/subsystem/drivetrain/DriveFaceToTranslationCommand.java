@@ -28,6 +28,8 @@ public class DriveFaceToTranslationCommand extends Command {
         m_translation = translation;
         m_moveSupplier = moveSupplier;
         m_fieldRelative = fieldRelative;
+
+        addRequirements(drivetrain);
     }
 
     @Override
